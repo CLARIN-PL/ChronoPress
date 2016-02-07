@@ -9,13 +9,13 @@ buildscript {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
         classpath "fi.jasoft.plugin:gradle-vaadin-plugin:0.10.4"
     }
-
 }
 
 plugins {
     id "fi.jasoft.plugin.vaadin" version "0.10.4"
 }
 
+apply plugin: 'maven'
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
@@ -36,12 +36,18 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url "http://maven.vaadin.com/vaadin-addons"
+    }
 }
 
 dependencies {
     compile('com.vaadin:vaadin-spring-boot-starter:1.0.0')
     compile('org.springframework.boot:spring-boot-starter-data-jpa')
+
     compile('com.vaadin:vaadin-push')
+    compile('org.vaadin.addons:vaadin-combobox-multiselect:1.1.2')
+
     runtime('org.postgresql:postgresql')
 
     compile('org.projectlombok:lombok:1.16.6')
@@ -64,8 +70,8 @@ eclipse {
     classpath {
          containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
          containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+        }
     }
-}
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.9'

@@ -28,25 +28,37 @@ public class DataAnalyseView extends DefaultView<DataAnalysePresenter> implement
 		super(presenter);
 	}
 
+	private final TabSheet sheet = new TabSheet();
+
 	@PostConstruct
 	public void init() {
 		setMargin(true);
-
 		addComponent(new Title(FontAwesome.COGS, "Analiza danych"));
-
-		TabSheet sheet = new TabSheet();
 		sheet.addStyleName(ValoTheme.TABSHEET_FRAMED);
+		addComponent(sheet);
+		initializeListeners();
+		initDataSelectionTab();
+	}
+
+
+	private void initDataSelectionTab(){
+
+		dataSelectionTab.getYears().addItems(presenter.loadYears());
+		dataSelectionTab.getTitles().addItems(presenter.loadTitles());
+		dataSelectionTab.getExpositions().addItems(presenter.loadExpositions());
+		dataSelectionTab.getPeriods().addItems(presenter.loadPeriods());
 
 		sheet.addComponent(dataSelectionTab);
-		addComponent(sheet);
-
-		initializeListeners();
 	}
 
 	public void initializeListeners(){
 		dataSelectionTab.getAcceptButton().addClickListener(e -> {
 			presenter.acceptDataSelection();
 		});
+	}
+
+	public DataSelectionTab getDataSelectionTab() {
+		return dataSelectionTab;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
@@ -22,6 +23,7 @@ import java.util.Locale;
 @Theme("chrono")
 @SpringUI
 @Push(transport = Transport.LONG_POLLING)
+@Widgetset("pl.edu.pwr.config.Widgetset")
 public final class MainUI extends UI {
 
 	@Autowired

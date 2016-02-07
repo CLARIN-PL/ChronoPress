@@ -23,7 +23,7 @@ public interface TextRepository extends JpaRepository<Text, Integer>, JpaSpecifi
     @Query("SELECT DISTINCT t.title_j FROM Text t")
     List<String> findJournalTitles();
 
-    @Query("SELECT DISTINCT t.exposition FROM Text t")
-    List<String> findExpositions();
+    @Query("SELECT DISTINCT t.exposition FROM Text t WHERE t.exposition IS NOT NULL ")
+    List<Integer> findExpositions();
 
 }

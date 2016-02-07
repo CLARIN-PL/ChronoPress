@@ -6,6 +6,7 @@ import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -41,33 +42,33 @@ public class TextSpecification {
         };
 	}
 
-	public static Specification<Text> isInTitle_j(final List<String> titles){
+	public static Specification<Text> isInTitle_j(final Collection<String> titles){
 		return (root, query, cb) -> {
             Predicate predicate  = root.get("title_j").in(titles);
             return predicate;
         };
 	}
 
-	public static Specification<Text> isInPeriodType(final List<String> period){
+	public static Specification<Text> isInPeriodType(final Collection<String> period){
 		return (root, query, cb) -> {
             Predicate predicate  = root.get("period").in(period);
             return predicate;
         };
 	}
 
-	public static Specification<Text> isInExposition(final List<Integer> exposition){
+	public static Specification<Text> isInExposition(final Collection<Integer> exposition){
 		return (root, query, cb) -> {
             Predicate predicate  = root.get("exposition").in(exposition);
             return predicate;
         };
 	}
 
-	public static Specification<Text> isLikeAuthor(final List<String> authors){
+	public static Specification<Text> isLikeAuthor(final Collection<String> authors){
 		return (root, query, cb) -> {
 			List<Predicate> criteriaList = new ArrayList<>();
 			Predicate predicate;
 			if(authors.size() == 1) {
-				 predicate = cb.like(root.get("authors"), getContainsLikePattern(authors.get(0)));
+				 predicate = cb.like(root.get("authors"), getContainsLikePattern(authors.iterator().next()));
 			} else {
 				authors.forEach(a -> {
 					Predicate p = cb.like(root.get("authors"), getContainsLikePattern(a));
@@ -79,14 +80,14 @@ public class TextSpecification {
         };
 	}
 
-	public static Specification<Text> isInTitle_a(final List<String> titles){
+	public static Specification<Text> isInTitle_a(final Collection<String> titles){
 		return (root, query, cb) -> {
             Predicate predicate  = root.get("title_a").in(titles);
             return predicate;
         };
 	}
 
-	public static Specification<Text> isPublishedInYear(final List<Integer> years){
+	public static Specification<Text> isPublishedInYear(final Collection<Integer> years){
 		return (root, query, cb) -> {
             Predicate predicate  = cb.function("year", Integer.class, root.get("date")).in(years);
             return predicate;
