@@ -1,0 +1,7 @@
+// Import all the mixins for this theme
+@import "chrono";
+
+.chrono {
+  // Output the actual theme selectors
+  @include chrono;
+}

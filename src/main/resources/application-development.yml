@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost/clarin
+    username: postgres
+    password: postgres
+    initialize: false
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      naming_strategy: org.hibernate.cfg.DefaultNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: validate
+        temp:
+          use_jdbc_metadata_defaults: false
+        default_schema: koper
+  application:
+    name: ChronoPress
+logging:
+  level:
+    org:
+      hibernate: INFO
+      spring: INFO
+server:
+  port: 8888
+

@@ -1,0 +1,70 @@
+$v-unit-size: 32px;
+
+@import "../valo/valo";
+
+$v-font-family: Arial, Verdana,  sans-serif;
+$view-padding: round($v-unit-size / 1.5) !default;
+
+@mixin chrono {
+
+	@include valo;
+
+	.ch-header{
+		background: #fff url("/VAADIN/themes/chrono/img/bg.jpg") no-repeat 50% 0%;
+		border-bottom: 1px solid #DADADA;;
+	}
+
+	.ch-branding{
+
+    	padding-left: 160px;
+    	padding-top: 15px;
+    	padding-bottom: 30px;
+
+    	.v-spacing {
+            width: 40px;
+        }
+    }
+
+    .ch-main-menu-wrapper{
+    	background-color: #1a407d;
+    }
+
+    .ch-main-menu{
+    	.v-menubar-menuitem-caption{
+    		color: #fff;
+    		font-size: 13px;
+    	}
+    }
+
+    .v-menubar-popup{
+      	background-color: #1a407d;
+    }
+
+    .ch-lead-panel{
+		.v-panel-caption{
+			font-size: 32px;
+			color: #197de1 !important;
+			border-bottom: 1px solid #197de1;
+		}
+
+    }
+
+    .ch-sub-panel{
+    	 .v-panel-caption{
+    		font-size: 22px;
+    		color: #197de1 !important;
+   		 }
+    }
+
+    .ch-footer{
+    	border-top: 1px solid #DADADA;
+    	font-size: 11px;
+    }
+
+    .ch-title{
+    	.v-caption{
+    		color: #197de1;
+    		font-size: 16px;
+    	}
+    }
+}
