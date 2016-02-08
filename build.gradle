@@ -21,6 +21,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
 apply plugin: "fi.jasoft.plugin.vaadin"
+apply plugin: 'war'
 
 vaadin {
     version '7.5.+'
@@ -31,6 +32,12 @@ jar {
     baseName = 'ChronoPress'
     version = '0.0.1-SNAPSHOT'
 }
+
+war {
+    baseName = 'ChronoPress'
+    version = '0.0.1-SNAPSHOT'
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -65,6 +72,10 @@ dependencyManagement {
     imports {
         mavenBom "com.vaadin:vaadin-bom:7.5.7"
     }
+}
+
+bootRepackage {
+    mainClass = 'pl.edu.pwr.Application'
 }
 
 eclipse {
