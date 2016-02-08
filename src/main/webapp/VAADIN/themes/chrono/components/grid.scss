@@ -1,0 +1,50 @@
+@mixin grid{
+
+	.ch-grid {
+
+		.v-grid-tablewrapper {
+    		border: none;
+		}
+
+		.v-grid-header th {
+  			border-left: none;
+  			border-top: 1px solid #999;
+    		border-bottom: 1px solid #999;
+    		height: 33px;
+            line-height: 33px;
+    	}
+
+		.v-grid-header .v-grid-cell {
+			font-size: 11px;
+			font-weight: bold;
+            color: #333;
+            background-color: #fff;
+            border-color: #999;
+        }
+
+		.v-grid-row > td, .v-grid-editor-cells > div {
+             border-left: none;
+        }
+
+        .v-grid-cell{
+        	height: 25px;
+        	line-height: 25px;
+			font-size: 12px;
+        }
+
+		.v-grid-header-deco{
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom: 1px solid  #999;
+		 }
+
+		 .v-grid-scroller-vertical{
+		 	border-top: none;
+		 }
+	}
+
+	.v-grid-cell-focused:before{
+      	border:none;
+    }
+}

@@ -5,7 +5,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
-import pl.edu.pwr.chrono.webui.infrastructure.components.Chrono;
+import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 
 import javax.annotation.PostConstruct;
 
@@ -20,7 +20,7 @@ public class Branding extends HorizontalLayout{
     @PostConstruct
     public void init(){
         setSpacing(true);
-        addStyleName(Chrono.BRANDING);
+        addStyleName(ChronoTheme.BRANDING);
 
         Image logo = new Image(null, new ThemeResource("img/logo_ktp.png"));
         Image UWlogo = new Image(null, new ThemeResource("img/logo_uw.png"));

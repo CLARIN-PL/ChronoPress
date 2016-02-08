@@ -7,7 +7,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
-import pl.edu.pwr.chrono.webui.infrastructure.components.Chrono;
+import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 
 import javax.annotation.PostConstruct;
 
@@ -22,7 +22,7 @@ public class Footer extends HorizontalLayout{
     @PostConstruct
     public void init(){
         setWidth(100, Sizeable.Unit.PERCENTAGE);
-        addStyleName(Chrono.FOOTER);
+        addStyleName(ChronoTheme.FOOTER);
 
         HorizontalLayout content = initializeFooter();
         addComponent(content);

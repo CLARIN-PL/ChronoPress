@@ -10,7 +10,7 @@ import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
-import pl.edu.pwr.chrono.webui.infrastructure.components.Chrono;
+import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 
 import javax.annotation.PostConstruct;
@@ -55,7 +55,7 @@ public class HomeView extends DefaultView<HomePresenter> implements View {
 
 		Panel panel = new Panel("O projekcje");
 		panel.addStyleName(ValoTheme.PANEL_BORDERLESS);
-		panel.addStyleName(Chrono.LEAD_PANEL);
+		panel.addStyleName(ChronoTheme.LEAD_PANEL);
 		panel.setContent(panelContent(
 				"Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. " +
 				"Praesent id metus massa, ut blandit odio."+
@@ -74,19 +74,19 @@ public class HomeView extends DefaultView<HomePresenter> implements View {
 
 		Panel tools = new Panel("Narzędzia");
 		tools.setIcon(FontAwesome.WRENCH);
-		tools.addStyleName(Chrono.SUB_PANEL);
+		tools.addStyleName(ChronoTheme.SUB_PANEL);
 		tools.addStyleName("borderless");
 		tools.setContent(panelContent("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio."));
 
 		Panel corpus = new Panel("Korpus");
 		corpus.setIcon(FontAwesome.BOOK);
-		corpus.addStyleName(Chrono.SUB_PANEL);
+		corpus.addStyleName(ChronoTheme.SUB_PANEL);
 		corpus.addStyleName("borderless");
 		corpus.setContent(panelContent("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio."));
 
 		Panel team = new Panel("Zaspół");
 		team.setIcon(FontAwesome.GROUP);
-		team.addStyleName(Chrono.SUB_PANEL);
+		team.addStyleName(ChronoTheme.SUB_PANEL);
 		team.addStyleName("borderless");
 		team.setContent(panelContent("Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio."));
 

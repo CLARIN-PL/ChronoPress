@@ -13,7 +13,7 @@ public class Title extends HorizontalLayout{
     public Title(FontAwesome icon ,String title){
 
         setWidth(100, Unit.PERCENTAGE);
-        addStyleName(Chrono.TITLE);
+        addStyleName(ChronoTheme.TITLE);
 
         Label desc = new Label();
         desc.setCaption(title);

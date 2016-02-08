@@ -2,6 +2,7 @@ package pl.edu.pwr.chrono.readmodel.dto;
 
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -13,7 +14,7 @@ public class DataSelectionDTO {
     private Set<Integer> years;
     private Set<String> titles;
     private Set<String> audience;
-    private Set<String> authors;
+    private List<String> authors;
     private Set<String> periodicType;
     private Set<Integer> exposition;
 

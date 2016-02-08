@@ -4,7 +4,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.VerticalLayout;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.edu.pwr.chrono.webui.infrastructure.components.Chrono;
+import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 
 import javax.annotation.PostConstruct;
 
@@ -22,7 +22,7 @@ public class Header  extends VerticalLayout{
     @PostConstruct
     public void init(){
         setWidth(100, Unit.PERCENTAGE);
-        addStyleName(Chrono.HEADER);
+        addStyleName(ChronoTheme.HEADER);
 
         addComponent(menu);
         addComponent(branding);

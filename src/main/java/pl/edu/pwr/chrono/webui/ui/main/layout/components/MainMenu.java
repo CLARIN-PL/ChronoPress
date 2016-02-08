@@ -11,7 +11,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.edu.pwr.chrono.webui.infrastructure.components.Chrono;
+import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
 import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataAnalyseView;
@@ -44,12 +44,12 @@ public class MainMenu extends HorizontalLayout{
         wrapper.addComponent(gear);
 
         HorizontalLayout barwrapper = new HorizontalLayout();
-        barwrapper.addStyleName(Chrono.MENU_BAR_WRAPPER);
+        barwrapper.addStyleName(ChronoTheme.MENU_BAR_WRAPPER);
         barwrapper.setMargin(new MarginInfo(false,true,false,true));
 
         MenuBar barmenu = new MenuBar();
         barmenu.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-        barmenu.addStyleName(Chrono.MENU_BAR);
+        barmenu.addStyleName(ChronoTheme.MENU_BAR);
 
         MenuBar.MenuItem home = barmenu.addItem("Home", FontAwesome.HOME, new MenuBar.Command() {
             @Override

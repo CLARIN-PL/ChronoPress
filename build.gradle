@@ -49,6 +49,7 @@ dependencies {
     compile('org.vaadin.addons:vaadin-combobox-multiselect:1.1.2')
 
     runtime('org.postgresql:postgresql')
+    compile('org.flywaydb:flyway-core')
 
     compile('org.projectlombok:lombok:1.16.6')
     compile('com.google.guava:guava:19.0')
