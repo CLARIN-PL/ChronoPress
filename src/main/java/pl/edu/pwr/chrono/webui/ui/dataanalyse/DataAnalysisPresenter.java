@@ -21,9 +21,9 @@ import java.util.Set;
  */
 @SpringComponent
 @UIScope
-public class DataAnalysePresenter extends Presenter<DataAnalyseView> {
+public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataAnalysePresenter.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(DataAnalysisPresenter.class);
 
     @Autowired
     private UCDataSelection ucDataSelection;
@@ -43,6 +43,11 @@ public class DataAnalysePresenter extends Presenter<DataAnalyseView> {
     @Autowired
     private UCLoadingAuthors ucLoadingAuthors;
 
+    @Autowired
+    private  UCQuantitativeAnalysis ucQuantitativeAnalysis;
+
+    private DataSelectionResult dataSelectionResult;
+
     public void onAcceptDataSelection(){
         DataSelectionDTO dto = new DataSelectionDTO();
 
@@ -52,8 +57,6 @@ public class DataAnalysePresenter extends Presenter<DataAnalyseView> {
         Set<Integer> selectedExpositions = (Set<Integer>) view.getDataSelectionTab().getExpositions().getValue();
         List<String> selectedAuthors =  view.getDataSelectionTab().getSearchAuthorsPanel().getSelectedItems();
 
-        System.out.println(selectedAuthors);
-
         dto.setYears(selectedYears);
         dto.setTitles(selectedTitles);
         dto.setPeriodicType(selectedPeriods);
@@ -62,12 +65,27 @@ public class DataAnalysePresenter extends Presenter<DataAnalyseView> {
         executeItemLoading(dto);
     }
 
+    public void onQuantitativeAnalysis(){
+        ucQuantitativeAnalysis.calculate(
+                getDataSelectionResult(),
+                view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO());
+    }
+
+    private void setDataSelectionResult(DataSelectionResult result){
+        this.dataSelectionResult = result;
+    }
+
+    private DataSelectionResult getDataSelectionResult(){
+        return dataSelectionResult;
+    }
+
     private void executeItemLoading(DataSelectionDTO dto) {
         view.getDataSelectionTab().showLoadingIndicator();
 
         Futures.addCallback(ucDataSelection.search(dto), new FutureCallback<Optional<DataSelectionResult>>() {
             @Override
             public void onSuccess(Optional<DataSelectionResult> result) {
+                setDataSelectionResult(result.get());
                 view.showSelectionDataResults(result);
             }
 

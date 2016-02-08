@@ -12,21 +12,28 @@ import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
 import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
+import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 
-@SpringView(name = DataAnalyseView.VIEW_NAME, ui = MainUI.class)
+@SpringView(name = DataAnalysisView.VIEW_NAME, ui = MainUI.class)
 @UIScope
-public class DataAnalyseView extends DefaultView<DataAnalysePresenter> implements View {
+public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> implements View {
 
 	public static final String VIEW_NAME = "analyse";
+
+	@Autowired
+	private DbPropertiesProvider provider;
 
 	@Autowired
 	private DataSelectionTab dataSelectionTab;
 
 	@Autowired
-	public DataAnalyseView(DataAnalysePresenter presenter) {
+	private QuantitativeAnalysisTab quantitativeAnalysisTab;
+
+	@Autowired
+	public DataAnalysisView(DataAnalysisPresenter presenter) {
 		super(presenter);
 	}
 
@@ -34,16 +41,16 @@ public class DataAnalyseView extends DefaultView<DataAnalysePresenter> implement
 
 	@PostConstruct
 	public void init() {
-		addComponent(new Title(FontAwesome.COGS, "Analiza danych"));
+		addComponent(new Title(FontAwesome.COGS, provider.getProperty("view.data.analyse.title")));
 		sheet.addStyleName(ValoTheme.TABSHEET_FRAMED);
 		addComponent(sheet);
 		initializeListeners();
 		initDataSelectionTab();
+		initQuantitativeAnalysisTab();
 	}
 
 
 	private void initDataSelectionTab(){
-
 		dataSelectionTab.getYears().addItems(presenter.loadYears());
 		dataSelectionTab.getTitles().addItems(presenter.loadTitles());
 		dataSelectionTab.getExpositions().addItems(presenter.loadExpositions());
@@ -52,10 +59,19 @@ public class DataAnalyseView extends DefaultView<DataAnalysePresenter> implement
 		sheet.addComponent(dataSelectionTab);
 	}
 
+	private void initQuantitativeAnalysisTab(){
+		sheet.addComponent(quantitativeAnalysisTab);
+	}
+
 	public void initializeListeners(){
 		dataSelectionTab.getAcceptButton().addClickListener(e -> {
 			presenter.onAcceptDataSelection();
 		});
+
+		quantitativeAnalysisTab.getAccept().addClickListener(event -> {
+			presenter.onQuantitativeAnalysis();
+		});
+
 	}
 	public void showSelectionDataResults(Optional<DataSelectionResult> result) {
 		getUI().access(() -> {
@@ -64,8 +80,13 @@ public class DataAnalyseView extends DefaultView<DataAnalysePresenter> implement
 			}
 		});
 	}
+
 	public DataSelectionTab getDataSelectionTab() {
 		return dataSelectionTab;
+	}
+
+	public QuantitativeAnalysisTab getQuantitativeAnalysisTab() {
+		return quantitativeAnalysisTab;
 	}
 
 	@Override

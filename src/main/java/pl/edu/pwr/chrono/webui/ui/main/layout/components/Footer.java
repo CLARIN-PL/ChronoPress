@@ -7,7 +7,9 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
+import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
 
@@ -29,10 +31,13 @@ public class Footer extends HorizontalLayout{
         setComponentAlignment(content , Alignment.BOTTOM_CENTER);
     }
 
+    @Autowired
+    private DbPropertiesProvider provider;
+
     private HorizontalLayout initializeFooter(){
         HorizontalLayout layout = new HorizontalLayout();
 
-        Label label = new Label("Copyright 2014 Clarin-PL. All Rights Reserved.");
+        Label label = new Label(provider.getProperty("footer.copy.right"));
         label.addStyleName(ValoTheme.LABEL_COLORED);
         layout.addComponent(label);
         return layout;

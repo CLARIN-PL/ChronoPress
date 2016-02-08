@@ -11,6 +11,7 @@ import org.vaadin.addons.comboboxmultiselect.ComboBoxMultiselect;
 import org.vaadin.hene.popupbutton.PopupButton;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.components.SearchableTablePanel;
+import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
 
@@ -21,8 +22,11 @@ import javax.annotation.PostConstruct;
 @ViewScope
 public class DataSelectionTab extends VerticalLayout{
 
-    private final Button acceptButton = new Button("Akceptuj");
-    private final Button clearButton  = new Button("Wyczyść");
+    @Autowired
+    private DbPropertiesProvider provider;
+
+    private final Button acceptButton = new Button();
+    private final Button clearButton = new Button();
 
     private final ComboBoxMultiselect years = new ComboBoxMultiselect();
     private final ComboBoxMultiselect titles = new ComboBoxMultiselect();
@@ -33,7 +37,7 @@ public class DataSelectionTab extends VerticalLayout{
 
     private final VerticalLayout mainPanelContent = new VerticalLayout();
     private final Panel results = new Panel();
-    private final VerticalLayout loadingIndicator = initializeLoading();
+    private VerticalLayout loadingIndicator;
     private final TextField sampleCount = new TextField();
     private final TextField wordCount = new TextField();
 
@@ -43,21 +47,25 @@ public class DataSelectionTab extends VerticalLayout{
     @PostConstruct
     public void init(){
         setMargin(true);
-        setCaption("Selekcja danych");
+        setCaption(provider.getProperty("view.tab.data.selection.title"));
         setSpacing(true);
 
+        acceptButton.setCaption(provider.getProperty("button.accept"));
+        clearButton.setCaption(provider.getProperty("button.clear"));
+        loadingIndicator = initializeLoading();
         addComponent(initMainPanel());
         initializeResultPanel();
     }
 
     private void initializeResultPanel() {
-        results.setCaption("Rezultat seleckcji");
+        results.setCaption(provider.getProperty("view.tab.data.selection.result.panel"));
         results.addStyleName(ChronoTheme.RESULT_PANEL);
         results.addStyleName(ValoTheme.PANEL_BORDERLESS);
         results.setSizeUndefined();
         results.setContent(initializeResultContentPanel());
         results.setVisible(false);
     }
+
 
     public HorizontalLayout initMainPanel(){
 
@@ -86,7 +94,7 @@ public class DataSelectionTab extends VerticalLayout{
 
             HorizontalLayout loadingNotification = new HorizontalLayout();
             loadingNotification.setSpacing(true);
-            loadingNotification.addComponents(progressBar, new Label("Wczytywanie ..."));
+            loadingNotification.addComponents(progressBar, new Label(provider.getProperty("label.loading")));
 
             layout.addComponents(loadingNotification);
             layout.setComponentAlignment(loadingNotification, Alignment.MIDDLE_CENTER);
@@ -112,8 +120,8 @@ public class DataSelectionTab extends VerticalLayout{
 
         VerticalLayout wrapper = new VerticalLayout();
         wrapper.setMargin(new MarginInfo(false,true,false,true));
-        sampleCount.setCaption("Liczba próbek");
-        wordCount.setCaption("Liczba wyrazów");
+        sampleCount.setCaption(provider.getProperty("label.sample.count"));
+        wordCount.setCaption(provider.getProperty("label.word.count"));
 
         FormLayout layout = new FormLayout();
         layout.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
@@ -131,23 +139,23 @@ public class DataSelectionTab extends VerticalLayout{
         FormLayout left = new FormLayout();
         left.setSpacing(true);
 
-        years.setCaption("Lata");
+        years.setCaption(provider.getProperty("label.years"));
         years.addStyleName(ValoTheme.COMBOBOX_TINY);
-        years.setInputPrompt("Wszystkie");
+        years.setInputPrompt(provider.getProperty("label.all"));
         left.addComponent(years);
 
-        titles.setCaption("Tytuły");
+        titles.setCaption(provider.getProperty("label.title"));
         titles.addStyleName(ValoTheme.COMBOBOX_TINY);
-        titles.setInputPrompt("Wszystkie");
+        titles.setInputPrompt(provider.getProperty("label.all"));
         left.addComponent(titles);
 
         HorizontalLayout authorWrapper = new HorizontalLayout();
-        authorWrapper.setCaption("Autor");
+        authorWrapper.setCaption(provider.getProperty("label.author"));
         authors.addStyleName(ValoTheme.BUTTON_TINY);
         authors.addStyleName(ChronoTheme.POPUP_BUTTON);
         authors.setContent(searchAuthorsPanel);
         authors.setWidth(160, Unit.PIXELS);
-        authors.setCaption("Wszystkie");
+        authors.setCaption(provider.getProperty("label.all"));
         authorWrapper.addComponent(authors);
         left.addComponent(authorWrapper);
 
@@ -155,19 +163,19 @@ public class DataSelectionTab extends VerticalLayout{
         FormLayout right = new FormLayout();
         right.setSpacing(true);
 
-        audience.setCaption("Grupa odbiorcza");
+        audience.setCaption(provider.getProperty("label.audience"));
         audience.addStyleName(ValoTheme.COMBOBOX_TINY);
-        audience.setInputPrompt("Wszystkie");
+        audience.setInputPrompt(provider.getProperty("label.all"));
         right.addComponent(audience);
 
-        periods.setCaption("Typ periodyku");
+        periods.setCaption(provider.getProperty("label.period.type"));
         periods.addStyleName(ValoTheme.COMBOBOX_TINY);
-        periods.setInputPrompt("Wszystkie");
+        periods.setInputPrompt(provider.getProperty("label.all"));
         right.addComponent(periods);
 
-        expositions.setCaption("Ekspozycja");
+        expositions.setCaption(provider.getProperty("label.exposition"));
         expositions.addStyleName(ValoTheme.COMBOBOX_TINY);
-        expositions.setInputPrompt("Wszystkie");
+        expositions.setInputPrompt(provider.getProperty("label.all"));
         right.addComponent(expositions);
 
 

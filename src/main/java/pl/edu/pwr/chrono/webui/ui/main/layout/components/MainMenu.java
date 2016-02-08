@@ -14,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
-import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataAnalyseView;
+import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataAnalysisView;
 import pl.edu.pwr.chrono.webui.ui.home.HomeView;
+import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -31,6 +32,9 @@ public class MainMenu extends HorizontalLayout{
 
     @Autowired
     private UIEventBus uiEventBus;
+
+    @Autowired
+    private DbPropertiesProvider provider;
 
     @PostConstruct
     public  void init(){
@@ -51,27 +55,27 @@ public class MainMenu extends HorizontalLayout{
         barmenu.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
         barmenu.addStyleName(ChronoTheme.MENU_BAR);
 
-        MenuBar.MenuItem home = barmenu.addItem("Home", FontAwesome.HOME, new MenuBar.Command() {
+        MenuBar.MenuItem home = barmenu.addItem(provider.getProperty("menu.home"), FontAwesome.HOME, new MenuBar.Command() {
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
                 uiEventBus.post( new NavigationEvent(HomeView.VIEW_NAME));
             }
         });
 
-        MenuBar.MenuItem tools = barmenu.addItem("Narzędzia", FontAwesome.WRENCH, null);
-        tools.addItem("Szukaj", FontAwesome.SEARCH, null);
-        tools.addItem("Przglądaj próbki", FontAwesome.BOOK, null);
+        MenuBar.MenuItem tools = barmenu.addItem(provider.getProperty("menu.tools"), FontAwesome.WRENCH, null);
+        tools.addItem(provider.getProperty("menu.search"), FontAwesome.SEARCH, null);
+        tools.addItem(provider.getProperty("menu.sample.viewer"), FontAwesome.BOOK, null);
 
-        tools.addItem("Analiza danych", FontAwesome.COGS, new MenuBar.Command() {
+        tools.addItem(provider.getProperty("menu.data.analyse"), FontAwesome.COGS, new MenuBar.Command() {
             @Override
             public void menuSelected(MenuBar.MenuItem selectedItem) {
-                uiEventBus.post( new NavigationEvent(DataAnalyseView.VIEW_NAME));
+                uiEventBus.post( new NavigationEvent(DataAnalysisView.VIEW_NAME));
             }
         });
 
-        MenuBar.MenuItem education = barmenu.addItem("Edukacja", FontAwesome.GRADUATION_CAP, null);
+        MenuBar.MenuItem education = barmenu.addItem(provider.getProperty("menu.education"), FontAwesome.GRADUATION_CAP, null);
 
-        MenuBar.MenuItem contact = barmenu.addItem("Kontakt", FontAwesome.ENVELOPE_O, null);
+        MenuBar.MenuItem contact = barmenu.addItem(provider.getProperty("menu.contact"), FontAwesome.ENVELOPE_O, null);
 
         barwrapper.addComponent(barmenu);
         wrapper.addComponent(barwrapper);
