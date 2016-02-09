@@ -70,7 +70,7 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     public void onQuantitativeAnalysis(){
        QuantitativeAnalysisResult result = ucQuantitativeAnalysis.calculate(
                 getDataSelectionResult(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO());
-       view.getQuantitativeAnalysisTab().showChart(result);
+       view.getQuantitativeAnalysisTab().addData(result);
     }
 
     private void setDataSelectionResult(DataSelectionResult result){

@@ -44,6 +44,7 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
                 DefaultUCCalculatingWordMeasurements.Average average = ucCalculatingWordMeasurements.calculate(
                         words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
                 result.setWordAverage(average);
+                result.setWordLetterUnit(true);
             }
         }
 

@@ -1,14 +1,8 @@
 package pl.edu.pwr.chrono.webui.ui.dataanalyse;
 
-import com.vaadin.addon.charts.Chart;
-import com.vaadin.addon.charts.model.ChartType;
-import com.vaadin.addon.charts.model.Configuration;
-import com.vaadin.addon.charts.model.DataSeries;
-import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
@@ -18,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
+import pl.edu.pwr.chrono.webui.infrastructure.components.ChartPanel;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
@@ -110,6 +105,9 @@ public class QuantitativeAnalysisTab extends VerticalLayout {
     private final Button clear = new Button();
     private final Button accept = new Button();
 
+    @Autowired
+    private ChartPanel resultChartPanel;
+
     @PostConstruct
     public void init() {
         setMargin(true);
@@ -127,6 +125,13 @@ public class QuantitativeAnalysisTab extends VerticalLayout {
         binder.setItemDataSource(new QuantitativeAnalysisDTO());
         binder.bindMemberFields(this);
         expression.setVisible(false);
+    }
+
+    public void addData(QuantitativeAnalysisResult data){
+        removeComponent(resultChartPanel);
+        resultChartPanel.addWordData(data);
+        resultChartPanel.addSentenceData(data);
+        addComponent(resultChartPanel);
     }
 
     private HorizontalLayout initButtons(){
@@ -185,26 +190,14 @@ public class QuantitativeAnalysisTab extends VerticalLayout {
         final VerticalLayout column = new VerticalLayout();
         column.setMargin(true);
 
-        initCheckBox(provider.getProperty("label.all.parts.of.speech"),allPartsOfSpeech);
-        column.addComponent(allPartsOfSpeech);
+        initCheckBox(provider.getProperty("label.all.parts.of.speech"),allPartsOfSpeech, column);
+        initCheckBox(provider.getProperty("label.adjective"), adjective, column);
+        initCheckBox(provider.getProperty("label.verb"), verb, column);
+        initCheckBox(provider.getProperty("label.adverb"), adverb, column);
+        initCheckBox(provider.getProperty("label.noun"), noun, column);
+        initCheckBox(provider.getProperty("label.namingUnit"), namingUnit, column);
+        initCheckBox(provider.getProperty("label.regular.expression"), regularExpression, column);
 
-        initCheckBox(provider.getProperty("label.adjective"), adjective);
-        column.addComponent(adjective);
-
-        initCheckBox(provider.getProperty("label.verb"), verb);
-        column.addComponent(verb);
-
-        initCheckBox(provider.getProperty("label.adverb"), adverb);
-        column.addComponent(adverb);
-
-        initCheckBox(provider.getProperty("label.noun"), noun);
-        column.addComponent(noun);
-
-        initCheckBox(provider.getProperty("label.namingUnit"), namingUnit);
-        column.addComponent(namingUnit);
-
-        initCheckBox(provider.getProperty("label.regular.expression"), regularExpression);
-        column.addComponent(regularExpression);
         regularExpression.addValueChangeListener(event -> {
             expression.setVisible(!expression.isVisible());
         });
@@ -217,9 +210,10 @@ public class QuantitativeAnalysisTab extends VerticalLayout {
         return column;
     }
 
-    private void initCheckBox(String caption, CheckBox box){
+    private void initCheckBox(String caption, CheckBox box, final AbstractOrderedLayout column){
         box.setCaption(caption);
         box.addStyleName(ValoTheme.CHECKBOX_SMALL);
+        column.addComponent(box);
     }
 
     private VerticalLayout initializeWordColumn() {
@@ -232,32 +226,17 @@ public class QuantitativeAnalysisTab extends VerticalLayout {
         desc.addStyleName(ValoTheme.LABEL_SMALL);
         unit.addComponent(desc);
 
-        initCheckBox(provider.getProperty("label.letter"), wordLetterUnit);
-        unit.addComponent( wordLetterUnit );
-
-        initCheckBox(provider.getProperty("label.syllable"), wordSyllableUnit);
-        unit.addComponent(wordSyllableUnit);
+        initCheckBox(provider.getProperty("label.letter"), wordLetterUnit, unit);
+        initCheckBox(provider.getProperty("label.syllable"), wordSyllableUnit, unit);
 
         column.addComponent(unit);
 
-        initCheckBox(provider.getProperty("label.average.length"), wordAveragesLength);
-        column.addComponent(wordAveragesLength);
-
-        initCheckBox(provider.getProperty("label.standard.deviation"), wordStandardDeviation);
-        column.addComponent(wordStandardDeviation);
-
-        initCheckBox(provider.getProperty("label.coefficient.of.variation"),  wordCoefficientOfVariation);
-        column.addComponent(wordCoefficientOfVariation);
-
-        initCheckBox(provider.getProperty("label.skewness"), wordSkewness );
-        column.addComponent(wordSkewness);
-
-        initCheckBox(provider.getProperty("label.kurtosis"), wordKurtosis );
-        column.addComponent(wordKurtosis);
-
-        initCheckBox(provider.getProperty("label.empirical.distribution.zipf.histogram"),  wordEmpiricalDistributionZipfHistogram);
-        column.addComponent(wordEmpiricalDistributionZipfHistogram);
-
+        initCheckBox(provider.getProperty("label.average.length"), wordAveragesLength,column);
+        initCheckBox(provider.getProperty("label.standard.deviation"), wordStandardDeviation, column);
+        initCheckBox(provider.getProperty("label.coefficient.of.variation"),  wordCoefficientOfVariation, column);
+        initCheckBox(provider.getProperty("label.skewness"), wordSkewness, column );
+        initCheckBox(provider.getProperty("label.kurtosis"), wordKurtosis, column );
+        initCheckBox(provider.getProperty("label.empirical.distribution.zipf.histogram"),  wordEmpiricalDistributionZipfHistogram, column);
         return  column;
     }
 
@@ -271,84 +250,18 @@ public class QuantitativeAnalysisTab extends VerticalLayout {
         desc.addStyleName(ValoTheme.LABEL_SMALL);
         unit.addComponent(desc);
 
-        initCheckBox(provider.getProperty("label.word"),  sentenceWordUnit);
-        unit.addComponent( sentenceWordUnit );
-
-        initCheckBox(provider.getProperty("label.letter"), sentenceLetterUnit);
-        unit.addComponent(sentenceLetterUnit);
+        initCheckBox(provider.getProperty("label.word"),  sentenceWordUnit, unit);
+        initCheckBox(provider.getProperty("label.letter"), sentenceLetterUnit, unit);
         column.addComponent(unit);
 
-        initCheckBox(provider.getProperty("label.average.length"),  sentenceAveragesLength);
-        column.addComponent(sentenceAveragesLength);
+        initCheckBox(provider.getProperty("label.average.length"),  sentenceAveragesLength, column);
+        initCheckBox(provider.getProperty("label.standard.deviation"), sentenceStandardDeviation, column);
+        initCheckBox(provider.getProperty("label.coefficient.of.variation"), sentenceCoefficientOfVariation, column);
+        initCheckBox(provider.getProperty("label.skewness"), sentenceSkewness, column);
+        initCheckBox(provider.getProperty("label.empirical.distribution.length"), sentenceEmpiricalDistributionLength, column);
 
-        initCheckBox(provider.getProperty("label.standard.deviation"), sentenceStandardDeviation);
-        column.addComponent(sentenceStandardDeviation);
-
-        initCheckBox(provider.getProperty("label.coefficient.of.variation"), sentenceCoefficientOfVariation);
-        column.addComponent(sentenceCoefficientOfVariation);
-
-        initCheckBox(provider.getProperty("label.skewness"), sentenceSkewness);
-        column.addComponent(sentenceSkewness);
-
-        initCheckBox(provider.getProperty("label.empirical.distribution.length"), sentenceEmpiricalDistributionLength);
-        column.addComponent(sentenceEmpiricalDistributionLength);
 
         return  column;
-    }
-
-    public void showChart(QuantitativeAnalysisResult result){
-
-        HorizontalLayout resultpanel = new HorizontalLayout();
-
-        TextField wordAverageLength = new TextField();
-        wordAverageLength.setCaption(provider.getProperty("label.word.average.length"));
-        wordAverageLength.setValue(Double.toString(result.getWordAveragesLength()));
-
-        TextField wordCoefficientOfVariation = new TextField();
-        wordCoefficientOfVariation.setCaption(provider.getProperty("label.word.coefficient"));
-        wordCoefficientOfVariation.setValue(Double.toString(result.getWordCoefficientOfVariation()));
-
-        TextField wordStandardDeviation = new TextField();
-        wordStandardDeviation.setCaption(provider.getProperty("label.word.standard.deviation"));
-        wordStandardDeviation.setValue(Double.toString(result.getWordStandardDeviation()));
-
-
-        VerticalLayout wrapper = new VerticalLayout();
-        wrapper.setMargin(new MarginInfo(false, true, false, true));
-
-        FormLayout form = new FormLayout();
-        form.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
-        form.addComponent(wordAverageLength);
-        form.addComponent(wordCoefficientOfVariation);
-        form.addComponent(wordStandardDeviation);
-        wrapper.addComponent(form);
-
-        resultpanel.addComponent(wrapper);
-
-
-        final VerticalLayout layout = new VerticalLayout();
-        layout.setMargin(true);
-        Chart chart = new Chart();
-
-        Configuration conf = chart.getConfiguration();
-        conf.setTitle("Frequency");
-        conf.getChart().setType(ChartType.COLUMN);
-
-        conf.getxAxis().setTitle("Długość słowa");
-        conf.getyAxis().setTitle("Ilość wystąpień");
-
-        DataSeries data = new DataSeries("seria 1");
-
-        result.getWordLengthFrequency().forEach((x, y) -> {
-            data.add(new DataSeriesItem(x, y));
-        });
-        conf.addSeries(data);
-
-        layout.addComponent(chart);
-
-        resultpanel.addComponent(layout);
-
-        addComponent(resultpanel);
     }
 
     public Button getClear() {
