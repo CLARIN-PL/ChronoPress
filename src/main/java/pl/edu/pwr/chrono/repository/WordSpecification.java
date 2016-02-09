@@ -32,10 +32,12 @@ public class WordSpecification {
                 criteriaList.add(isVerb().toPredicate(root,query,cb));
             }
             List<Predicate> cl = new ArrayList<>();
-            Predicate p1 =  inIdList(ids).toPredicate(root, query,cb);
-            Predicate p2 = cb.or(criteriaList.toArray(new Predicate[0]));
+            Predicate p1 =  inIdList(ids).toPredicate(root, query, cb);
             cl.add(p1);
-            cl.add(p2);
+            if(criteriaList.size() > 0) {
+                Predicate p2 = cb.or(criteriaList.toArray(new Predicate[0]));
+                cl.add(p2);
+            }
             return cb.and(cl.toArray(new Predicate[0]));
         };
     }

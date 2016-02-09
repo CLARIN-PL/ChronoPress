@@ -3,6 +3,7 @@ package pl.edu.pwr.chrono.readmodel;
 import org.springframework.stereotype.Service;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
+import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
 
 /**
  * Created by tnaskret on 08.02.16.
@@ -11,5 +12,5 @@ import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
 @Service
 public interface UCQuantitativeAnalysis {
 
-     void calculate(DataSelectionResult result, QuantitativeAnalysisDTO dto);
+     QuantitativeAnalysisResult calculate(DataSelectionResult result, QuantitativeAnalysisDTO dto);
 }

@@ -24,8 +24,7 @@ public class QuantitativeAnalysisDTO {
     private Boolean wordCoefficientOfVariation = false;
     private Boolean wordSkewness = false;
     private Boolean wordKurtosis = false;
-    private Boolean wordEmpiricalDistributionLength = false;
-    private Boolean wordZipfaHistogram = false;
+    private Boolean wordEmpiricalDistributionZipfHistogram = false;
 
     private Boolean sentenceWordUnit = false;
     private Boolean sentenceLetterUnit = false;
@@ -34,4 +33,5 @@ public class QuantitativeAnalysisDTO {
     private Boolean sentenceCoefficientOfVariation = false;
     private Boolean sentenceSkewness = false;
     private Boolean sentenceEmpiricalDistributionLength = false;
+
 }

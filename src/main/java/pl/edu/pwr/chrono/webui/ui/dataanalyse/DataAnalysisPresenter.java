@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.*;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
+import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 
 import java.util.List;
@@ -62,13 +63,14 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
         dto.setPeriodicType(selectedPeriods);
         dto.setExposition(selectedExpositions);
         dto.setAuthors(selectedAuthors);
-        executeItemLoading(dto);
+
+        executeDataSelection(dto);
     }
 
     public void onQuantitativeAnalysis(){
-        ucQuantitativeAnalysis.calculate(
-                getDataSelectionResult(),
-                view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO());
+       QuantitativeAnalysisResult result = ucQuantitativeAnalysis.calculate(
+                getDataSelectionResult(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO());
+       view.getQuantitativeAnalysisTab().showChart(result);
     }
 
     private void setDataSelectionResult(DataSelectionResult result){
@@ -79,7 +81,7 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
         return dataSelectionResult;
     }
 
-    private void executeItemLoading(DataSelectionDTO dto) {
+    private void executeDataSelection(DataSelectionDTO dto) {
         view.getDataSelectionTab().showLoadingIndicator();
 
         Futures.addCallback(ucDataSelection.search(dto), new FutureCallback<Optional<DataSelectionResult>>() {

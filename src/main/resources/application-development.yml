@@ -5,6 +5,19 @@ spring:
     username: postgres
     password: postgres
     initialize: false
+    test-while-idle: true
+    test-on-borrow: true
+    test-on-return: true
+    validation-query: "SELECT 1"
+    validation-interval: 3000
+    time-between-eviction-runs-millis: 5000
+    min-evictable-idle-time-millis: 60000
+    remove-abandoned-timeout: 120
+    remove-abandoned: true
+    max-active: 50
+    min-idle: 10
+    max-wait: 30000
+    initialSize: 10
   jpa:
     show-sql: true
     hibernate:

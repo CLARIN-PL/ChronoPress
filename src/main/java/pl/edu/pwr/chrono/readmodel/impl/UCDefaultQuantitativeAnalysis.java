@@ -2,10 +2,13 @@ package pl.edu.pwr.chrono.readmodel.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.edu.pwr.chrono.application.service.UCCalculatingWordMeasurements;
+import pl.edu.pwr.chrono.application.service.impl.DefaultUCCalculatingWordMeasurements;
 import pl.edu.pwr.chrono.domain.Word;
 import pl.edu.pwr.chrono.readmodel.UCQuantitativeAnalysis;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
+import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
 import pl.edu.pwr.chrono.repository.WordRepository;
 import pl.edu.pwr.chrono.repository.WordSpecification;
 
@@ -26,16 +29,43 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
     @PersistenceContext
     private EntityManager em;
 
-    @Override
-    public void calculate(DataSelectionResult result, QuantitativeAnalysisDTO dto) {
+    @Autowired
+    private UCCalculatingWordMeasurements ucCalculatingWordMeasurements;
 
+    @Override
+    public QuantitativeAnalysisResult calculate(DataSelectionResult selection, QuantitativeAnalysisDTO dto) {
+
+        List<Word> words  = filter(selection, dto);
+
+        QuantitativeAnalysisResult result = new QuantitativeAnalysisResult();
+
+        if(doWordAverageCalculations(dto)){
+            if(dto.getWordLetterUnit()){
+                DefaultUCCalculatingWordMeasurements.Average average = ucCalculatingWordMeasurements.calculate(
+                        words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+                result.setWordAverage(average);
+            }
+        }
+
+        if(dto.getWordEmpiricalDistributionZipfHistogram()){
+            result.setWordLengthFrequency(ucCalculatingWordMeasurements.frequencyCalculations(words));
+        }
+
+        return result;
+    }
+
+    private  List<Word> filter(DataSelectionResult selection, QuantitativeAnalysisDTO dto) {
         List<Integer> ids = em.createNativeQuery(
                 "select w.id from koper.sentence s " +
                         "inner join koper.word w on w.sentence_id = s.id " +
-                        "where s.text_id in (?1)").setParameter(1, result.getSampleList()).getResultList();
-        List<Word> filtered = wordRepository.findAll(WordSpecification.filter(ids, dto));
-        System.out.println(filtered.size());
+                        "where s.text_id in (?1)").setParameter(1, selection.getSampleList()).getResultList();
+        return wordRepository.findAll(WordSpecification.filter(ids, dto));
     }
 
-
+    private Boolean doWordAverageCalculations(final QuantitativeAnalysisDTO dto){
+        if(dto.getWordAveragesLength()
+                || dto.getWordCoefficientOfVariation()
+                || dto.getWordStandardDeviation()) return true;
+        return false;
+    }
 }
