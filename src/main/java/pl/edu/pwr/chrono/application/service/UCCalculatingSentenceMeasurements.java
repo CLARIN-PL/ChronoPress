@@ -13,6 +13,6 @@ import java.util.Map;
 @Service
 public interface UCCalculatingSentenceMeasurements {
 
-    DefaultUCCalculatingSentenceMeasurements.Average calculateByWord(final List<SentenceWordCount> list);
-    Map<Integer, Long> frequencyCalculationsByWord(final List<SentenceWordCount> list);
+    DefaultUCCalculatingSentenceMeasurements.Average calculate(final List<SentenceWordCount> list, DefaultUCCalculatingSentenceMeasurements.Unit unit);
+    Map<Integer, Long> frequencyCalculations(final List<SentenceWordCount> list ,  DefaultUCCalculatingSentenceMeasurements.Unit unit);
 }

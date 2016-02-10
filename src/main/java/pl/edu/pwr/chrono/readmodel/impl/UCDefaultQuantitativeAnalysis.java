@@ -1,6 +1,8 @@
 package pl.edu.pwr.chrono.readmodel.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.pwr.chrono.application.service.UCCalculatingSentenceMeasurements;
@@ -39,43 +41,62 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
     @Autowired
     private UCCalculatingSentenceMeasurements ucCalculatingSentenceMeasurements;
 
+    @Autowired
+    private ListeningExecutorService service;
+
+
     @Override
-    public QuantitativeAnalysisResult calculate(DataSelectionResult selection, QuantitativeAnalysisDTO dto) {
+    public ListenableFuture<QuantitativeAnalysisResult> calculate(DataSelectionResult selection, QuantitativeAnalysisDTO dto) {
 
-        List<List<Integer>> wordsIds  = findWordIdFromText(selection);
+        return service.submit(() -> {
+            List<List<Integer>> wordsIds = findWordIdFromText(selection);
 
-        QuantitativeAnalysisResult result = new QuantitativeAnalysisResult();
+            final QuantitativeAnalysisResult result = new QuantitativeAnalysisResult();
 
-        if(dto.getWordLetterUnit()){
-            List<Word> words = filterWords(wordsIds, dto);
-            if(dto.getWordLetterUnit()){
-                DefaultUCCalculatingWordMeasurements.Average average = ucCalculatingWordMeasurements.calculate(
-                        words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
-                result.setWordAverage(average);
-                result.setWordLetterUnit(true);
+            if (dto.getWordLetterUnit()) {
+                List<Word> words = filterWords(wordsIds, dto);
+                if (dto.getWordLetterUnit()) {
+                    DefaultUCCalculatingWordMeasurements.Average average = ucCalculatingWordMeasurements.calculate(
+                            words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+                    result.setWordAverage(average);
+                    result.setWordLetterUnit(true);
+                }
+
+                if (dto.getWordEmpiricalDistributionZipfHistogram()) {
+                    result.setWordLengthFrequency(
+                            ucCalculatingWordMeasurements.averageLengthHistogram(words));
+                }
             }
 
-            if(dto.getWordEmpiricalDistributionZipfHistogram()){
-                result.setWordLengthFrequency(ucCalculatingWordMeasurements.frequencyCalculations(words));
+            if (dto.getSentenceWordUnit() || dto.getSentenceLetterUnit()) {
+
+                List<SentenceWordCount> list = sentenceCalculations(wordsIds);
+                if (dto.getSentenceWordUnit()) {
+                    result.setSentenceWordUnit(true);
+                    calculateSentence(DefaultUCCalculatingSentenceMeasurements.Unit.WORD, dto, result, list);
+                }
+                if (dto.getSentenceLetterUnit()) {
+                    result.setSentenceLetterUnit(true);
+                    calculateSentence(DefaultUCCalculatingSentenceMeasurements.Unit.LETTER, dto, result, list);
+                }
             }
+            return result;
+        });
+    }
+
+    private void calculateSentence(DefaultUCCalculatingSentenceMeasurements.Unit unit,
+                                   QuantitativeAnalysisDTO dto,
+                                   QuantitativeAnalysisResult result,
+                                   List<SentenceWordCount> list) {
+
+        DefaultUCCalculatingSentenceMeasurements.Average average =
+                ucCalculatingSentenceMeasurements.calculate(
+                        list, unit);
+        result.setSentenceAverage(average);
+        if(dto.getSentenceEmpiricalDistributionLength()){
+            result.setSentenceEmpiricalDistributionLength(
+                    ucCalculatingSentenceMeasurements.frequencyCalculations(list, unit));
         }
-
-        if(dto.getSentenceWordUnit()){
-            List<SentenceWordCount> list = unitWordSentenceCount(wordsIds);
-            if(dto.getSentenceWordUnit()){
-                DefaultUCCalculatingSentenceMeasurements.Average average =
-                        ucCalculatingSentenceMeasurements.calculateByWord(list);
-                result.setSentenceWordUnit(true);
-                result.setSentenceAverage(average);
-            }
-
-            if(dto.getSentenceEmpiricalDistributionLength()){
-                result.setSentenceEmpiricalDistributionLength(ucCalculatingSentenceMeasurements.frequencyCalculationsByWord(list));
-            }
-
-        }
-
-        return result;
     }
 
     private List<List<Integer>> findWordIdFromText(DataSelectionResult selection){
@@ -100,11 +121,12 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
         return result;
     }
 
-    private  List<SentenceWordCount> unitWordSentenceCount(List<List<Integer>> wordsIds){
+    private  List<SentenceWordCount> sentenceCalculations(List<List<Integer>> wordsIds){
         List<List<SentenceWordCount>> partitioned = Lists.newArrayList();
         wordsIds.forEach(i -> {
             partitioned.add(em.createNativeQuery(
-                    "SELECT w.sentence_id, count(*) as word_count FROM  koper.word as w " +
+                    "SELECT w.sentence_id, count(*) as word_count, sum(length(w.txt)) as letter_count " +
+                            "FROM  koper.word as w " +
                             "WHERE (w.pos_alias != 'punct' and w.id in (?1)) " +
                             "GROUP BY w.sentence_id", "SentenceWordCountDTOMapping")
                     .setParameter(1, i).getResultList());
@@ -113,4 +135,5 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
         partitioned.forEach(l -> { result.addAll(l);});
         return result;
     }
+
 }

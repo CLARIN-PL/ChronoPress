@@ -1,5 +1,6 @@
 package pl.edu.pwr.chrono.application.service.impl;
 
+import com.google.common.collect.Maps;
 import org.springframework.stereotype.Service;
 import pl.edu.pwr.chrono.application.service.UCCalculatingSentenceMeasurements;
 import pl.edu.pwr.chrono.readmodel.dto.SentenceWordCount;
@@ -18,9 +19,9 @@ public class DefaultUCCalculatingSentenceMeasurements implements UCCalculatingSe
     public enum Unit {LETTER, WORD}
 
     @Override
-    public Average calculateByWord(final List<SentenceWordCount> list) {
+    public Average calculate(final List<SentenceWordCount> list,  Unit unit) {
         if(list == null) return new Average();
-        Average average = averageCalculations(list, Unit.WORD);
+        Average average = averageCalculations(list, unit);
         return  average;
     }
 
@@ -30,15 +31,30 @@ public class DefaultUCCalculatingSentenceMeasurements implements UCCalculatingSe
                     .map(i-> i.getWordCount())
                     .collect(Average::new, Average::accept, Average::combine);
         }
+        if(unit == Unit.LETTER){
+            return list.stream()
+                    .map(i-> i.getLetterCount())
+                    .collect(Average::new, Average::accept, Average::combine);
+        }
         return new Average();
     }
 
     @Override
-    public Map<Integer, Long> frequencyCalculationsByWord(final List<SentenceWordCount> list){
-        Map<Integer , Long> map = list.stream()
-                .collect(Collectors.groupingBy(o -> o.getWordCount(),
-                        Collectors.counting()));
-        return map;
+    public Map<Integer, Long> frequencyCalculations(final List<SentenceWordCount> list, Unit unit){
+
+        if(unit == Unit.WORD) {
+            Map<Integer, Long> map = list.stream()
+                    .collect(Collectors.groupingBy(o -> o.getWordCount(),
+                            Collectors.counting()));
+            return map;
+        }
+        if(unit == Unit.LETTER){
+            Map<Integer, Long> map = list.stream()
+                    .collect(Collectors.groupingBy(o -> o.getLetterCount(),
+                            Collectors.counting()));
+            return map;
+        }
+        return Maps.newConcurrentMap();
     }
 
     public class Average implements IntConsumer{

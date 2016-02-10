@@ -1,5 +1,6 @@
 package pl.edu.pwr.chrono.readmodel;
 
+import com.google.common.util.concurrent.ListenableFuture;
 import org.springframework.stereotype.Service;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
@@ -12,5 +13,5 @@ import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
 @Service
 public interface UCQuantitativeAnalysis {
 
-     QuantitativeAnalysisResult calculate(DataSelectionResult result, QuantitativeAnalysisDTO dto);
+     ListenableFuture<QuantitativeAnalysisResult> calculate(DataSelectionResult result, QuantitativeAnalysisDTO dto);
 }

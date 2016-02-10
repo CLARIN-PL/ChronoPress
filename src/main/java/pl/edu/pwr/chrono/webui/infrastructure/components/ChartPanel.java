@@ -36,8 +36,10 @@ public class ChartPanel extends VerticalLayout {
 
     public void addData(String name, FormBuilder form, Map<Integer, Long> map){
         String title =  name +" - "+ tabCounter++;
+        form.setCaption(title);
         sheet.addTab(form);
         addDataSeries(chart, map, title);
+        sheet.setSelectedTab(form);
     }
 
     private HorizontalLayout initContentColumnLayout(TabSheet sheet, Chart chart){
@@ -60,12 +62,16 @@ public class ChartPanel extends VerticalLayout {
 
     }
 
+    public void changexAxisScale(Number value) {
+        chart.getConfiguration().getxAxis().setExtremes(1, value);
+        chart.drawChart();
+    }
+
     public static class FormBuilder extends VerticalLayout{
 
         final FormLayout form = new FormLayout();
 
-        public FormBuilder(String name){
-            setCaption(name);
+        public FormBuilder(){
             setMargin(true);
             form.addStyleName(ValoTheme.FORMLAYOUT_LIGHT);
             addComponent(form);

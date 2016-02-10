@@ -19,6 +19,8 @@ public class WordSpecification {
         return (root, query, cb) -> {
 
             List<Predicate> criteriaList = new ArrayList<>();
+            criteriaList.add(notPunctuation().toPredicate(root, query, cb));
+
             if(dto.getNoun()){
                 criteriaList.add(isNoun().toPredicate(root,query,cb));
             }
@@ -39,6 +41,13 @@ public class WordSpecification {
                 cl.add(p2);
             }
             return cb.and(cl.toArray(new Predicate[0]));
+        };
+    }
+
+    public static Specification<Word> notPunctuation(){
+        return (root, query, cb) -> {
+            Predicate predicate  = cb.notEqual(root.get("pos_alias"), "punct");
+            return predicate;
         };
     }
 

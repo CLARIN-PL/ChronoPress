@@ -10,9 +10,11 @@ public class SentenceWordCount {
 
     private Integer sentenceId;
     private Integer wordCount;
+    private Integer letterCount;
 
-    public SentenceWordCount(Integer sentenceId, Integer wordCount) {
+    public SentenceWordCount(Integer sentenceId, Integer wordCount, Integer letterCount) {
         this.sentenceId = sentenceId;
         this.wordCount = wordCount;
+        this.letterCount = letterCount;
     }
 }

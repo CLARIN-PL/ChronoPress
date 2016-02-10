@@ -67,18 +67,25 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
     public void onQuantitativeAnalysis(){
 
-        QuantitativeAnalysisResult result = ucQuantitativeAnalysis.calculate(
-                getDataSelectionResult(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO());
+        view.getQuantitativeAnalysisTab().getAcceptButton().setEnabled(false);
+        view.getQuantitativeAnalysisTab().showLoadingIndicator();
 
-        if(result.getWordLetterUnit() || result.getWordSyllableUnit()) {
-           view.getQuantitativeAnalysisTab().addWordData(result);
-       }
+        Futures.addCallback(ucQuantitativeAnalysis.calculate(
+                getDataSelectionResult(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO()) ,
+                new FutureCallback<QuantitativeAnalysisResult>() {
 
-       if(result.getSentenceLetterUnit() || result.getSentenceWordUnit()) {
-           view.getQuantitativeAnalysisTab().addSentenceData(result);
-       }
+            @Override
+            public void onSuccess(QuantitativeAnalysisResult result) {
+                view.showQuantitativeAnalysisResult(result);
+                view.getQuantitativeAnalysisTab().getAcceptButton().setEnabled(true);
+            }
 
-       view.getQuantitativeAnalysisTab().showResults();
+            @Override
+            public void onFailure(Throwable throwable) {
+                log.warn("Item loading failed ", throwable);
+            }
+        });
+
     }
 
     private void setDataSelectionResult(DataSelectionResult result){

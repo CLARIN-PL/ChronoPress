@@ -16,7 +16,8 @@ import java.io.Serializable;
                 targetClass = SentenceWordCount.class,
                 columns = {
                         @ColumnResult(name = "sentence_id", type = Integer.class),
-                        @ColumnResult(name = "word_count", type = Integer.class)}))
+                        @ColumnResult(name = "word_count", type = Integer.class),
+                        @ColumnResult(name = "letter_count", type = Integer.class)}))
 
 @Entity
 @Table(name = "sentence")

@@ -9,6 +9,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
+import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
 import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
@@ -72,6 +73,18 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 			presenter.onQuantitativeAnalysis();
 		});
 
+	}
+
+	public void showQuantitativeAnalysisResult(QuantitativeAnalysisResult result){
+		getUI().access(() -> {
+			if (result.getWordLetterUnit() || result.getWordSyllableUnit()) {
+				quantitativeAnalysisTab.addWordData(result);
+			}
+			if (result.getSentenceLetterUnit() || result.getSentenceWordUnit()) {
+				quantitativeAnalysisTab.addSentenceData(result);
+			}
+			quantitativeAnalysisTab.showResults();
+		});
 	}
 	public void showSelectionDataResults(Optional<DataSelectionResult> result) {
 		getUI().access(() -> {

@@ -6,6 +6,7 @@ import pl.edu.pwr.chrono.domain.Word;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
@@ -35,11 +36,18 @@ public class DefaultUCCalculatingWordMeasurements implements UCCalculatingWordMe
     }
 
     @Override
-    public Map<Integer, Long> frequencyCalculations(final List<Word> list){
+    public Map<Integer, Long> averageLengthHistogram(final List<Word> list){
        Map<Integer , Long> map = list.stream()
                 .collect(Collectors.groupingBy(o -> o.getTxt().length(),
                         Collectors.counting()));
         return map;
+    }
+
+
+    public Map<Integer, Long> frequencyHistogram(final List<Word> list){
+        Map<String , Long> map = list.stream()
+                .collect(Collectors.groupingBy(o -> o.getTxt(), Collectors.counting()));
+        return null;
     }
 
     public class Average implements IntConsumer

@@ -115,6 +115,11 @@ public class QuantitativeAnalysisTab extends Tab {
         results.setVisible(false);
     }
 
+    public void showLoadingIndicator(){
+        results.setVisible(false);
+        mainPanelContent.addComponent(loadingIndicator);
+    }
+
     public HorizontalLayout initMainPanel(){
 
         HorizontalLayout wrapper = new HorizontalLayout();
@@ -154,7 +159,7 @@ public class QuantitativeAnalysisTab extends Tab {
 
         wordResultPanel.addData(
                 provider.getProperty("label.sample"),
-                new ChartPanel.FormBuilder(provider.getProperty("label.result.word.qa.form.title"))
+                new ChartPanel.FormBuilder()
                         .addStringField(provider.getProperty("label.unit"), unitValue)
                         .addDoubleField(provider.getProperty("label.average.length"), data.getWordAveragesLength())
                         .addDoubleField(provider.getProperty("label.standard.deviation"), data.getWordStandardDeviation())
@@ -183,7 +188,7 @@ public class QuantitativeAnalysisTab extends Tab {
 
         sentenceResultPanel.addData(
                 provider.getProperty("label.sample"),
-                new ChartPanel.FormBuilder(provider.getProperty("label.result.sentence.qa.form.title"))
+                new ChartPanel.FormBuilder()
                         .addStringField(provider.getProperty("label.unit"), unitValue)
                         .addDoubleField(provider.getProperty("label.average.length"), data.getSentenceAverageLength())
                         .addDoubleField(provider.getProperty("label.standard.deviation"), data.getSentenceStandardDeviation())
@@ -191,6 +196,8 @@ public class QuantitativeAnalysisTab extends Tab {
                         .addDoubleField(provider.getProperty("label.skewness"), data.getSentenceSkewness())
                         .build(),
                 data.getSentenceEmpiricalDistributionLength());
+        Number x = new Integer(400);
+        sentenceResultPanel.changexAxisScale(x);
         results.addComponent(sentenceResultPanel);
     }
 
