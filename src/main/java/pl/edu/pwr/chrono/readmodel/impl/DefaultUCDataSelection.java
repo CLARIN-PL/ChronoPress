@@ -39,16 +39,27 @@ public class DefaultUCDataSelection implements UCDataSelection {
     public ListenableFuture<Optional<DataSelectionResult>> search(DataSelectionDTO dto) {
 
       return service.submit(() -> {
+           //TODO add collect only id
            List<Text> texts = textRepository.findAll(TextSpecification.search(dto));
            List<Integer> ids = Lists.newArrayList();
            texts.forEach(i -> {
                ids.add(i.getId());
            });
-           Integer wordCount = 0;
-           if(!ids.isEmpty())
-               wordCount = sentenceRepository.findWordCount(ids);
-           DataSelectionResult result = new DataSelectionResult(ids, texts.size(), wordCount);
+
+          //TODO Ansyc
+           final List<Integer> resultCount = Lists.newArrayList();
+           if(!ids.isEmpty()) {
+                List<List<Integer>> smallerLists = Lists.partition(ids, 10);
+                if (!smallerLists.isEmpty()) {
+                    smallerLists.forEach( l -> {
+                        resultCount.add(sentenceRepository.findWordCount(l));
+                    });
+                }
+            }
+           DataSelectionResult result = new DataSelectionResult(ids, texts.size(),
+                   resultCount.stream().mapToInt(Integer::intValue).sum());
            return  Optional.of(result);
        });
+
     }
 }

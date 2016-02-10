@@ -17,4 +17,5 @@ public class ChronoTheme {
     public static final String TITLE = "ch-title";
     public static final String FOOTER = "ch-footer";
     public static final String GRID = "ch-grid";
+    public static final String RESULT_TITLE = "ch-result-title";
 }

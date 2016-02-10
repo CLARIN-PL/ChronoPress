@@ -86,6 +86,17 @@ $view-padding: round($v-unit-size / 1.5) !default;
             color: #197de1 !important;
           }
     }
+	 .v-slot-ch-result-title{
+	 	padding-left: 50px;
+        padding-right: 50px;
+	 }
+     .v-caption-ch-result-title{
+        font-size: 14px;
+        border-bottom: 1px solid  #197de1 !important;
+  		margin-bottom: 10px !important;
+        color: #197de1 !important;
+     }
+
     .ch-popup-button{
     	background-image: none;
     	box-shadow: none;

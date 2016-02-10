@@ -4,8 +4,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.*;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
@@ -22,9 +21,8 @@ import java.util.Set;
  */
 @SpringComponent
 @UIScope
+@Slf4j
 public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(DataAnalysisPresenter.class);
 
     @Autowired
     private UCDataSelection ucDataSelection;
@@ -68,9 +66,19 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     }
 
     public void onQuantitativeAnalysis(){
-       QuantitativeAnalysisResult result = ucQuantitativeAnalysis.calculate(
+
+        QuantitativeAnalysisResult result = ucQuantitativeAnalysis.calculate(
                 getDataSelectionResult(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO());
-       view.getQuantitativeAnalysisTab().addData(result);
+
+        if(result.getWordLetterUnit() || result.getWordSyllableUnit()) {
+           view.getQuantitativeAnalysisTab().addWordData(result);
+       }
+
+       if(result.getSentenceLetterUnit() || result.getSentenceWordUnit()) {
+           view.getQuantitativeAnalysisTab().addSentenceData(result);
+       }
+
+       view.getQuantitativeAnalysisTab().showResults();
     }
 
     private void setDataSelectionResult(DataSelectionResult result){
@@ -82,6 +90,7 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     }
 
     private void executeDataSelection(DataSelectionDTO dto) {
+        view.getDataSelectionTab().getAcceptButton().setEnabled(false);
         view.getDataSelectionTab().showLoadingIndicator();
 
         Futures.addCallback(ucDataSelection.search(dto), new FutureCallback<Optional<DataSelectionResult>>() {
@@ -89,11 +98,12 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
             public void onSuccess(Optional<DataSelectionResult> result) {
                 setDataSelectionResult(result.get());
                 view.showSelectionDataResults(result);
+                view.getDataSelectionTab().getAcceptButton().setEnabled(true);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                LOGGER.warn("Item loading failed ", throwable);
+                log.warn("Item loading failed ", throwable);
             }
         });
     }

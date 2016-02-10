@@ -68,7 +68,7 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 			presenter.onAcceptDataSelection();
 		});
 
-		quantitativeAnalysisTab.getAccept().addClickListener(event -> {
+		quantitativeAnalysisTab.getAcceptButton().addClickListener(event -> {
 			presenter.onQuantitativeAnalysis();
 		});
 

@@ -2,8 +2,7 @@ package pl.edu.pwr.chrono.webui.ui.home;
 
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 
 /**
@@ -11,9 +10,8 @@ import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
  */
 @SpringComponent
 @UIScope
+@Slf4j
 public class HomePresenter extends Presenter<HomeView> {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(HomePresenter.class);
 
     public void showInstitutionPersonList() {
     }

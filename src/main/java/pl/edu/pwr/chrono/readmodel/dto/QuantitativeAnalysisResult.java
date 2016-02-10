@@ -2,6 +2,7 @@ package pl.edu.pwr.chrono.readmodel.dto;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
+import pl.edu.pwr.chrono.application.service.impl.DefaultUCCalculatingSentenceMeasurements;
 import pl.edu.pwr.chrono.application.service.impl.DefaultUCCalculatingWordMeasurements;
 
 import java.util.Map;
@@ -33,6 +34,12 @@ public class QuantitativeAnalysisResult {
         wordAveragesLength = avr.getAverage();
         wordStandardDeviation = avr.getStandardDeviation();
         wordCoefficientOfVariation = avr.getCoefficientOfVariation();
+    }
+
+    public void setSentenceAverage(DefaultUCCalculatingSentenceMeasurements.Average avr){
+        sentenceAverageLength = avr.getAverage();
+        sentenceStandardDeviation = avr.getStandardDeviation();
+        sentenceCoefficientOfVariation = avr.getCoefficientOfVariation();
     }
 
 }

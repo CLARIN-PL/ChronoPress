@@ -1,6 +1,5 @@
 package pl.edu.pwr.chrono.webui.ui.dataanalyse;
 
-import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
@@ -11,22 +10,14 @@ import org.vaadin.addons.comboboxmultiselect.ComboBoxMultiselect;
 import org.vaadin.hene.popupbutton.PopupButton;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.components.SearchableTablePanel;
-import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
-
-import javax.annotation.PostConstruct;
+import pl.edu.pwr.chrono.webui.infrastructure.components.Tab;
 
 /**
  * Created by tnaskret on 05.02.16.
  */
 @SpringComponent
 @ViewScope
-public class DataSelectionTab extends VerticalLayout{
-
-    @Autowired
-    private DbPropertiesProvider provider;
-
-    private final Button acceptButton = new Button();
-    private final Button clearButton = new Button();
+public class DataSelectionTab extends Tab {
 
     private final ComboBoxMultiselect years = new ComboBoxMultiselect();
     private final ComboBoxMultiselect titles = new ComboBoxMultiselect();
@@ -34,27 +25,19 @@ public class DataSelectionTab extends VerticalLayout{
     private final ComboBoxMultiselect expositions = new ComboBoxMultiselect();
     private final ComboBoxMultiselect audience = new ComboBoxMultiselect();
     private final PopupButton authors = new PopupButton();
-
-    private final VerticalLayout mainPanelContent = new VerticalLayout();
     private final Panel results = new Panel();
-    private VerticalLayout loadingIndicator;
     private final TextField sampleCount = new TextField();
     private final TextField wordCount = new TextField();
 
     @Autowired
     private SearchableTablePanel searchAuthorsPanel;
 
-    @PostConstruct
-    public void init(){
-        setMargin(true);
+    @Override
+    public void initializeTab() {
         setCaption(provider.getProperty("view.tab.data.selection.title"));
-        setSpacing(true);
-
-        acceptButton.setCaption(provider.getProperty("button.accept"));
-        clearButton.setCaption(provider.getProperty("button.clear"));
-        loadingIndicator = initializeLoading();
         addComponent(initMainPanel());
         initializeResultPanel();
+        initListeners();
     }
 
     private void initializeResultPanel() {
@@ -66,6 +49,10 @@ public class DataSelectionTab extends VerticalLayout{
         results.setVisible(false);
     }
 
+    public void showLoadingIndicator(){
+        mainPanelContent.removeComponent(results);
+        mainPanelContent.addComponent(loadingIndicator);
+    }
 
     public HorizontalLayout initMainPanel(){
 
@@ -75,7 +62,6 @@ public class DataSelectionTab extends VerticalLayout{
         mainPanelContent.setSizeUndefined();
         mainPanelContent.addComponent(initializeComboBoxes());
 
-        HorizontalLayout buttonBar = buildButtonBar();
         mainPanelContent.addComponent(buttonBar);
         mainPanelContent.setComponentAlignment(buttonBar, Alignment.MIDDLE_RIGHT);
 
@@ -83,28 +69,6 @@ public class DataSelectionTab extends VerticalLayout{
         wrapper.setComponentAlignment(mainPanelContent, Alignment.MIDDLE_CENTER);
 
         return  wrapper;
-    }
-
-    public VerticalLayout initializeLoading(){
-            VerticalLayout layout = new VerticalLayout();
-            layout.setMargin(true);
-
-            ProgressBar progressBar = new ProgressBar();
-            progressBar.setIndeterminate(true);
-
-            HorizontalLayout loadingNotification = new HorizontalLayout();
-            loadingNotification.setSpacing(true);
-            loadingNotification.addComponents(progressBar, new Label(provider.getProperty("label.loading")));
-
-            layout.addComponents(loadingNotification);
-            layout.setComponentAlignment(loadingNotification, Alignment.MIDDLE_CENTER);
-
-            return layout;
-    }
-
-    public void showLoadingIndicator(){
-        mainPanelContent.removeComponent(results);
-        mainPanelContent.addComponent(loadingIndicator);
     }
 
     public void showResults(Integer sc, Integer wc){
@@ -184,32 +148,15 @@ public class DataSelectionTab extends VerticalLayout{
         return  layout;
     }
 
-    public HorizontalLayout buildButtonBar(){
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.setSizeUndefined();
-        layout.setSpacing(true);
-
-        acceptButton.setIcon(FontAwesome.CHECK);
-        acceptButton.addStyleName(ValoTheme.BUTTON_SMALL);
-        acceptButton.addStyleName(ValoTheme.BUTTON_FRIENDLY);
-
-        clearButton.addStyleName(ValoTheme.BUTTON_SMALL);
-        clearButton.addClickListener(event -> {
-            years.unselectAll();
-            titles.unselectAll();
-            expositions.unselectAll();
-            periods.unselectAll();
-        });
-
-        layout.addComponent(clearButton);
-        layout.addComponent(acceptButton);
-
-        return layout;
+    public void initListeners(){
+       getClearButton().addClickListener(event -> {
+           years.unselectAll();
+           titles.unselectAll();
+           expositions.unselectAll();
+           periods.unselectAll();
+       });
     }
 
-    public Button getAcceptButton() {
-        return acceptButton;
-    }
 
     public ComboBoxMultiselect getYears() {
         return years;
