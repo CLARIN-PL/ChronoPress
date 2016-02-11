@@ -46,13 +46,13 @@ public class DefaultUCCalculatingSentenceMeasurements implements UCCalculatingSe
             Map<Integer, Long> map = list.stream()
                     .collect(Collectors.groupingBy(o -> o.getWordCount(),
                             Collectors.counting()));
-            return map;
+            return  DefaultUCCalculatingWordMeasurements.sortByIntegerKey(map);
         }
         if(unit == Unit.LETTER){
             Map<Integer, Long> map = list.stream()
                     .collect(Collectors.groupingBy(o -> o.getLetterCount(),
                             Collectors.counting()));
-            return map;
+            return DefaultUCCalculatingWordMeasurements.sortByIntegerKey(map);
         }
         return Maps.newConcurrentMap();
     }

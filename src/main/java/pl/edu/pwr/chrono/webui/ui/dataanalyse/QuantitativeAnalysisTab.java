@@ -157,7 +157,7 @@ public class QuantitativeAnalysisTab extends Tab {
             unitValue = provider.getProperty("label.unit.syllable");
         }
 
-        wordResultPanel.addData(
+        wordResultPanel.addDataWithLong(
                 provider.getProperty("label.sample"),
                 new ChartPanel.FormBuilder()
                         .addStringField(provider.getProperty("label.unit"), unitValue)
@@ -167,7 +167,7 @@ public class QuantitativeAnalysisTab extends Tab {
                         .addDoubleField(provider.getProperty("label.skewness"), data.getWordSkewness())
                         .addDoubleField(provider.getProperty("label.kurtosis"), data.getWordKurtosis())
                         .build(),
-                data.getWordLengthFrequency());
+                data.getWordFrequencyHistogram());
         results.addComponent(wordResultPanel);
     }
 
@@ -186,7 +186,7 @@ public class QuantitativeAnalysisTab extends Tab {
             unitValue = provider.getProperty("label.unit.word");
         }
 
-        sentenceResultPanel.addData(
+        sentenceResultPanel.addDataWithInteger(
                 provider.getProperty("label.sample"),
                 new ChartPanel.FormBuilder()
                         .addStringField(provider.getProperty("label.unit"), unitValue)
@@ -196,8 +196,6 @@ public class QuantitativeAnalysisTab extends Tab {
                         .addDoubleField(provider.getProperty("label.skewness"), data.getSentenceSkewness())
                         .build(),
                 data.getSentenceEmpiricalDistributionLength());
-        Number x = new Integer(400);
-        sentenceResultPanel.changexAxisScale(x);
         results.addComponent(sentenceResultPanel);
     }
 

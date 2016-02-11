@@ -49,7 +49,7 @@ public class DefaultUCDataSelection implements UCDataSelection {
           //TODO Ansyc
            final List<Integer> resultCount = Lists.newArrayList();
            if(!ids.isEmpty()) {
-                List<List<Integer>> smallerLists = Lists.partition(ids, 10);
+                List<List<Integer>> smallerLists = Lists.partition(ids, 20);
                 if (!smallerLists.isEmpty()) {
                     smallerLists.forEach( l -> {
                         resultCount.add(sentenceRepository.findWordCount(l));

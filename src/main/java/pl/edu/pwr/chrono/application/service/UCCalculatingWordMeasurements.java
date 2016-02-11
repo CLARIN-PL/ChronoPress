@@ -15,5 +15,7 @@ public interface UCCalculatingWordMeasurements {
 
     DefaultUCCalculatingWordMeasurements.Average calculate(List<Word> list,
                                                            DefaultUCCalculatingWordMeasurements.Unit unit);
+
     Map<Integer, Long> averageLengthHistogram(final List<Word> list);
+    Map<Long, Long> frequencyHistogram(final List<Word> list);
 }

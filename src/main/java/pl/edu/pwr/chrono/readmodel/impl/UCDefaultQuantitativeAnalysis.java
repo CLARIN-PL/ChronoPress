@@ -63,8 +63,8 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
                 }
 
                 if (dto.getWordEmpiricalDistributionZipfHistogram()) {
-                    result.setWordLengthFrequency(
-                            ucCalculatingWordMeasurements.averageLengthHistogram(words));
+                    result.setWordFrequencyHistogram(
+                            ucCalculatingWordMeasurements.frequencyHistogram(words));
                 }
             }
 
@@ -100,7 +100,7 @@ public class UCDefaultQuantitativeAnalysis implements UCQuantitativeAnalysis {
     }
 
     private List<List<Integer>> findWordIdFromText(DataSelectionResult selection){
-        List<List<Integer>> partitioned = Lists.partition(selection.getSampleList(), 10);
+        List<List<Integer>> partitioned = Lists.partition(selection.getSampleList(), 20);
                 final List<List<Integer>> results = Lists.newArrayList();
                 partitioned.forEach(i ->{
                     results.add(em.createNativeQuery(

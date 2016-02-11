@@ -6,9 +6,7 @@ import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.util.ArrayDeque;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by tnaskret on 09.02.16.
@@ -34,12 +32,22 @@ public class ChartPanel extends VerticalLayout {
         chart.getConfiguration().getSeries().clear();
     }
 
-    public void addData(String name, FormBuilder form, Map<Integer, Long> map){
+    public void addDataWithInteger(String name, FormBuilder form, Map<Integer, Long> map){
+        String title = buildTab(name, form);
+        addDataSeries(chart, loadIntegerData(map, title));
+    }
+
+    private String buildTab(String name, FormBuilder form) {
         String title =  name +" - "+ tabCounter++;
         form.setCaption(title);
         sheet.addTab(form);
-        addDataSeries(chart, map, title);
         sheet.setSelectedTab(form);
+        return title;
+    }
+
+    public void addDataWithLong(String name, FormBuilder form, Map<Long, Long> map){
+        String title = buildTab(name, form);
+        addDataSeries(chart, loadLongData(map, title));
     }
 
     private HorizontalLayout initContentColumnLayout(TabSheet sheet, Chart chart){
@@ -62,9 +70,8 @@ public class ChartPanel extends VerticalLayout {
 
     }
 
-    public void changexAxisScale(Number value) {
+    private void adjustXAxisMax(Long value) {
         chart.getConfiguration().getxAxis().setExtremes(1, value);
-        chart.drawChart();
     }
 
     public static class FormBuilder extends VerticalLayout{
@@ -116,20 +123,32 @@ public class ChartPanel extends VerticalLayout {
         return q;
     }
 
-    private void addDataSeries(Chart chart, Map<Integer, Long> series, String name){
-
-        final DataSeries data = new DataSeries(name);
-
+    private void addDataSeries(Chart chart,  DataSeries data){
         if(!colors.isEmpty()) {
-            final PlotOptionsColumn opts = new PlotOptionsColumn();;
+            final PlotOptionsColumn opts = new PlotOptionsColumn();
             opts.setColor(colors.poll());
             opts.setStacking(Stacking.NORMAL);
             data.setPlotOptions(opts);
         }
+        chart.getConfiguration().addSeries(data);
+        chart.getConfiguration().getChart().setZoomType(ZoomType.X);
+        chart.drawChart();
+    }
+
+    private  DataSeries loadLongData(Map<Long, Long> series, String name) {
+        final DataSeries data = new DataSeries(name);
         series.forEach((x, y) -> {
             data.add(new DataSeriesItem(x, y));
         });
-        chart.getConfiguration().addSeries(data);
-        chart.drawChart();
+        adjustXAxisMax(Long.valueOf(series.size() +10));
+        return data;
+    }
+
+    private  DataSeries loadIntegerData(Map<Integer, Long> series, String name) {
+        final DataSeries data = new DataSeries(name);
+        series.forEach((x, y) -> {
+            data.add(new DataSeriesItem(x, y));
+        });
+        return  data;
     }
 }

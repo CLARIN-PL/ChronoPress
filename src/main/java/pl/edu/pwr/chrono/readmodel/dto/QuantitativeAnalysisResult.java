@@ -20,7 +20,8 @@ public class QuantitativeAnalysisResult {
     private double  wordCoefficientOfVariation = 0;
     private double  wordSkewness = 0;
     private double  wordKurtosis = 0;
-    private Map<Integer, Long> wordLengthFrequency = Maps.newConcurrentMap();
+    private Map<Integer, Long> wordAverageLengthHistogram = Maps.newConcurrentMap();
+    private Map<Long, Long> wordFrequencyHistogram = Maps.newConcurrentMap();
 
     private Boolean sentenceWordUnit = false;
     private Boolean sentenceLetterUnit = false;

@@ -4,9 +4,9 @@ import org.springframework.stereotype.Service;
 import pl.edu.pwr.chrono.application.service.UCCalculatingWordMeasurements;
 import pl.edu.pwr.chrono.domain.Word;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
@@ -40,14 +40,33 @@ public class DefaultUCCalculatingWordMeasurements implements UCCalculatingWordMe
        Map<Integer , Long> map = list.stream()
                 .collect(Collectors.groupingBy(o -> o.getTxt().length(),
                         Collectors.counting()));
-        return map;
+        return sortByIntegerKey(map);
     }
 
-
-    public Map<Integer, Long> frequencyHistogram(final List<Word> list){
+    @Override
+    public Map<Long, Long> frequencyHistogram(final List<Word> list){
         Map<String , Long> map = list.stream()
                 .collect(Collectors.groupingBy(o -> o.getTxt(), Collectors.counting()));
-        return null;
+        Map<Long, Long> result = map.entrySet()
+                                    .stream()
+                                    .collect(Collectors.groupingBy(e -> e.getValue(), Collectors.counting()));
+        return sortByLongKey(result);
+    }
+
+    public static Map sortByIntegerKey(Map<Integer, Long> map){
+        return map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
+    private static Map sortByLongKey(Map<Long, Long> map){
+        return map.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, LinkedHashMap::new));
     }
 
     public class Average implements IntConsumer
