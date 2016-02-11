@@ -1,5 +1,2 @@
-info.build.number: ${buildNumber}
-info.build.version: ${version}
-info.build.date: ${date}
 spring:
   profiles.active: development
