@@ -1,12 +1,12 @@
 spring:
   datasource:
-    driverClassName: org.postgresql.Driver
+    dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
     url: jdbc:postgresql://localhost/clarin
     username: chrono
     password: chr0n0pre55
     initialize: false
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: validate
       naming_strategy: org.hibernate.cfg.DefaultNamingStrategy
