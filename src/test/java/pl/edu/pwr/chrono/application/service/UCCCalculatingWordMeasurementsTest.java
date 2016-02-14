@@ -4,15 +4,12 @@ import com.google.common.collect.Lists;
 import org.junit.Test;
 import pl.edu.pwr.chrono.application.service.impl.DefaultUCCalculatingWordMeasurements;
 import pl.edu.pwr.chrono.domain.Word;
+import pl.edu.pwr.chrono.infrastructure.Unit;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-
-/**
- * Created by tnaskret on 09.02.16.
- */
 
 public class UCCCalculatingWordMeasurementsTest {
 
@@ -21,7 +18,7 @@ public class UCCCalculatingWordMeasurementsTest {
     @Test
     public void calculateAverageLength_ListSizeZero_ReturnsZero(){
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(Lists.newArrayList(), DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(Lists.newArrayList(), Unit.LETTER);
         assertThat(calculated.getAverage()).isEqualTo(0);
 
     }
@@ -34,7 +31,7 @@ public class UCCCalculatingWordMeasurementsTest {
         w1.setTxt("");
         words.add(w1);
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
         assertThat(calculated.getAverage()).isEqualTo(0);
 
     }
@@ -56,7 +53,7 @@ public class UCCCalculatingWordMeasurementsTest {
         w3.setTxt("GAZETA RObotnicza"); //17
         words.add(w3);
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
         assertThat(calculated.getAverage()).isEqualTo(9);
 
     }
@@ -73,7 +70,7 @@ public class UCCCalculatingWordMeasurementsTest {
         Word w2 = new Word();
         words.add(w2);
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
         assertThat(calculated.getAverage()).isEqualTo(5f);
 
     }
@@ -91,7 +88,7 @@ public class UCCCalculatingWordMeasurementsTest {
         w2.setTxt("zamek"); //5
         words.add(w2);
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
         assertThat(calculated.getStandardDeviation()).isEqualTo(0.0);
 
     }
@@ -116,7 +113,7 @@ public class UCCCalculatingWordMeasurementsTest {
         w4.setTxt("zapał"); //7
         words.add(w2);
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
         assertThat(calculated.getStandardDeviation()).isEqualTo(0.0);
 
     }
@@ -133,7 +130,7 @@ public class UCCCalculatingWordMeasurementsTest {
         w2.setTxt("dom"); //3
         words.add(w2);
 
-        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, DefaultUCCalculatingWordMeasurements.Unit.LETTER);
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
         assertThat(calculated.getCoefficientOfVariation()).isEqualTo(Math.sqrt(2)/4);
     }
 
@@ -153,11 +150,11 @@ public class UCCCalculatingWordMeasurementsTest {
         w3.setTxt("dom"); //3
         words.add(w2);
 
-        Map<Integer, Long> calculated = service.averageLengthHistogram(words);
-        assertThat(calculated).containsKey(3);
-        assertThat(calculated).containsKey(5);
-        assertThat(calculated).containsValue(2l);
-        assertThat(calculated).containsValue(1l);
+        Map calculated = service.averageLengthHistogram(words);
+        assertThat(calculated).containsKey(3L);
+        assertThat(calculated).containsKey(5L);
+        assertThat(calculated).containsValue(2L);
+        assertThat(calculated).containsValue(1L);
     }
 
     @Test
@@ -195,7 +192,7 @@ public class UCCCalculatingWordMeasurementsTest {
         w8.setTxt("zamek"); //5
         words.add(w8);
 
-        Map<Long, Long> calculated = service.frequencyHistogram(words);
+        Map calculated = service.frequencyHistogram(words);
 
         System.out.println(calculated);
     }

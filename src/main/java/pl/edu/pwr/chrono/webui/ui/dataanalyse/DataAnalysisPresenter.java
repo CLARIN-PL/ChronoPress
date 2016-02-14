@@ -4,21 +4,19 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.*;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
+import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesResult;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-/**
- * Created by tnaskret on 10.01.16.
- */
 @SpringComponent
 @UIScope
 @Slf4j
@@ -43,95 +41,92 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     private UCLoadingAuthors ucLoadingAuthors;
 
     @Autowired
-    private  UCQuantitativeAnalysis ucQuantitativeAnalysis;
+    private UCQuantitativeAnalysis ucQuantitativeAnalysis;
 
-    private DataSelectionResult dataSelectionResult;
+    @Autowired
+    private UCTimeSeries ucTimeSeries;
 
-    public void onAcceptDataSelection(){
-        DataSelectionDTO dto = new DataSelectionDTO();
-
-        Set<Integer> selectedYears = (Set<Integer>) view.getDataSelectionTab().getYears().getValue();
-        Set<String> selectedTitles = (Set<String>) view.getDataSelectionTab().getTitles().getValue();
-        Set<String> selectedPeriods = (Set<String>) view.getDataSelectionTab().getPeriods().getValue();
-        Set<Integer> selectedExpositions = (Set<Integer>) view.getDataSelectionTab().getExpositions().getValue();
-        List<String> selectedAuthors =  view.getDataSelectionTab().getSearchAuthorsPanel().getSelectedItems();
-
-        dto.setYears(selectedYears);
-        dto.setTitles(selectedTitles);
-        dto.setPeriodicType(selectedPeriods);
-        dto.setExposition(selectedExpositions);
-        dto.setAuthors(selectedAuthors);
-
-        executeDataSelection(dto);
-    }
-
-    public void onQuantitativeAnalysis(){
-
-        view.getQuantitativeAnalysisTab().getAcceptButton().setEnabled(false);
-        view.getQuantitativeAnalysisTab().showLoadingIndicator();
-
+    public void executeQuantitativeCalculations() {
+        view.getQuantitativeAnalysisTab().showLoading(true);
+        executeDataSelection(view.getDataSelectionPanel().getData());
         Futures.addCallback(ucQuantitativeAnalysis.calculate(
-                getDataSelectionResult(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO()) ,
+                view.getDataSelectionPanel().getData(), view.getQuantitativeAnalysisTab().getQuantitativeAnalysisDTO()),
                 new FutureCallback<QuantitativeAnalysisResult>() {
 
-            @Override
-            public void onSuccess(QuantitativeAnalysisResult result) {
-                view.showQuantitativeAnalysisResult(result);
-                view.getQuantitativeAnalysisTab().getAcceptButton().setEnabled(true);
-            }
+                    @Override
+                    public void onSuccess(QuantitativeAnalysisResult result) {
+                        view.showQuantitativeAnalysisResult(result);
+                    }
 
-            @Override
-            public void onFailure(Throwable throwable) {
-                log.warn("Item loading failed ", throwable);
-            }
-        });
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                        log.warn("Item loading failed ", throwable);
+                        view.getQuantitativeAnalysisTab().showLoading(false);
+                    }
+                });
 
     }
 
-    private void setDataSelectionResult(DataSelectionResult result){
-        this.dataSelectionResult = result;
-    }
+    public void executeTimeSeriesCalculations() {
 
-    private DataSelectionResult getDataSelectionResult(){
-        return dataSelectionResult;
+        if (view.getTimeSeriesTab().getTimeSeriesDTO().getTimeSeriesCalculation()) {
+
+            executeDataSelection(view.getDataSelectionPanel().getData());
+            view.getTimeSeriesTab().showLoading(true);
+
+            Futures.addCallback(ucTimeSeries.calculate(
+                    view.getDataSelectionPanel().getData(),
+                    view.getTimeSeriesTab().getTimeSeriesDTO()),
+                    new FutureCallback<TimeSeriesResult>() {
+
+                        @Override
+                        public void onSuccess(TimeSeriesResult result) {
+                            view.showTimeSeriesResults(result);
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+                            Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                            log.warn("Item loading failed ", throwable);
+                            view.getTimeSeriesTab().showLoading(false);
+                        }
+                    });
+        }
     }
 
     private void executeDataSelection(DataSelectionDTO dto) {
-        view.getDataSelectionTab().getAcceptButton().setEnabled(false);
-        view.getDataSelectionTab().showLoadingIndicator();
-
         Futures.addCallback(ucDataSelection.search(dto), new FutureCallback<Optional<DataSelectionResult>>() {
             @Override
             public void onSuccess(Optional<DataSelectionResult> result) {
-                setDataSelectionResult(result.get());
                 view.showSelectionDataResults(result);
-                view.getDataSelectionTab().getAcceptButton().setEnabled(true);
             }
 
             @Override
             public void onFailure(Throwable throwable) {
+                Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
                 log.warn("Item loading failed ", throwable);
             }
         });
     }
 
-    public List<Integer> loadYears(){
-        return  ucLoadingYears.load();
+    public List<Integer> loadYears() {
+        return ucLoadingYears.load();
     }
 
-    public List<String> loadTitles(){
+    public List<String> loadTitles() {
         return ucLoadingTitles.load();
     }
 
-    public List<String> loadPeriods(){
-        return  ucLoadingPeriods.load();
+    public List<String> loadPeriods() {
+        return ucLoadingPeriods.load();
     }
 
-    public  List<Integer> loadExpositions(){
-        return  ucLoadingExpositions.load();
+    public List<Integer> loadExpositions() {
+        return ucLoadingExpositions.load();
     }
 
-    public List<String> loadAuthors(){
-        return  ucLoadingAuthors.load();
+    public List<String> loadAuthors() {
+        return ucLoadingAuthors.load();
     }
 }

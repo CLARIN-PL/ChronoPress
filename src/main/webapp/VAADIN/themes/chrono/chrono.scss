@@ -70,6 +70,34 @@ $view-padding: round($v-unit-size / 1.5) !default;
     		font-size: 16px;
     	}
     }
+
+     .ch-title-small{
+      	.v-caption{
+       		color: #197de1;
+       		font-size: 12px;
+       	}
+     }
+
+      .ch-title-plain{
+           	.v-caption{
+            		color: #197de1;
+            		font-size: 16px;
+           	}
+       }
+
+      .v-slot-ch-title-plain{
+       	height: 18px !important;
+       	text-align: right;
+      }
+
+    .v-slot-ch-title-small{
+    	height: 16px !important;
+        padding-top: 10px;
+        padding-bottom: 0px;
+        border-bottom: 1px solid #197de1;
+        margin-bottom: 10px;
+    }
+
     .v-slot-ch-title{
     	height: 25px;
     	padding-top: 10px;
@@ -86,10 +114,12 @@ $view-padding: round($v-unit-size / 1.5) !default;
             color: #197de1 !important;
           }
     }
+
 	 .v-slot-ch-result-title{
 	 	padding-left: 50px;
         padding-right: 50px;
 	 }
+
      .v-caption-ch-result-title{
         font-size: 14px;
         border-bottom: 1px solid  #197de1 !important;
@@ -101,9 +131,88 @@ $view-padding: round($v-unit-size / 1.5) !default;
     	background-image: none;
     	box-shadow: none;
 		background-color: #fff;
+		text-align: right;
 
     	.v-button-caption{
 			color: #999;
     	}
     }
+    .ch-compact-form{
+    	.v-formlayout-captioncell{
+    		text-align: right;
+    		padding-left: 0px !important;
+    		padding-top: 0 !important;
+    		padding-bottom: 0 !important;
+    	}
+    	.v-formlayout-errorcell, .v-formlayout-contentcell{
+    		padding-top: 0 !important;
+    		padding-bottom: 0 !important;
+    	}
+
+    }
+
+    .sparks {
+          @include valo-panel-style;
+          margin-bottom: round($view-padding / 3);
+
+          @include width-range($max: 680px) {
+            .spark {
+              width: 50%;
+            }
+            .spark:nth-child(2n+1) {
+              border-left: none;
+            }
+            .spark:nth-child(n+3) {
+              border-top: valo-border($strength: 0.3);
+            }
+          }
+
+          @include width-range($max: 270px) {
+            .spark {
+              width: 100%;
+              border-left: none;
+              border-top: valo-border($strength: 0.3);
+
+              &:first-child {
+                border-top: none;
+              }
+            }
+          }
+        }
+
+
+        .spark {
+          float: left;
+          text-align: center;
+          width: 25%;
+          padding: $v-layout-spacing-vertical $v-layout-spacing-horizontal;
+          border-left: valo-border($strength: 0.3);
+          line-height: 1.35;
+
+          > tbody {
+            display: inline-block;
+          }
+
+          &:first-child {
+            border-left: none;
+          }
+        }
+
+        .ch-panel-toolbar{
+        	height: 39px !important;
+        	padding: 1px 0 1px 21px;
+        }
+        .ch-panel-content{
+			padding: 0 30px 0 30px;
+        }
+
+	.v-widget.tokenfield .v-button-link{
+			font-size: 11px;
+			text-decoration: none;
+	}
+	.tokentextfield .v-filterselect {
+         height: 24px;
+         margin-bottom: 3px;
+         background: none;
+     }
 }

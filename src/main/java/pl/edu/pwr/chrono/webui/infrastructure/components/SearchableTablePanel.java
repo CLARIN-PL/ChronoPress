@@ -14,22 +14,16 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-
-/**
- * Created by tnaskret on 08.02.16.
- */
 
 @SpringComponent
 @ViewScope
 public class SearchableTablePanel extends VerticalLayout{
 
-    private TextField filter;
-
     private final Grid grid;
     private final BeanItemContainer<StringBeanItem> container;
+    private TextField filter;
 
     public SearchableTablePanel() {
         setSpacing(true);
@@ -75,20 +69,19 @@ public class SearchableTablePanel extends VerticalLayout{
         grid.getColumn("value").setHeaderCaption("Autor");
     }
 
-    public List<String> getSelectedItems(){
+    public void clearSelection() {
+        grid.getSelectionModel().reset();
+    }
+
+    public List<String> getSelectedItems() {
        List<String> selected = Lists.newArrayList();
-       Collection<Object> list = grid.getSelectedRows();
-       list.forEach(o -> {
-           selected.add( ((StringBeanItem) o).getValue());
-       });
+        grid.getSelectedRows().forEach(o -> selected.add(((StringBeanItem) o).getValue()));
         return selected;
     }
 
     public void populateContainer(List<String> items){
         List<StringBeanItem> list = Lists.newArrayList();
-        items.forEach(s -> {
-            list.add(new StringBeanItem(s));
-        });
+        items.forEach(s -> list.add(new StringBeanItem(s)));
         container.addAll(list);
     }
 
@@ -97,8 +90,7 @@ public class SearchableTablePanel extends VerticalLayout{
                 || item.getItemProperty(prop).getValue() == null)
             return false;
         String val = item.getItemProperty(prop).getValue().toString().trim().toLowerCase();
-        if (val.startsWith(text.toLowerCase().trim())) return true;
-        return false;
+        return val.startsWith(text.toLowerCase().trim());
     }
 
     private class TextFilter implements Container.Filter {
@@ -111,18 +103,12 @@ public class SearchableTablePanel extends VerticalLayout{
         @Override
         public boolean passesFilter(Object itemId, Item item)
                 throws UnsupportedOperationException {
-            if (needle == null || "".equals(needle)) {
-                return true;
-            }
-            return filterByProperty("value", item, needle);
-
+            return needle == null || "".equals(needle) || filterByProperty("value", item, needle);
         }
 
         @Override
         public boolean appliesToProperty(Object propertyId) {
-            if (propertyId.equals("value"))
-                return true;
-            return false;
+            return propertyId.equals("value");
         }
     }
 

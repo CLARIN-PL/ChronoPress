@@ -12,7 +12,7 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan
-class DataSourceConfig {
+public class DataSourceConfig {
  
    @Value("${spring.datasource.username}")
    private String user;
@@ -44,7 +44,6 @@ class DataSourceConfig {
           configProps.put("dataSourceProperties", dsProps);
  
       HikariConfig hc = new HikariConfig(configProps);
-      HikariDataSource ds = new HikariDataSource(hc);
-      return ds;
+      return new HikariDataSource(hc);
    }
 }

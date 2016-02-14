@@ -2,8 +2,8 @@ spring:
   datasource:
     dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
     url: jdbc:postgresql://localhost/clarin
-    username: postgres
-    password: postgres
+    username: chrono
+    password: dev
     initialize: false
   jpa:
     show-sql: true

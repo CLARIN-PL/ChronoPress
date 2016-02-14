@@ -7,40 +7,27 @@ import pl.edu.pwr.chrono.application.service.impl.DefaultUCCalculatingWordMeasur
 
 import java.util.Map;
 
-/**
- * Created by tnaskret on 08.02.16.
- */
 @Data
 public class QuantitativeAnalysisResult {
 
-    private Boolean wordLetterUnit = false;
-    private Boolean wordSyllableUnit = false;
-    private double  wordAveragesLength = 0;
-    private double  wordStandardDeviation = 0;
-    private double  wordCoefficientOfVariation = 0;
-    private double  wordSkewness = 0;
-    private double  wordKurtosis = 0;
-    private Map<Integer, Long> wordAverageLengthHistogram = Maps.newConcurrentMap();
+    private boolean wordAverageCalculations = false;
+    private boolean wordFrequencyCalculations = false;
+
+    private Average word = new Average();
     private Map<Long, Long> wordFrequencyHistogram = Maps.newConcurrentMap();
 
-    private Boolean sentenceWordUnit = false;
-    private Boolean sentenceLetterUnit = false;
-    private double sentenceAverageLength = 0;
-    private double sentenceStandardDeviation = 0;
-    private double sentenceCoefficientOfVariation = 0;
-    private double sentenceSkewness = 0;
-    private Map<Integer, Long> sentenceEmpiricalDistributionLength = Maps.newConcurrentMap();
+    private boolean sentenceAverageCalculations = false;
+    private Average sentence = new Average();
 
     public void setWordAverage(DefaultUCCalculatingWordMeasurements.Average avr){
-        wordAveragesLength = avr.getAverage();
-        wordStandardDeviation = avr.getStandardDeviation();
-        wordCoefficientOfVariation = avr.getCoefficientOfVariation();
+        word.setAveragesLength(avr.getAverage());
+        word.setStandardDeviation(avr.getStandardDeviation());
+        word.setCoefficientOfVariation(avr.getCoefficientOfVariation());
     }
 
     public void setSentenceAverage(DefaultUCCalculatingSentenceMeasurements.Average avr){
-        sentenceAverageLength = avr.getAverage();
-        sentenceStandardDeviation = avr.getStandardDeviation();
-        sentenceCoefficientOfVariation = avr.getCoefficientOfVariation();
+        sentence.setAveragesLength(avr.getAverage());
+        sentence.setStandardDeviation(avr.getStandardDeviation());
+        sentence.setCoefficientOfVariation(avr.getCoefficientOfVariation());
     }
-
 }

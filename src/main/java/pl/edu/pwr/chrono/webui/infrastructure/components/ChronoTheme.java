@@ -15,7 +15,16 @@ public class ChronoTheme {
     public static final String RESULT_PANEL = "ch-result-panel";
     public static final String POPUP_BUTTON = "ch-popup-button";
     public static final String TITLE = "ch-title";
+    public static final String TITLE_SMALL = "ch-title-small";
+    public static final String TITLE_PLAIN = "ch-title-plain";
     public static final String FOOTER = "ch-footer";
     public static final String GRID = "ch-grid";
     public static final String RESULT_TITLE = "ch-result-title";
+    public static final String COMPACT_FORM = "ch-compact-form";
+    public static final String PANEL_PLAIN = "spark";
+
+
+    public static final String PANEL_TOOLBAR = "ch-panel-toolbar";
+    public static final String PANEL_CONTENT = "ch-panel-content";
+    public static final String TOKENFIELD = "ch-token-field";
 }

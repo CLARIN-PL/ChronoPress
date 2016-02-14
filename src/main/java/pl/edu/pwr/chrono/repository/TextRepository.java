@@ -8,11 +8,8 @@ import pl.edu.pwr.chrono.domain.Text;
 
 import java.util.List;
 
-/**
- * Created by tnaskret on 05.02.16.
- */
 @Repository
-public interface TextRepository extends JpaRepository<Text, Integer>, JpaSpecificationExecutor<Text> {
+public interface TextRepository extends JpaRepository<Text, Integer>, JpaSpecificationExecutor<Text>, TextRepositoryCustom {
 
     @Query("SELECT DISTINCT YEAR(t.date) FROM Text t")
     List<Integer> findYears();
