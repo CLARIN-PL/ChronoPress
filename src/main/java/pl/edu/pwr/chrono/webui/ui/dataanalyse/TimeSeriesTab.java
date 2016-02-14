@@ -14,6 +14,7 @@ import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesDTO;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.components.MultiColumnPanel;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Tab;
+import pl.edu.pwr.chrono.webui.infrastructure.validators.RegularExpressionValidator;
 
 @Slf4j
 @SpringComponent
@@ -57,6 +58,8 @@ public class TimeSeriesTab extends Tab {
         lexeme.addStyleName(ChronoTheme.TOKENFIELD);
         lexeme.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexeme.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
+
+        regularExpression.addValidator(new RegularExpressionValidator());
     }
 
     private void initializeTimeUnit() {
@@ -111,12 +114,8 @@ public class TimeSeriesTab extends Tab {
         }
     }
 
-    public TimeSeriesDTO getTimeSeriesDTO() {
-        try {
-            binder.commit();
-        } catch (FieldGroup.CommitException e) {
-            log.info("Commit failed", e);
-        }
+    public TimeSeriesDTO getTimeSeriesDTO() throws FieldGroup.CommitException {
+        binder.commit();
         return binder.getItemDataSource().getBean();
     }
 }

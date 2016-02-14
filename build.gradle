@@ -55,6 +55,7 @@ repositories {
 
 dependencies {
     compile('com.vaadin:vaadin-spring-boot-starter:1.0.0')
+    compile('org.springframework.boot:spring-boot-starter-security')
     compile('com.zaxxer:HikariCP')
     runtime('org.postgresql:postgresql')
     compile('org.flywaydb:flyway-core')

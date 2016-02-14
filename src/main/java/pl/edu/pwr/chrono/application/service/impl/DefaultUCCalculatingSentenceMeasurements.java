@@ -6,6 +6,7 @@ import pl.edu.pwr.chrono.application.service.UCCalculatingSentenceMeasurements;
 import pl.edu.pwr.chrono.infrastructure.Unit;
 import pl.edu.pwr.chrono.readmodel.dto.SentenceWordCount;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.LongConsumer;
@@ -59,17 +60,20 @@ public class DefaultUCCalculatingSentenceMeasurements implements UCCalculatingSe
         private long elementSum = 0;
         private long elementSquareSum = 0;
         private long total = 0;
+        private List<Long> elements = new ArrayList<>();
 
         public void accept(long i) {
             elementSum += i;
             elementSquareSum += i * i;
             total++;
+            elements.add(i);
         }
 
         public void combine(Average other) {
             elementSum += other.elementSum;
             elementSquareSum += other.elementSquareSum;
             total +=  other.total;
+            elements = other.elements;
         }
 
         public double getAverage(){
@@ -82,13 +86,23 @@ public class DefaultUCCalculatingSentenceMeasurements implements UCCalculatingSe
 
         public double getStandardDeviation(){
             if (total <= 0) return 0;
-            double n = (double)total/(total -1);
+            double n = (double) total / (total - 1);
             double a = getAverage()*getAverage();
             return Math.sqrt(n * (getSquareAverage() - a));
         }
 
         public double getCoefficientOfVariation(){
             return  getAverage() > 0 ? getStandardDeviation() / getAverage() : 0;
+        }
+
+        public double getFourthCentralMoment() {
+            final long[] fourthCentralMoment = {0};
+            elements.forEach(i -> fourthCentralMoment[0] += Math.pow((i - getAverage()), 4));
+            return (double) fourthCentralMoment[0] / total;
+        }
+
+        public double getKurtoze() {
+            return (getFourthCentralMoment() / Math.pow(getStandardDeviation(), 4)) - 3;
         }
     }
 }

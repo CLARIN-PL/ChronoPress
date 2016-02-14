@@ -34,6 +34,9 @@ public class WordSpecification {
                 if (dto.getVerb()) {
                     criteriaList.add(isVerb().toPredicate(root, query, cb));
                 }
+                if (dto.getWordRegularExpression() != null && !dto.getWordRegularExpression().equals("")) {
+                    criteriaList.add(byText(dto.getWordRegularExpression()).toPredicate(root, query, cb));
+                }
             }
             return cb.and(criteriaList.toArray(new Predicate[criteriaList.size()]));
         };
@@ -67,4 +70,7 @@ public class WordSpecification {
         return (root, query, cb) -> root.get("pos_lemma").in(lexeme);
     }
 
+    public static Specification<Word> byText(String expression) {
+        return (root, query, cb) -> cb.like(root.get("txt"), expression);
+    }
 }

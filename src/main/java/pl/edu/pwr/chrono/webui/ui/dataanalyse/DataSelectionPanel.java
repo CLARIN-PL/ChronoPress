@@ -1,6 +1,5 @@
 package pl.edu.pwr.chrono.webui.ui.dataanalyse;
 
-import com.vaadin.data.Property;
 import com.vaadin.server.Responsive;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
@@ -22,7 +21,7 @@ import java.util.Set;
 
 @SpringComponent
 @ViewScope
-public class DataSelectionPanel extends VerticalLayout implements Property.ValueChangeListener {
+public class DataSelectionPanel extends VerticalLayout {
 
     private final ComboBoxMultiselect years = new ComboBoxMultiselect();
     private final ComboBoxMultiselect titles = new ComboBoxMultiselect();
@@ -35,7 +34,8 @@ public class DataSelectionPanel extends VerticalLayout implements Property.Value
     private final Label wordCount = new Label();
     @Autowired
     protected DbPropertiesProvider provider;
-    private boolean needsCalculating = true;
+    private CssLayout results;
+    private VerticalLayout loading;
     private MultiColumnPanel panel;
 
     @Autowired
@@ -47,21 +47,15 @@ public class DataSelectionPanel extends VerticalLayout implements Property.Value
         panel = initSelectionPanel();
         addComponent(panel);
 
-        Component results = buildResult();
+        results = buildResult();
+        loading = initializeLoading();
+
         addComponent(results);
         setComponentAlignment(results, Alignment.TOP_CENTER);
-        initListeners();
     }
 
-    private void initListeners() {
-        years.addValueChangeListener(this);
-        titles.addValueChangeListener(this);
-        audience.addValueChangeListener(this);
-        periods.addValueChangeListener(this);
-        expositions.addValueChangeListener(this);
-    }
+    private CssLayout buildResult() {
 
-    private Component buildResult() {
         CssLayout sparks = new CssLayout();
         sparks.setWidth(100, Unit.PERCENTAGE);
         sparks.addStyleName("sparks");
@@ -105,7 +99,12 @@ public class DataSelectionPanel extends VerticalLayout implements Property.Value
                 .build();
     }
 
+    public void showLoadingIndicator() {
+        replaceComponent(results, loading);
+    }
+
     public void showResults(DataSelectionResult result) {
+        replaceComponent(loading, results);
         wordCount.setValue(Long.toString(result.getWordCount()));
         sampleCount.setValue(Long.toString(result.getSampleCount()));
     }
@@ -117,6 +116,8 @@ public class DataSelectionPanel extends VerticalLayout implements Property.Value
         periods.unselectAll();
         audience.unselectAll();
         searchAuthorsPanel.clearSelection();
+        sampleCount.setValue("0");
+        wordCount.setValue("0");
     }
 
     public DataSelectionDTO getData() {
@@ -127,6 +128,23 @@ public class DataSelectionPanel extends VerticalLayout implements Property.Value
         dto.setExposition((Set<Integer>) expositions.getValue());
         dto.setAuthors(searchAuthorsPanel.getSelectedItems());
         return dto;
+    }
+
+    private VerticalLayout initializeLoading() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(true);
+
+        ProgressBar progressBar = new ProgressBar();
+        progressBar.setIndeterminate(true);
+
+        HorizontalLayout loadingNotification = new HorizontalLayout();
+        loadingNotification.setSpacing(true);
+        loadingNotification.addComponents(progressBar, new Label(provider.getProperty("label.loading")));
+
+        layout.addComponents(loadingNotification);
+        layout.setComponentAlignment(loadingNotification, Alignment.MIDDLE_CENTER);
+
+        return layout;
     }
 
     public ComboBoxMultiselect getYears() {
@@ -147,11 +165,6 @@ public class DataSelectionPanel extends VerticalLayout implements Property.Value
 
     public SearchableTablePanel getSearchAuthorsPanel() {
         return searchAuthorsPanel;
-    }
-
-    @Override
-    public void valueChange(Property.ValueChangeEvent event) {
-        needsCalculating = true;
     }
 
 }

@@ -193,7 +193,5 @@ public class UCCCalculatingWordMeasurementsTest {
         words.add(w8);
 
         Map calculated = service.frequencyHistogram(words);
-
-        System.out.println(calculated);
     }
 }

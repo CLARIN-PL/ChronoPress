@@ -6,15 +6,19 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Responsive;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringViewProvider;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.edu.pwr.chrono.domain.User;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
+import pl.edu.pwr.chrono.webui.ui.admin.AdminView;
 import pl.edu.pwr.chrono.webui.ui.main.layout.MainLayout;
 
 import java.util.Locale;
@@ -35,10 +39,6 @@ public final class MainUI extends UI {
 	@Autowired
 	private MainLayout layout;
 
-	public static MainUI getCurrent() {
-		return (MainUI) UI.getCurrent();
-	}
-
 	@Override
 	protected void init(VaadinRequest request) {
 		setLocale(new Locale("pl", "PL"));
@@ -48,9 +48,32 @@ public final class MainUI extends UI {
 		Navigator navigator = new Navigator(this, layout.getContent());
 		navigator.addProvider(viewProvider);
 		navigator.setErrorView(ErrorView.class);
+		navigator.addViewChangeListener(new ViewChangeListener() {
+
+			@Override
+			public boolean beforeViewChange(ViewChangeEvent event) {
+				if ((event.getNewView() instanceof AdminView)
+						&& (((MainUI) UI.getCurrent()).getLoggedInUser() == null)) {
+					Notification.show("Permission denied", Notification.Type.ERROR_MESSAGE);
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+			@Override
+			public void afterViewChange(ViewChangeEvent event) {
+			}
+
+		});
+
 		setNavigator(navigator);
 
 		uiEventBus.register(this);
+	}
+
+	public User getLoggedInUser() {
+		return null;
 	}
 
 	@Subscribe

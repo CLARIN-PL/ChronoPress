@@ -13,7 +13,7 @@ WITH (
   OIDS=FALSE
 );
 ALTER TABLE koper.property
-  OWNER TO postgres;
+  OWNER TO chrono;
 
 CREATE SEQUENCE koper.property_ref_id_seq
   INCREMENT 1
@@ -22,4 +22,4 @@ CREATE SEQUENCE koper.property_ref_id_seq
   START 1
   CACHE 1;
 ALTER TABLE koper.property_ref_id_seq
-  OWNER TO postgres;
+  OWNER TO chrono;

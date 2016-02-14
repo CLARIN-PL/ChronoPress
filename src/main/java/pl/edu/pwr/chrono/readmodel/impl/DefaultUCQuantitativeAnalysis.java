@@ -67,7 +67,7 @@ public class DefaultUCQuantitativeAnalysis implements UCQuantitativeAnalysis {
 
             } else if (dto.getSentenceAverageLengthHistogram()) {
 
-                List<SentenceWordCount> list = repository.findSentenceWordCountAndWordLength(selection);
+                List<SentenceWordCount> list = repository.findSentenceWordCountAndWordLength(selection, dto);
                 if (dto.getSentenceUnit() == Unit.WORD) {
                     result.getSentence().setUnit(Unit.WORD);
                     calculateSentence(Unit.WORD, result, list);

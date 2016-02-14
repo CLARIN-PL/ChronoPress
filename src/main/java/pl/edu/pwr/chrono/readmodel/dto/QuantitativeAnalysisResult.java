@@ -23,6 +23,7 @@ public class QuantitativeAnalysisResult {
         word.setAveragesLength(avr.getAverage());
         word.setStandardDeviation(avr.getStandardDeviation());
         word.setCoefficientOfVariation(avr.getCoefficientOfVariation());
+        word.setKurtosis(avr.getKurtoze());
     }
 
     public void setSentenceAverage(DefaultUCCalculatingSentenceMeasurements.Average avr){

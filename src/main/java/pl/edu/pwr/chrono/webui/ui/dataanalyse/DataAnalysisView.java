@@ -26,7 +26,7 @@ import java.util.Optional;
 @UIScope
 public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> implements View {
 
-	public static final String VIEW_NAME = "analyse";
+	public static final String VIEW_NAME = "analysis";
 	private final TabSheet sheet = new TabSheet();
 	@Autowired
 	private DbPropertiesProvider provider;

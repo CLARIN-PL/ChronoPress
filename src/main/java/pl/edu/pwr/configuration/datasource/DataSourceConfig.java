@@ -1,4 +1,4 @@
-package pl.edu.pwr.configuration;
+package pl.edu.pwr.configuration.datasource;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

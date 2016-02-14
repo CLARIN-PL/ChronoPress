@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
 import pl.edu.pwr.chrono.webui.infrastructure.components.MultiColumnPanel;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Tab;
+import pl.edu.pwr.chrono.webui.infrastructure.validators.RegularExpressionValidator;
 
 @SpringComponent
 @ViewScope
@@ -71,6 +72,9 @@ public class QuantitativeAnalysisTab extends Tab {
         panel = initMainPanel();
         addComponent(panel);
         initListeners();
+
+        wordRegularExpression.addValidator(new RegularExpressionValidator());
+        sentenceRegularExpression.addValidator(new RegularExpressionValidator());
     }
 
     private void initListeners() {
@@ -167,12 +171,8 @@ public class QuantitativeAnalysisTab extends Tab {
         sentenceAverageLengthHistogram.setValue(false);
     }
 
-    public QuantitativeAnalysisDTO getQuantitativeAnalysisDTO() {
-        try {
-            binder.commit();
-        } catch (FieldGroup.CommitException e) {
-            QuantitativeAnalysisTab.log.info("Commit failed", e);
-        }
+    public QuantitativeAnalysisDTO getQuantitativeAnalysisDTO() throws FieldGroup.CommitException {
+        binder.commit();
         return binder.getItemDataSource().getBean();
     }
 }

@@ -13,7 +13,7 @@ public interface TextRepositoryCustom {
 
     Optional<DataSelectionResult> countSamplesByCriteria(DataSelectionDTO dto);
 
-    List<SentenceWordCount> findSentenceWordCountAndWordLength(DataSelectionDTO dto);
+    List<SentenceWordCount> findSentenceWordCountAndWordLength(DataSelectionDTO dto, QuantitativeAnalysisDTO analysisDTO);
 
     List<Word> findWords(DataSelectionDTO selection, QuantitativeAnalysisDTO dto);
 }

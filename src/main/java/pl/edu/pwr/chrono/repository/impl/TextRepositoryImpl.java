@@ -11,6 +11,7 @@ import pl.edu.pwr.chrono.readmodel.dto.SentenceWordCount;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,25 +47,31 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
     }
 
     @Override
-    public List<SentenceWordCount> findSentenceWordCountAndWordLength(DataSelectionDTO dto) {
+    public List<SentenceWordCount> findSentenceWordCountAndWordLength(DataSelectionDTO dto, QuantitativeAnalysisDTO analysisDTO) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<SentenceWordCount> q = cb.createQuery(SentenceWordCount.class);
 
         Root<Word> root = q.from(Word.class);
-        Join<Word, Sentence> sentence = root.join("sentence");
+        Root<Sentence> sentence = q.from(Sentence.class);
         Root<Text> text = q.from(Text.class);
 
-        Predicate p0 = cb.equal(sentence.get("text").get("id"), text.get("id"));
-        Predicate p1 = TextSpecification.search(dto).toPredicate(text, q, cb);
-        Predicate p2 = WordSpecification.notPunctuation().toPredicate(root, q, cb);
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(cb.equal(root.get("sentence").get("id"), sentence.get("id")));
+        predicates.add(TextSpecification.search(dto).toPredicate(text, q, cb));
+        predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
+
+        if (analysisDTO.getSentenceRegularExpression() != null && !analysisDTO.getSentenceRegularExpression().equals("")) {
+            predicates.add(SentenceSpecification.byText(analysisDTO.getSentenceRegularExpression()).toPredicate(sentence, q, cb));
+        }
 
         q.select(cb.construct(SentenceWordCount.class,
                 root.get("sentence").get("id"),
                 cb.count(root.get("sentence").get("id")),
                 cb.sum(cb.function("length", Long.class, root.get("txt")))));
         q.groupBy(root.get("sentence").get("id"));
-        q.where(p0, p1, p2);
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
 
         return em.createQuery(q).getResultList();
     }
