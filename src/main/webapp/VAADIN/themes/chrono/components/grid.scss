@@ -39,8 +39,19 @@
             border-bottom: 1px solid  #999;
 		 }
 
+		.v-grid-footer-deco{
+			border: none;
+		}
+		.v-grid-footer-deco, .v-grid-horizontal-scrollbar-deco{
+		    border: none;
+		    background-image:none;
+		}
+
 		 .v-grid-scroller-vertical{
-		 	border-top: none;
+		 	border: none;
+		 }
+		 .v-grid-scroller-horizontal{
+		    border: none;
 		 }
 	}
 

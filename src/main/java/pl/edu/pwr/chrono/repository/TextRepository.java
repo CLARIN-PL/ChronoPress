@@ -26,4 +26,7 @@ public interface TextRepository extends JpaRepository<Text, Integer>, JpaSpecifi
     @Query("SELECT DISTINCT t.authors FROM Text t")
     List<String> findAuthors();
 
+    @Query("SELECT count(t.id) FROM Text t")
+    int countByTexts();
+
 }

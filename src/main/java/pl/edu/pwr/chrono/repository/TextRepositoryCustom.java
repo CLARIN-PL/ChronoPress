@@ -15,4 +15,6 @@ public interface TextRepositoryCustom {
     List<Word> findWords(DataSelectionDTO selection, QuantitativeAnalysisDTO dto);
 
     TimeSeriesResult findTimeSeries(final DataSelectionDTO selection, final TimeSeriesDTO dto);
+
+    List<TextItemDTO> findTextItem(int startIndex);
 }
