@@ -92,6 +92,15 @@ public class ChartPanel extends VerticalLayout {
         q.add(SolidColor.YELLOW);
         q.add(SolidColor.PINK);
         q.add(SolidColor.MAGENTA);
+        q.add(SolidColor.AZURE);
+        q.add(SolidColor.BEIGE);
+        q.add(SolidColor.DARKGREEN);
+        q.add(SolidColor.TOMATO);
+        q.add(SolidColor.CYAN);
+        q.add(SolidColor.DARKSALMON);
+        q.add(SolidColor.FUCHSIA);
+        q.add(SolidColor.LAVENDER);
+        q.add(SolidColor.PLUM);
         return q;
     }
 

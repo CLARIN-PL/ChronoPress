@@ -8,6 +8,7 @@ import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.tokenfield.TokenField;
 import pl.edu.pwr.chrono.infrastructure.Time;
 import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesDTO;
@@ -39,6 +40,9 @@ public class TimeSeriesTab extends Tab {
 
     private MultiColumnPanel panel;
 
+    @Autowired
+    private RegularExpressionValidator regularExpressionValidator;
+
     @Override
     public void initializeTab() {
         setCaption(provider.getProperty("view.tab.time.series.title"));
@@ -59,7 +63,7 @@ public class TimeSeriesTab extends Tab {
         lexeme.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexeme.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
 
-        regularExpression.addValidator(new RegularExpressionValidator());
+        regularExpression.addValidator(regularExpressionValidator);
     }
 
     private void initializeTimeUnit() {

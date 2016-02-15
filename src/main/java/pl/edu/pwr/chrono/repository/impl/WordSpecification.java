@@ -70,6 +70,11 @@ public class WordSpecification {
         return (root, query, cb) -> root.get("pos_lemma").in(lexeme);
     }
 
+    public static Specification<Word> lexemeByRegExp(String expr) {
+        return (root, query, cb) -> cb.like(root.get("pos_lemma"), expr);
+    }
+
+
     public static Specification<Word> byText(String expression) {
         return (root, query, cb) -> cb.like(root.get("txt"), expression);
     }

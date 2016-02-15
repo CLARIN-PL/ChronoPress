@@ -13,4 +13,7 @@ public class TimeSeriesDTO {
     private String regularExpression = "";
     private Boolean timeSeriesCalculation = false;
 
+    public Boolean canExecuteCalculation() {
+        return (((lexeme != null) && (lexeme.size() > 0)) || !"".equals(regularExpression)) && timeSeriesCalculation;
+    }
 }

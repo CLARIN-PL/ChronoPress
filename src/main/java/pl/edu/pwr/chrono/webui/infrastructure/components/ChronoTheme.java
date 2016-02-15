@@ -27,4 +27,5 @@ public class ChronoTheme {
     public static final String PANEL_TOOLBAR = "ch-panel-toolbar";
     public static final String PANEL_CONTENT = "ch-panel-content";
     public static final String TOKENFIELD = "ch-token-field";
+    public static final String WINDOW = "ch-window";
 }

@@ -33,6 +33,10 @@ vaadin {
     widgetset 'pl.edu.pwr.config.Widgetset'
 }
 
+buildVersion {
+    integrationVersion = true
+}
+
 jar {
     baseName = 'ChronoPress'
     version = buildVersion.version

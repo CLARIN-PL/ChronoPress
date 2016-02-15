@@ -10,6 +10,4 @@ import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesResult;
 public interface UCTimeSeries {
 
     ListenableFuture<TimeSeriesResult> calculate(DataSelectionDTO data, TimeSeriesDTO dto);
-
-    TimeSeriesResult fetch(final DataSelectionDTO data, final TimeSeriesDTO dto);
 }

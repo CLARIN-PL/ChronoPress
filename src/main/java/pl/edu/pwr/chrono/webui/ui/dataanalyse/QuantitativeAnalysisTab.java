@@ -10,6 +10,7 @@ import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisDTO;
 import pl.edu.pwr.chrono.webui.infrastructure.components.MultiColumnPanel;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Tab;
@@ -63,6 +64,9 @@ public class QuantitativeAnalysisTab extends Tab {
 
     private MultiColumnPanel panel;
 
+    @Autowired
+    private RegularExpressionValidator regularExpressionValidator;
+
     @Override
     public void initializeTab() {
         setCaption(provider.getProperty("view.tab.quantitative.analysis.title"));
@@ -73,8 +77,8 @@ public class QuantitativeAnalysisTab extends Tab {
         addComponent(panel);
         initListeners();
 
-        wordRegularExpression.addValidator(new RegularExpressionValidator());
-        sentenceRegularExpression.addValidator(new RegularExpressionValidator());
+        wordRegularExpression.addValidator(regularExpressionValidator);
+        sentenceRegularExpression.addValidator(regularExpressionValidator);
     }
 
     private void initListeners() {

@@ -75,7 +75,7 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     public void executeTimeSeriesCalculations() {
 
         try {
-            if (view.getTimeSeriesTab().getTimeSeriesDTO().getTimeSeriesCalculation()) {
+            if (view.getTimeSeriesTab().getTimeSeriesDTO().canExecuteCalculation()) {
 
                 executeDataSelection(view.getDataSelectionPanel().getData());
                 view.getTimeSeriesTab().showLoading(true);
