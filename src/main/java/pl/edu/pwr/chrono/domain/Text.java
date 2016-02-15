@@ -6,10 +6,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by tnaskret on 05.02.16.
- */
-
 @Entity
 @Table(name = "text")
 @Data
@@ -23,8 +19,11 @@ public class Text implements Serializable {
     @Column(name = "shortid")
     private String shortId;
 
-    private String title_j;
-    private String title_a;
+    @Column(name = "title_j")
+    private String journalTitle;
+
+    @Column(name = "title_a")
+    private String articleTitle;
 
     @Column(name = "authors_parsed", columnDefinition = "text")
     private String authors;

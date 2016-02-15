@@ -1,23 +1,9 @@
 package pl.edu.pwr.chrono.domain;
 
 import lombok.Data;
-import pl.edu.pwr.chrono.readmodel.dto.SentenceWordCount;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
-/**
- * Created by tnaskret on 05.02.16.
- */
-
-@SqlResultSetMapping(
-        name = "SentenceWordCountDTOMapping",
-        classes = @ConstructorResult(
-                targetClass = SentenceWordCount.class,
-                columns = {
-                        @ColumnResult(name = "sentence_id", type = Integer.class),
-                        @ColumnResult(name = "word_count", type = Integer.class),
-                        @ColumnResult(name = "letter_count", type = Integer.class)}))
 
 @Entity
 @Table(name = "sentence")

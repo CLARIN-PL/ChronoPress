@@ -16,5 +16,4 @@ public interface TextRepositoryCustom {
 
     TimeSeriesResult findTimeSeries(final DataSelectionDTO selection, final TimeSeriesDTO dto);
 
-    List<TextItemDTO> findTextItem(int startIndex);
 }

@@ -23,8 +23,8 @@ public class TextSpecification {
             }
 
             if(dto.getTitles() !=null && !dto.getTitles().isEmpty()){
-                criteriaList.add(isInTitle_j(dto.getTitles()).toPredicate(root,query,cb));
-            }
+				criteriaList.add(isJournalTitle(dto.getTitles()).toPredicate(root, query, cb));
+			}
 
             if(dto.getPeriodicType() !=null && !dto.getPeriodicType().isEmpty()){
                 criteriaList.add(isInPeriodType(dto.getPeriodicType()).toPredicate(root,query,cb));
@@ -42,8 +42,8 @@ public class TextSpecification {
 		};
 	}
 
-	public static Specification<Text> isInTitle_j(final Collection<String> titles){
-		return (root, query, cb) -> root.get("title_j").in(titles);
+	public static Specification<Text> isJournalTitle(final Collection<String> titles) {
+		return (root, query, cb) -> root.get("journalTitle").in(titles);
 	}
 
 	public static Specification<Text> isInPeriodType(final Collection<String> period){
@@ -71,8 +71,8 @@ public class TextSpecification {
         };
 	}
 
-	public static Specification<Text> isInTitle_a(final Collection<String> titles){
-		return (root, query, cb) -> root.get("title_a").in(titles);
+	public static Specification<Text> isArticleTitle(final Collection<String> titles) {
+		return (root, query, cb) -> root.get("articleTitle").in(titles);
 	}
 
 	public static Specification<Text> isPublishedInYear(final Collection<Integer> years){

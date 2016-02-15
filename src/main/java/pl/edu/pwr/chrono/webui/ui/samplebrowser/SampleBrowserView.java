@@ -3,16 +3,17 @@ package pl.edu.pwr.chrono.webui.ui.samplebrowser;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.spring.annotation.SpringView;
 import com.vaadin.spring.annotation.UIScope;
-import com.vaadin.ui.Grid;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.vaadin.viritin.LazyList;
-import org.vaadin.viritin.ListContainer;
+import org.vaadin.viritin.SortableLazyList;
+import org.vaadin.viritin.fields.MTable;
+import pl.edu.pwr.chrono.domain.Text;
+import pl.edu.pwr.chrono.repository.TextRepository;
 import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
-import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
@@ -24,7 +25,13 @@ import javax.annotation.PostConstruct;
 public class SampleBrowserView extends DefaultView<SampleBrowserPresenter> implements View {
 
     public static final String VIEW_NAME = "sample-browser";
-    private final Grid grid = new Grid();
+
+    private final MTable<Text> table = new MTable<>(Text.class)
+            .withProperties("journalTitle", "articleTitle", "authors", "style", "date")
+            .withColumnHeaders("a", "b", "c", "d", "e")
+            .setSortableProperties("journalTitle", "articleTitle", "date", "authors").withFullWidth();
+
+
     @Autowired
     private DbPropertiesProvider provider;
 
@@ -40,34 +47,24 @@ public class SampleBrowserView extends DefaultView<SampleBrowserPresenter> imple
         setWidth(100, Unit.PERCENTAGE);
         initializeGrid();
 
-        grid.setSizeFull();
-        addComponent(grid);
+        addComponent(table);
 
-        grid.addSelectionListener(event -> {
-            try {
-                Notification.show(event.getSelected().toString());
-            } catch (Exception e) {
-
-            }
-        });
     }
 
     private void initializeGrid() {
-        grid.setContainerDataSource(
-                new ListContainer<>(new LazyList<>(presenter, 50)));
-        grid.setHeightMode(HeightMode.ROW);
-        grid.setHeightByRows(20);
-        grid.addStyleName(ChronoTheme.GRID);
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-        grid.setColumnOrder("source", "title", "author", "publishDate", "style");
-        grid.getColumn("source").setHeaderCaption(provider.getProperty("label.source"));
-        grid.getColumn("title").setHeaderCaption(provider.getProperty("label.title"));
-        grid.getColumn("author").setHeaderCaption("label.author");
-        grid.getColumn("publishDate").setHeaderCaption("label.publish.date");
-        grid.getColumn("style").setHeaderCaption("label.style");
-        grid.getColumn("id").setHidden(true);
-    }
+        table.setRowHeaderMode(Table.RowHeaderMode.INDEX);
+        table.setSelectable(true);
+        table.addStyleName(ValoTheme.TABLE_COMPACT);
+        table.setBeans(new SortableLazyList<>(
+                // entity fetching strategy
+                (firstRow, asc, sortProperty) -> presenter.findEntities(firstRow, asc, sortProperty),
+                // count fetching strategy
+                () -> (int) presenter.size(), TextRepository.PAGE_SIZE));
 
+        table.addRowClickListener(event -> {
+            Notification.show(event.getEntity().toString());
+        });
+    }
 
 
     @Override

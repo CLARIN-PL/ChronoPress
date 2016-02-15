@@ -147,23 +147,4 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         return new TimeSeriesResult(dto.getUnit(), sorted);
     }
 
-    @Override
-    public List<TextItemDTO> findTextItem(int startIndex) {
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<TextItemDTO> q = cb.createQuery(TextItemDTO.class);
-        Root<Text> root = q.from(Text.class);
-
-        q.select(cb.construct(TextItemDTO.class,
-                root.get("id"),
-                root.get("title_j"),
-                root.get("title_a"),
-                root.get("authors"),
-                root.get("date"),
-                root.get("style")));
-
-        return em.createQuery(q)
-                .setFirstResult(startIndex)
-                .getResultList();
-    }
 }
