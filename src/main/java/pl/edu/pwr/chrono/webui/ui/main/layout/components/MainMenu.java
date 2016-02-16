@@ -2,6 +2,8 @@ package pl.edu.pwr.chrono.webui.ui.main.layout.components;
 
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.ThemeResource;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -16,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
+import pl.edu.pwr.chrono.webui.ui.admin.AdminView;
 import pl.edu.pwr.chrono.webui.ui.admin.LoginWindow;
 import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataAnalysisView;
 import pl.edu.pwr.chrono.webui.ui.education.EducationView;
@@ -30,18 +33,16 @@ import javax.annotation.PreDestroy;
 @UIScope
 public class MainMenu extends HorizontalLayout{
 
+    private final MenuBar menuBar = new MenuBar();
     @Autowired
     private UIEventBus uiEventBus;
-
     @Autowired
     private DbPropertiesProvider provider;
-
     @Autowired
     private LoginWindow loginWindow;
-
     @Autowired
     private AuthenticationManager auth;
-
+    private MenuBar.MenuItem user;
 
     @PostConstruct
     public  void init(){
@@ -54,14 +55,14 @@ public class MainMenu extends HorizontalLayout{
 
         wrapper.addComponent(gear);
 
-        HorizontalLayout barwrapper = new HorizontalLayout();
-        barwrapper.addStyleName(ChronoTheme.MENU_BAR_WRAPPER);
-        barwrapper.setMargin(new MarginInfo(false,true,false,true));
+        HorizontalLayout barWrapper = new HorizontalLayout();
+        barWrapper.addStyleName(ChronoTheme.MENU_BAR_WRAPPER);
+        barWrapper.setMargin(new MarginInfo(false, false, false, true));
 
-        MenuBar barmenu = buildMenuBar();
+        initMenuBar();
 
-        barwrapper.addComponent(barmenu);
-        wrapper.addComponent(barwrapper);
+        barWrapper.addComponent(menuBar);
+        wrapper.addComponent(barWrapper);
         addComponent(wrapper);
         setComponentAlignment(wrapper, Alignment.BOTTOM_RIGHT);
 
@@ -75,7 +76,21 @@ public class MainMenu extends HorizontalLayout{
                         loginWindow.getUsername(), loginWindow.getPassword());
                 Authentication result = auth.authenticate(request);
                 SecurityContextHolder.getContext().setAuthentication(result);
+                user.removeChildren();
 
+                user.addItem(provider.getProperty("menu.administration"), FontAwesome.COG, (MenuBar.Command) selectedItem ->
+                        uiEventBus.post(new NavigationEvent(AdminView.VIEW_NAME)));
+
+                user.addItem(provider.getProperty("menu.sign.out"), FontAwesome.SIGN_OUT,
+                        (MenuBar.Command) selectedItem -> {
+                            user.removeChildren();
+                            getUI().getPage().setLocation(VaadinServlet.getCurrent().getServletContext().getContextPath() + "/");
+                            VaadinService.getCurrentRequest().getWrappedSession().invalidate();
+                            SecurityContextHolder.clearContext();
+
+                            user.addItem(provider.getProperty("menu.sign.in"), FontAwesome.SIGN_IN,
+                                    (MenuBar.Command) item -> UI.getCurrent().addWindow(loginWindow));
+                        });
             } catch (AuthenticationException e) {
                 Notification.show("Login failed.", e.getMessage(), Notification.Type.ERROR_MESSAGE);
                 e.printStackTrace();
@@ -86,17 +101,15 @@ public class MainMenu extends HorizontalLayout{
         });
     }
 
+    private void initMenuBar() {
 
-    private MenuBar buildMenuBar() {
+        menuBar.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
+        menuBar.addStyleName(ChronoTheme.MENU_BAR);
 
-        MenuBar barmenu = new MenuBar();
-        barmenu.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
-        barmenu.addStyleName(ChronoTheme.MENU_BAR);
-
-        MenuBar.MenuItem home = barmenu.addItem(provider.getProperty("menu.home"), FontAwesome.HOME,
+        MenuBar.MenuItem home = menuBar.addItem(provider.getProperty("menu.home"), FontAwesome.HOME,
                 (MenuBar.Command) selectedItem -> uiEventBus.post(new NavigationEvent(HomeView.VIEW_NAME)));
 
-        MenuBar.MenuItem tools = barmenu.addItem(provider.getProperty("menu.tools"), FontAwesome.WRENCH, null);
+        MenuBar.MenuItem tools = menuBar.addItem(provider.getProperty("menu.tools"), FontAwesome.WRENCH, null);
         tools.addItem(provider.getProperty("menu.search"), FontAwesome.SEARCH, null);
         tools.addItem(provider.getProperty("menu.sample.viewer"), FontAwesome.BOOK,
                 (MenuBar.Command) selectedItem -> uiEventBus.post(new NavigationEvent(SampleBrowserView.VIEW_NAME)));
@@ -104,15 +117,17 @@ public class MainMenu extends HorizontalLayout{
         tools.addItem(provider.getProperty("menu.data.analyse"), FontAwesome.COGS,
                 (MenuBar.Command) selectedItem -> uiEventBus.post(new NavigationEvent(DataAnalysisView.VIEW_NAME)));
 
-        MenuBar.MenuItem education = barmenu.addItem(provider.getProperty("menu.education"), FontAwesome.GRADUATION_CAP,
+        MenuBar.MenuItem education = menuBar.addItem(provider.getProperty("menu.education"), FontAwesome.GRADUATION_CAP,
                 (MenuBar.Command) selectedItem -> uiEventBus.post(new NavigationEvent(EducationView.VIEW_NAME)));
 
-        MenuBar.MenuItem contact = barmenu.addItem(provider.getProperty("menu.contact"), FontAwesome.ENVELOPE_O, null);
+        MenuBar.MenuItem contact = menuBar.addItem(provider.getProperty("menu.contact"), FontAwesome.ENVELOPE_O, null);
 
-        MenuBar.MenuItem signin = barmenu.addItem(provider.getProperty("menu.sign.in"), FontAwesome.SIGN_IN,
+        user = menuBar.addItem("", FontAwesome.USER, null);
+
+        user.addItem(provider.getProperty("menu.sign.in"), FontAwesome.SIGN_IN,
                 (MenuBar.Command) selectedItem -> UI.getCurrent().addWindow(loginWindow));
-        return barmenu;
     }
+
 
     @PreDestroy
     public  void preDestroy(){

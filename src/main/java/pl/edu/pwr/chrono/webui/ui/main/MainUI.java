@@ -15,11 +15,13 @@ import com.vaadin.spring.navigator.SpringViewProvider;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.edu.pwr.chrono.domain.User;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
 import pl.edu.pwr.chrono.webui.ui.admin.AdminView;
 import pl.edu.pwr.chrono.webui.ui.main.layout.MainLayout;
+import pl.edu.pwr.configuration.security.ProfileAdapter;
 
 import java.util.Locale;
 
@@ -73,8 +75,10 @@ public final class MainUI extends UI {
 	}
 
 	public User getLoggedInUser() {
-		return null;
-	}
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof ProfileAdapter)
+            return ((ProfileAdapter) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUser();
+        else return null;
+    }
 
 	@Subscribe
 	public void navigateTo(NavigationEvent view) {
