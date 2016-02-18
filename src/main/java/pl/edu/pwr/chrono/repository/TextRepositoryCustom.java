@@ -16,4 +16,7 @@ public interface TextRepositoryCustom {
 
     TimeSeriesResult findTimeSeries(final DataSelectionDTO selection, final TimeSeriesDTO dto);
 
+    List<WordFrequencyDTO> findWordFrequencyByLexeme(DataSelectionDTO selection);
+
+    List<ConcordanceDTO> findConcordanceNotLemmatized(DataSelectionDTO selection, String lemma);
 }

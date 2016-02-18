@@ -9,10 +9,7 @@ import com.vaadin.ui.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.readmodel.*;
-import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
-import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
-import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
-import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesResult;
+import pl.edu.pwr.chrono.readmodel.dto.*;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 
 import java.util.List;
@@ -46,6 +43,9 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
     @Autowired
     private UCTimeSeries ucTimeSeries;
+
+    @Autowired
+    private UCDataExploration ucDataExploration;
 
     public void executeQuantitativeCalculations() {
         try {
@@ -120,6 +120,60 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
         });
     }
 
+    public void executeDataExplorationCalculations() {
+        try {
+            if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
+                    DataExplorationTab.DataExplorationType.LEXEME_FREQUENCY_LIST) {
+                executeDataSelection(view.getDataSelectionPanel().getData());
+                view.getDataExplorationTab().showLoading(true);
+                Futures.addCallback(ucDataExploration.calculateWordFrequencyByLexeme(
+                                view.getDataSelectionPanel().getData()),
+                        new FutureCallback<List<WordFrequencyDTO>>() {
+
+                            @Override
+                            public void onSuccess(List<WordFrequencyDTO> result) {
+                                view.showDataExplorationWordFrequencyResults(result);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                                log.warn("Item loading failed ", throwable);
+                                view.getDataExplorationTab().showLoading(false);
+                            }
+                        });
+            }
+
+            if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
+                    DataExplorationTab.DataExplorationType.LEXEME_CONCORDANCE) {
+
+                executeDataSelection(view.getDataSelectionPanel().getData());
+                view.getDataExplorationTab().showLoading(true);
+
+                Futures.addCallback(ucDataExploration.calculateConcordanceNotLemmatized(
+                                view.getDataSelectionPanel().getData(),
+                                view.getDataExplorationTab().getDataExplorationDTO().getLemma()),
+
+                        new FutureCallback<List<ConcordanceDTO>>() {
+
+                            @Override
+                            public void onSuccess(List<ConcordanceDTO> result) {
+                                view.showDataExplorationConcordanceResults(result);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                                log.warn("Item loading failed ", throwable);
+                                view.getDataExplorationTab().showLoading(false);
+                            }
+                        });
+            }
+        } catch (FieldGroup.CommitException e) {
+            log.debug("Validation failed", e);
+        }
+    }
+
     public List<Integer> loadYears() {
         return ucLoadingYears.load();
     }
@@ -139,4 +193,5 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     public List<String> loadAuthors() {
         return ucLoadingAuthors.load();
     }
+
 }

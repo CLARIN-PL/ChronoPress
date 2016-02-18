@@ -43,35 +43,35 @@ public class WordSpecification {
     }
 
     public static Specification<Word> notPunctuation(){
-        return (root, query, cb) -> cb.notEqual(root.get("pos_alias"), "punct");
+        return (root, query, cb) -> cb.not(root.get("posAlias").in("punct", "interp"));
     }
 
     public static Specification<Word> isVerb() {
-        return (root, query, cb) -> cb.equal(root.get("pos_alias"), "verb");
+        return (root, query, cb) -> cb.equal(root.get("posAlias"), "verb");
     }
 
     public static Specification<Word> allPartsOfSpeech() {
-        return (root, query, cb) -> root.get("pos_alias").in("verb", "noun", "adj", "adv");
+        return (root, query, cb) -> root.get("posAlias").in("verb", "noun", "adj", "adv");
     }
 
     public static Specification<Word> isNoun(){
-        return (root, query, cb) -> cb.equal(root.get("pos_alias"), "noun");
+        return (root, query, cb) -> cb.equal(root.get("posAlias"), "noun");
     }
 
     public static Specification<Word> isAdj(){
-        return (root, query, cb) -> cb.equal(root.get("pos_alias"), "adj");
+        return (root, query, cb) -> cb.equal(root.get("posAlias"), "adj");
     }
 
     public static Specification<Word> isAdv(){
-        return (root, query, cb) -> cb.equal(root.get("pos_alias"), "adv");
+        return (root, query, cb) -> cb.equal(root.get("posAlias"), "adv");
     }
 
     public static Specification<Word> byLexeme(Set<String> lexeme) {
-        return (root, query, cb) -> root.get("pos_lemma").in(lexeme);
+        return (root, query, cb) -> root.get("posLemma").in(lexeme);
     }
 
     public static Specification<Word> lexemeByRegExp(String expr) {
-        return (root, query, cb) -> cb.like(root.get("pos_lemma"), expr);
+        return (root, query, cb) -> cb.like(root.get("posLemma"), expr);
     }
 
 

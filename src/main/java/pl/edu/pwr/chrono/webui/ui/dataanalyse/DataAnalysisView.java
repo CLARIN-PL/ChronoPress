@@ -10,9 +10,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
-import pl.edu.pwr.chrono.readmodel.dto.QuantitativeAnalysisResult;
-import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesResult;
+import pl.edu.pwr.chrono.readmodel.dto.*;
 import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
 import pl.edu.pwr.chrono.webui.infrastructure.components.results.*;
@@ -20,6 +18,7 @@ import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 import java.util.Optional;
 
 @SpringView(name = DataAnalysisView.VIEW_NAME, ui = MainUI.class)
@@ -36,6 +35,9 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 	private QuantitativeAnalysisTab quantitativeAnalysisTab;
 	@Autowired
 	private TimeSeriesTab timeSeriesTab;
+	@Autowired
+	private DataExplorationTab dataExplorationTab;
+
 	@Autowired
 	private Result result;
 
@@ -67,6 +69,7 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 		initDataSelectionTab();
 		initQuantitativeAnalysisTab();
 		initTimeSeriesTab();
+		initDataExploration();
 	}
 
 
@@ -93,10 +96,16 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 			dataSelectionPanel.reset();
 			timeSeriesTab.reset();
 		});
+
+		dataExplorationTab.getAcceptButton().addClickListener(e -> presenter.executeDataExplorationCalculations());
 	}
 
 	private void initTimeSeriesTab() {
 		sheet.addComponent(timeSeriesTab);
+	}
+
+	private void initDataExploration() {
+		sheet.addComponent(dataExplorationTab);
 	}
 
 	public void showQuantitativeAnalysisResult(QuantitativeAnalysisResult result){
@@ -142,6 +151,26 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 		});
 	}
 
+	public void showDataExplorationWordFrequencyResults(List<WordFrequencyDTO> result) {
+		getUI().access(() -> {
+			FrequencyList freq = new FrequencyList(provider);
+			freq.addData(result);
+			this.result.setCalculation(freq);
+			this.result.show();
+			dataExplorationTab.showLoading(false);
+		});
+	}
+
+	public void showDataExplorationConcordanceResults(List<ConcordanceDTO> result) {
+		getUI().access(() -> {
+			ConcordanceList concord = new ConcordanceList(provider);
+			concord.addData(result);
+			this.result.setCalculation(concord);
+			this.result.show();
+			dataExplorationTab.showLoading(false);
+		});
+	}
+
 	public DataSelectionPanel getDataSelectionPanel() {
 		return dataSelectionPanel;
 	}
@@ -152,6 +181,10 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 
 	public TimeSeriesTab getTimeSeriesTab() {
 		return timeSeriesTab;
+	}
+
+	public DataExplorationTab getDataExplorationTab() {
+		return dataExplorationTab;
 	}
 
 	@Override

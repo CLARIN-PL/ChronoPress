@@ -40,5 +40,6 @@ public class FilterPanel extends VerticalLayout {
         table.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
         table.addStyleName(ValoTheme.TABLE_NO_STRIPES);
         table.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
+        table.addStyleName(ValoTheme.TABLE_BORDERLESS);
     }
 }

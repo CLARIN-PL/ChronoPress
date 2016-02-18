@@ -14,7 +14,7 @@ public class WordAverageLengthHistogram implements CalculationResult {
 
     public WordAverageLengthHistogram(DbPropertiesProvider provider) {
         this.provider = provider;
-        panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.average..word.qt.panel.title"))
+        panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.average.word.qt.panel.title"))
                 .addTabSheet()
                 .addChart(provider.getProperty("label.result.word.qa.chart.title"),
                         provider.getProperty("label.result.word.qa.chart.x.axis.title"),

@@ -21,17 +21,17 @@ public class Word implements Serializable{
     @Column(columnDefinition = "text")
     private String txt;
 
-    @Column(columnDefinition = "text")
-    private String pos;
+    @Column(name = "pos", columnDefinition = "text")
+    private String partOfSpeech;
 
-    @Column(columnDefinition = "text")
-    private String pos_class;
+    @Column(name = "pos_class", columnDefinition = "text")
+    private String posClass;
 
-    @Column(columnDefinition = "text")
-    private String pos_alias;
+    @Column(name = "pos_alias", columnDefinition = "text")
+    private String posAlias;
 
-    @Column(columnDefinition = "text")
-    private String pos_lemma;
+    @Column(name = "pos_lemma", columnDefinition = "text")
+    private String posLemma;
 
     private Integer seq;
 

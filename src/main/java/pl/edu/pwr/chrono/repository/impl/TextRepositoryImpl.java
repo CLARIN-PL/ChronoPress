@@ -97,6 +97,35 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
     }
 
     @Override
+    public List<WordFrequencyDTO> findWordFrequencyByLexeme(DataSelectionDTO selection) {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<WordFrequencyDTO> q = cb.createQuery(WordFrequencyDTO.class);
+
+        Root<Word> root = q.from(Word.class);
+        Join<Word, Sentence> sentence = root.join("sentence");
+        Root<Text> text = q.from(Text.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(TextSpecification.search(selection).toPredicate(text, q, cb));
+        predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
+
+        q.select(cb.construct(WordFrequencyDTO.class,
+                root.get("posLemma"),
+                root.get("posAlias"),
+                cb.count(root.get("id"))));
+
+        q.groupBy(root.get("posLemma"), root.get("posAlias"));
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        List<WordFrequencyDTO> queryResult = em.createQuery(q).getResultList();
+        long size = queryResult.size();
+        queryResult.forEach(i -> i.setPercentage(i.getCount() * 100 / size));
+        return queryResult;
+    }
+
+    @Override
     public TimeSeriesResult findTimeSeries(final DataSelectionDTO selection, final TimeSeriesDTO dto) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -121,21 +150,21 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
 
         if (dto.getUnit() == Time.MONTH) {
             q.select(cb.construct(TimeProbe.class,
-                    root.get("pos_lemma"),
+                    root.get("posLemma"),
                     year,
                     month,
                     cb.count(text.get("date"))));
-            q.groupBy(month, year, root.get("pos_lemma"));
-            q.orderBy(cb.asc(root.get("pos_lemma")), cb.asc(year), cb.asc(month));
+            q.groupBy(month, year, root.get("posLemma"));
+            q.orderBy(cb.asc(root.get("posLemma")), cb.asc(year), cb.asc(month));
         }
 
         if (dto.getUnit() == Time.YEAR) {
             q.select(cb.construct(TimeProbe.class,
-                    root.get("pos_lemma"),
+                    root.get("posLemma"),
                     year, cb.count(text.get("date"))));
 
-            q.groupBy(year, root.get("pos_lemma"));
-            q.orderBy(cb.asc(root.get("pos_lemma")), cb.asc(year));
+            q.groupBy(year, root.get("posLemma"));
+            q.orderBy(cb.asc(root.get("posLemma")), cb.asc(year));
         }
 
         q.where(predicates.toArray(new Predicate[predicates.size()]));
@@ -145,6 +174,35 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         Map<String, List<TimeProbe>> sorted = queryResult.stream()
                 .collect(groupingBy(TimeProbe::getLexeme, mapping(s -> s, toList())));
         return new TimeSeriesResult(dto.getUnit(), sorted);
+    }
+
+    @Override
+    public List<ConcordanceDTO> findConcordanceNotLemmatized(DataSelectionDTO selection, String lemma) {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ConcordanceDTO> q = cb.createQuery(ConcordanceDTO.class);
+
+        Root<Word> root = q.from(Word.class);
+        Join<Word, Sentence> sentence = root.join("sentence");
+        Root<Text> text = q.from(Text.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(TextSpecification.search(selection).toPredicate(text, q, cb));
+        predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
+        predicates.add(WordSpecification.byText(lemma).toPredicate(root, q, cb));
+
+        q.select(cb.construct(ConcordanceDTO.class,
+                root.get("txt"),
+                root.get("posLemma"),
+                sentence.get("sentPlain"),
+                text.get("date"),
+                text.get("journalTitle")));
+
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        List<ConcordanceDTO> queryResult = em.createQuery(q).getResultList();
+        return queryResult;
     }
 
 }

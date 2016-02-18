@@ -31,7 +31,6 @@ public class SampleBrowserView extends DefaultView<SampleBrowserPresenter> imple
 
     private MTable<Text> table;
 
-
     @Autowired
     private DbPropertiesProvider provider;
 

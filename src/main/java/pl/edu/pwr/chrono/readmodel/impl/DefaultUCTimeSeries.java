@@ -11,13 +11,8 @@ import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesDTO;
 import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesResult;
 import pl.edu.pwr.chrono.repository.TextRepository;
 
-import javax.persistence.EntityManager;
-
 @Service
 public class DefaultUCTimeSeries implements UCTimeSeries {
-
-    @Autowired
-    private EntityManager em;
 
     @Autowired
     private ListeningExecutorService service;
