@@ -9,6 +9,8 @@ public class ConcordanceDTO {
 
     private String base;
     private String lemma;
+    private String left;
+    private String right;
     private String sentence;
     private Date publicationDate;
     private String journalTitle;
@@ -19,5 +21,13 @@ public class ConcordanceDTO {
         this.sentence = sentence;
         this.publicationDate = publicationDate;
         this.journalTitle = journalTitle;
+    }
+
+    public ConcordanceDTO(ConcordanceDTO c) {
+        this.base = c.getBase();
+        this.lemma = c.getLemma();
+        this.sentence = c.getSentence();
+        this.publicationDate = c.getPublicationDate();
+        this.journalTitle = c.getJournalTitle();
     }
 }

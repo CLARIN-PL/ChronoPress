@@ -14,6 +14,11 @@ public class WordFrequencyDTO {
     private long count = 0;
     private double percentage = 0;
 
+    public WordFrequencyDTO(String word, long count) {
+        this.word = word;
+        this.count = count;
+    }
+
     public WordFrequencyDTO(String word, String partOfSpeech, long count) {
         this.word = word;
         this.count = count;

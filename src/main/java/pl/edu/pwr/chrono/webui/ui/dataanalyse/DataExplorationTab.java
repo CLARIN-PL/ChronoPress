@@ -37,6 +37,7 @@ public class DataExplorationTab extends Tab {
         panel = initMainPanel();
         addComponent(panel);
 
+        lemma.setVisible(false);
     }
 
     public MultiColumnPanel initMainPanel() {
@@ -58,10 +59,24 @@ public class DataExplorationTab extends Tab {
     private void initializeOperations() {
         operationType.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         operationType.addItem(DataExplorationType.LEXEME_FREQUENCY_LIST);
-        operationType.setItemCaption(DataExplorationType.LEXEME_FREQUENCY_LIST, provider.getProperty("label.lexeme.frequency.list"));
+        operationType.setItemCaption(DataExplorationType.LEXEME_FREQUENCY_LIST,
+                provider.getProperty("label.lexeme.frequency.list"));
         operationType.select(DataExplorationType.LEXEME_FREQUENCY_LIST);
+
+        operationType.addItem(DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST);
+        operationType.setItemCaption(DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST,
+                provider.getProperty("label.not.lemmatized.frequency.list"));
+
         operationType.addItem(DataExplorationType.LEXEME_CONCORDANCE);
-        operationType.setItemCaption(DataExplorationType.LEXEME_CONCORDANCE, provider.getProperty("label.lexeme.concordance"));
+        operationType.setItemCaption(DataExplorationType.LEXEME_CONCORDANCE,
+                provider.getProperty("label.lexeme.concordance"));
+        operationType.addValueChangeListener(event -> {
+            if (event.getProperty().getValue() == DataExplorationType.LEXEME_CONCORDANCE) {
+                lemma.setVisible(true);
+            } else {
+                lemma.setVisible(false);
+            }
+        });
     }
 
     public void showLoading(Boolean show) {
@@ -78,6 +93,6 @@ public class DataExplorationTab extends Tab {
     }
 
     public enum DataExplorationType {
-        LEXEME_FREQUENCY_LIST, LEXEME_CONCORDANCE
+        LEXEME_FREQUENCY_LIST, NOT_LEMMATIZED_FREQUENCY_LIST, LEXEME_CONCORDANCE
     }
 }

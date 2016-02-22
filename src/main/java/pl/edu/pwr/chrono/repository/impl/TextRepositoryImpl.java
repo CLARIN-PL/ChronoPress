@@ -120,8 +120,36 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         q.where(predicates.toArray(new Predicate[predicates.size()]));
 
         List<WordFrequencyDTO> queryResult = em.createQuery(q).getResultList();
-        long size = queryResult.size();
-        queryResult.forEach(i -> i.setPercentage(i.getCount() * 100 / size));
+        long size = queryResult.stream().mapToLong(i -> i.getCount()).sum();
+        queryResult.forEach(i -> i.setPercentage((i.getCount() * 100.0) / size));
+        return queryResult;
+    }
+
+    @Override
+    public List<WordFrequencyDTO> findWordFrequencyNotLemmatized(DataSelectionDTO selection) {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<WordFrequencyDTO> q = cb.createQuery(WordFrequencyDTO.class);
+
+        Root<Word> root = q.from(Word.class);
+        Join<Word, Sentence> sentence = root.join("sentence");
+        Root<Text> text = q.from(Text.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(TextSpecification.search(selection).toPredicate(text, q, cb));
+        predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
+
+        q.select(cb.construct(WordFrequencyDTO.class,
+                root.get("txt"),
+                cb.count(root.get("id"))));
+
+        q.groupBy(root.get("txt"));
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        List<WordFrequencyDTO> queryResult = em.createQuery(q).getResultList();
+        long size = queryResult.stream().mapToLong(i -> i.getCount()).sum();
+        queryResult.forEach(i -> i.setPercentage((i.getCount() * 100.0) / size));
         return queryResult;
     }
 

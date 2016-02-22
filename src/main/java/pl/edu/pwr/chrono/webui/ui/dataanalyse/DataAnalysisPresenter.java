@@ -121,6 +121,8 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     }
 
     public void executeDataExplorationCalculations() {
+
+        //TODO Change code replication
         try {
             if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
                     DataExplorationTab.DataExplorationType.LEXEME_FREQUENCY_LIST) {
@@ -143,6 +145,29 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
                             }
                         });
             }
+
+            if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
+                    DataExplorationTab.DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST) {
+                executeDataSelection(view.getDataSelectionPanel().getData());
+                view.getDataExplorationTab().showLoading(true);
+                Futures.addCallback(ucDataExploration.calculateWordFrequencyNotLematized(
+                                view.getDataSelectionPanel().getData()),
+                        new FutureCallback<List<WordFrequencyDTO>>() {
+
+                            @Override
+                            public void onSuccess(List<WordFrequencyDTO> result) {
+                                view.showDataExplorationWordFrequencyResults(result);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                                log.warn("Item loading failed ", throwable);
+                                view.getDataExplorationTab().showLoading(false);
+                            }
+                        });
+            }
+
 
             if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
                     DataExplorationTab.DataExplorationType.LEXEME_CONCORDANCE) {
