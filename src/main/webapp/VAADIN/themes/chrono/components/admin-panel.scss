@@ -1,0 +1,32 @@
+@mixin admin-panel  {
+
+	.v-slot-ch-admin-panel {
+		padding-left: 15%;
+        padding-right: 15%;
+	}
+
+	.ch-admin-panel{
+		font-family: Arial, Verdana,Helvetica,sans-serif;
+		border: 1px solid #999999;
+		background-color: #eeeeee;
+		margin-bottom: 10px;
+	}
+
+	.ch-admin-panel-row{
+		border-bottom: 1px solid #dfdfdf;
+	}
+
+	.ch-admin-panel-left-column{
+		padding-left: 5px;
+		font-size: 11px;
+	 	background-color: #fff;
+	 	border-left: 1px solid #ccc;
+	}
+
+	.ch-admin-panel-right-column{
+		padding-left: 5px;
+		font-size: 11px;
+        border-left: 2px solid #ccc;
+        line-height: normal;
+    }
+}

@@ -27,6 +27,7 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 
 	public static final String VIEW_NAME = "analysis";
 	private final TabSheet sheet = new TabSheet();
+
 	@Autowired
 	private DbPropertiesProvider provider;
 	@Autowired
@@ -98,6 +99,10 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 		});
 
 		dataExplorationTab.getAcceptButton().addClickListener(e -> presenter.executeDataExplorationCalculations());
+		dataExplorationTab.getClearButton().addClickListener(e -> {
+			dataSelectionPanel.reset();
+			dataExplorationTab.reset();
+		});
 	}
 
 	private void initTimeSeriesTab() {

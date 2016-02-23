@@ -2,6 +2,13 @@ $v-unit-size: 32px;
 
 @import "../valo/valo";
 @import "components/grid.scss";
+@import "components/textfields.scss";
+@import "components/admin-panel.scss";
+@import "components/buttons.scss";
+@import "components/icons.scss";
+@import "components/details.scss";
+@import "components/read.scss";
+
 
 $v-font-family: Arial, Verdana,  sans-serif;
 $view-padding: round($v-unit-size / 1.5) !default;
@@ -10,6 +17,12 @@ $view-padding: round($v-unit-size / 1.5) !default;
 
 	@include valo;
 	@include grid;
+    @include admin-panel;
+    @include buttons;
+    @include icons;
+    @include details;
+    @include read;
+    @include textfields;
 
 	.ch-header{
 		background: #fff url("/VAADIN/themes/chrono/img/bg.jpg") no-repeat 50% 0%;
@@ -238,5 +251,15 @@ $view-padding: round($v-unit-size / 1.5) !default;
            .v-window-outerheader{
               border-bottom: 1px solid #dfdfdf;
            }
+     }
+
+     .ch-grid .leftcol {
+         direction: rtl;
+         text-align: right;
+         text-overflow: clip;
+     }
+     .ch-grid .centercol {
+         text-align: center;
+         font-weight: bold;
      }
 }

@@ -28,4 +28,34 @@ public class ChronoTheme {
     public static final String PANEL_CONTENT = "ch-panel-content";
     public static final String TOKENFIELD = "ch-token-field";
     public static final String WINDOW = "ch-window";
+
+    //ICONS
+    public static final String ICON_HELMET = "ch-icon-helmet";
+    public static final String ICON_SETTINGS = "ch-icon-settings";
+    public static final String ICON_USERS = "ch-icon-users";
+    public static final String ICON_USERS_ACTIVITY = "ch-icon-users-stats";
+    public static final String ICON_BUILDING = "ch-icon-building";
+    public static final String ICON_LOG = "ch-icon-log";
+    public static final String ICON_TAG = "ch-icon-tag";
+    public static final String ICON_BOOK = "ch-icon-book";
+    public static final String ICON_REPORT = "ch-icon-report";
+    public static final String ICON_HOME = "ch-icon-home";
+    public static final String ICON_PERSON = "ch-icon-person";
+
+    public static final String BUTTON_LINK = "ch-link-button";
+
+    //TEXTFIELDS
+    public static final String TEXTFIELD_ROUND = "ch-textfield-round";
+
+    //BUTTONS
+    public static final String BUTTON = "ch-button";
+
+    public static final String DETAILS_CONTENT = "ch-details-content";
+    public static final String DETAILS_SECTION_TITLE = "ch-details-section-title";
+
+    //ADMIN PANEL
+    public static final String ADMIN_PANEL = "ch-admin-panel";
+    public static final String ADMIN_PANEL_ROW = "ch-admin-panel-row";
+    public static final String ADMIN_PANEL_LEFT_COLUMN = "ch-admin-panel-left-column";
+    public static final String ADMIN_PANEL_RIGHT_COLUMN = "ch-admin-panel-right-column";
 }

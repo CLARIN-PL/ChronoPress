@@ -1,0 +1,80 @@
+@mixin buttons  {
+
+	.v-button:focus:after {
+        border-color: transparent;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+	.ch-link-button{
+		font-size: 11px;
+		height: 18px;
+		padding-left: 3px;
+		color: #444444;
+	}
+
+	.ch-link-button:hover{
+    	color: #cc551c;
+    }
+
+	.ch-round-button{
+    	color: white;
+        background-color: #EC9C75;
+        padding: 0 7px;
+        border-radius: 27px;
+        height: 30px;
+        width: 30px;
+	}
+
+    .ch-button{
+    	color: #565656;
+    	background-color: #eee;
+    	border: 1px solid #999999;
+    	height: 22px;
+        font-size: 9.5pt;
+        border-radius: 5px;
+    	background-image: url("/VAADIN/themes/chrono/img/button_flat.png");
+        background-position: 0 50%;
+        background-repeat: repeat-x;
+        white-space: nowrap;
+        font-family: Verdana,Arial,Helvetica,sans;
+
+        .v-icon{
+           	color: #989898;
+        }
+    }
+
+    .v-upload .v-button{
+    	color: #565656;
+       	background-color: #eee;
+       	border: 1px solid #999999;
+       	height: 22px;
+        font-size: 9.5pt;
+        border-radius: 5px;
+      	background-image: url("/VAADIN/themes/chrono/img/button_flat.png");
+        background-position: 0 50%;
+        background-repeat: repeat-x;
+        white-space: nowrap;
+         font-family: Verdana,Arial,Helvetica,sans;
+    }
+
+    .ch-combobox{
+
+    	.v-filterselect-tiny {
+        	height: 22px;
+        	font-size: 13px;
+    	}
+
+    	.v-filterselect-input{
+   		 	background-image: url("/VAADIN/themes/chrono/img/button_flat.png");
+         	background-position: 0 50%;
+         	background-repeat: repeat-x;
+         	color: #222;
+         	padding-left: 15px;
+         }
+    }
+
+    .tn-upload-padding{
+    	padding-left: 80px;
+    }
+}

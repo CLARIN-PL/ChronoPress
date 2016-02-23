@@ -79,6 +79,9 @@ public class DataExplorationTab extends Tab {
         });
     }
 
+    public void reset() {
+        lemma.clear();
+    }
     public void showLoading(Boolean show) {
         if (show) {
             panel.showLoadingIndicator();

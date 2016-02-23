@@ -34,18 +34,17 @@ public class DefaultUCDataExplorationTest {
     @Test
     public void splitSentenceByWord_SentenceWithWordOccurredTwice_SplitSentence() {
 
-        String sentence = "janusz miał dużo pracy i robił w pracy cały dzień";
+        String sentence = "janusz miał dużo pracy i robił w pracy cały dzień, żeby zarobić";
 
         List<ConcordanceDTO> list = Lists.newArrayList();
         ConcordanceDTO dto = new ConcordanceDTO("pracy", "pracy", sentence, new Date(), "Trybuna");
         list.add(dto);
 
         List<ConcordanceDTO> after = service.splitSentenceOnWord(list);
-        System.out.println(after);
         assertThat("janusz miał dużo").isEqualTo(after.get(0).getLeft());
-        assertThat("i robił w pracy cały dzień").isEqualTo(after.get(0).getRight());
+        assertThat("i robił w pracy cały dzień, żeby zarobić").isEqualTo(after.get(0).getRight());
 
         assertThat("janusz miał dużo pracy i robił w").isEqualTo(after.get(1).getLeft());
-        assertThat("cały dzień").isEqualTo(after.get(1).getRight());
+        assertThat("cały dzień, żeby zarobić").isEqualTo(after.get(1).getRight());
     }
 }
