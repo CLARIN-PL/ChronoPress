@@ -15,5 +15,5 @@ public interface UCDataExploration {
 
     ListenableFuture<List<WordFrequencyDTO>> calculateWordFrequencyNotLematized(DataSelectionDTO data);
 
-    ListenableFuture<List<ConcordanceDTO>> calculateConcordanceNotLemmatized(DataSelectionDTO data, String lemma);
+    ListenableFuture<List<ConcordanceDTO>> calculateConcordance(DataSelectionDTO data, String lemma);
 }

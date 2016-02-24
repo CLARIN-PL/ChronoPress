@@ -20,5 +20,5 @@ public interface TextRepositoryCustom {
 
     List<WordFrequencyDTO> findWordFrequencyNotLemmatized(DataSelectionDTO selection);
 
-    List<ConcordanceDTO> findConcordanceNotLemmatized(DataSelectionDTO selection, String lemma);
+    List<ConcordanceDTO> findConcordance(DataSelectionDTO selection, String lemma);
 }

@@ -175,7 +175,7 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
                 executeDataSelection(view.getDataSelectionPanel().getData());
                 view.getDataExplorationTab().showLoading(true);
 
-                Futures.addCallback(ucDataExploration.calculateConcordanceNotLemmatized(
+                Futures.addCallback(ucDataExploration.calculateConcordance(
                                 view.getDataSelectionPanel().getData(),
                                 view.getDataExplorationTab().getDataExplorationDTO().getLemma()),
 

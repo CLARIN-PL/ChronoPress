@@ -69,7 +69,7 @@ public class DataExplorationTab extends Tab {
 
         operationType.addItem(DataExplorationType.LEXEME_CONCORDANCE);
         operationType.setItemCaption(DataExplorationType.LEXEME_CONCORDANCE,
-                provider.getProperty("label.lexeme.concordance"));
+                provider.getProperty("label.concordance.list"));
         operationType.addValueChangeListener(event -> {
             if (event.getProperty().getValue() == DataExplorationType.LEXEME_CONCORDANCE) {
                 lemma.setVisible(true);

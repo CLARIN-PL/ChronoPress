@@ -9,10 +9,7 @@ import pl.edu.pwr.chrono.readmodel.dto.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.*;
 
@@ -205,7 +202,7 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
     }
 
     @Override
-    public List<ConcordanceDTO> findConcordanceNotLemmatized(DataSelectionDTO selection, String lemma) {
+    public List<ConcordanceDTO> findConcordance(DataSelectionDTO selection, String lemma) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<ConcordanceDTO> q = cb.createQuery(ConcordanceDTO.class);
@@ -218,14 +215,25 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
         predicates.add(TextSpecification.search(selection).toPredicate(text, q, cb));
         predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
-        predicates.add(WordSpecification.byText(lemma).toPredicate(root, q, cb));
+
+        if (lemma.contains("\"")) {
+            Set<String> lexeme = new HashSet<>(Arrays.asList(lemma.replace("\"", "")));
+            predicates.add(WordSpecification.byLexeme(lexeme).toPredicate(root, q, cb));
+        } else {
+            predicates.add(WordSpecification.byText(lemma).toPredicate(root, q, cb));
+        }
 
         q.select(cb.construct(ConcordanceDTO.class,
                 root.get("txt"),
                 root.get("posLemma"),
                 sentence.get("sentPlain"),
                 text.get("date"),
-                text.get("journalTitle")));
+                text.get("journalTitle"),
+                text.get("articleTitle"),
+                text.get("style"),
+                text.get("period"),
+                text.get("status")
+        ));
 
         q.where(predicates.toArray(new Predicate[predicates.size()]));
 

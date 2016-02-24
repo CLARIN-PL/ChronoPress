@@ -36,26 +36,27 @@ public class DefaultUCDataExploration implements UCDataExploration {
     }
 
     @Override
-    public ListenableFuture<List<ConcordanceDTO>> calculateConcordanceNotLemmatized(DataSelectionDTO data, String lemma) {
-        return service.submit(() -> splitSentenceOnWord(repository.findConcordanceNotLemmatized(data, lemma)));
+    public ListenableFuture<List<ConcordanceDTO>> calculateConcordance(DataSelectionDTO data, String lemma) {
+        return service.submit(() -> splitSentenceOnWord(repository.findConcordance(data, lemma)));
     }
 
     public List<ConcordanceDTO> splitSentenceOnWord(final List<ConcordanceDTO> list) {
         final List<ConcordanceDTO> split = Lists.newArrayList();
         list.forEach(s -> {
-            int occurrence = StringUtils.countMatches(s.getSentence(), s.getBase());
+            int occurrence = StringUtils.countMatches(s.getSentence(), s.getWord());
             int lastPosition = 0;
             for (int i = 0; i < occurrence; i++) {
                 ConcordanceDTO d = new ConcordanceDTO(s);
 
-                lastPosition = d.getSentence().indexOf(s.getBase(), lastPosition);
+                lastPosition = d.getSentence().indexOf(s.getWord(), lastPosition);
                 d.setLeft((d.getSentence().substring(0, lastPosition)).trim());
-                d.setRight((d.getSentence().substring(lastPosition + d.getBase().length(), d.getSentence().length())).trim());
+                d.setRight((d.getSentence().substring(lastPosition + d.getWord().length(), d.getSentence().length())).trim());
 
                 lastPosition++;
                 split.add(d);
             }
         });
+
         return split;
     }
 }
