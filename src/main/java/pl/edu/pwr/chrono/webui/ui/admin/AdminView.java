@@ -60,7 +60,7 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
 
         layout.addComponent(row(ChronoTheme.ICON_TAG, captionsManagement, provider.getProperty("view.admin.panel.caption.desc")));
         layout.addComponent(row(ChronoTheme.ICON_HELMET, lexicalFiledManagement, provider.getProperty("view.admin.panel.lexical.field.desc")));
-        layout.addComponent(row(ChronoTheme.ICON_PERSON, audienceManagement, provider.getProperty("view.admin.panel.audience.button.desc")));
+        layout.addComponent(row(ChronoTheme.ICON_USERS, audienceManagement, provider.getProperty("view.admin.panel.audience.button.desc")));
         layout.addComponent(row(ChronoTheme.ICON_LOG, educationManagement, provider.getProperty("view.admin.panel.education.button.desc")));
 
         return layout;

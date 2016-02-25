@@ -7,8 +7,9 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.shared.ui.grid.HeightMode;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.themes.ValoTheme;
 import pl.edu.pwr.chrono.readmodel.dto.ConcordanceDTO;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class ConcordanceList implements CalculationResult {
 
-    private final HorizontalLayout panel = new HorizontalLayout();
+    private final HorizontalSplitPanel panel = new HorizontalSplitPanel();
 
     private final Grid grid = new Grid();
 
@@ -35,8 +36,8 @@ public class ConcordanceList implements CalculationResult {
         this.provider = provider;
         initializeGrid();
         panel.setWidth(100, Sizeable.Unit.PERCENTAGE);
-        panel.setMargin(true);
-        panel.addComponent(grid);
+        panel.setFirstComponent(grid);
+        panel.setSplitPosition(75, Sizeable.Unit.PERCENTAGE);
         panel.setCaption(provider.getProperty("label.lexeme.concordance.list"));
     }
 
@@ -48,13 +49,17 @@ public class ConcordanceList implements CalculationResult {
     public void addData(List<ConcordanceDTO> data) {
         container.removeAllItems();
         container.addAll(data);
-        panel.addComponent(buildStatTable(data));
+        TreeTable tt = buildStatTable(data);
+        tt.setWidth(100, Sizeable.Unit.PERCENTAGE);
+        panel.setSecondComponent(tt);
     }
 
     private TreeTable buildStatTable(List<ConcordanceDTO> data) {
 
         final Map<String, Map<String, Long>> stats = calculateConcordanceStats(data);
         final TreeTable ttable = new TreeTable();
+        ttable.addStyleName(ValoTheme.TREETABLE_SMALL);
+        ttable.addStyleName(ValoTheme.TREETABLE_NO_HEADER);
         ttable.addContainerProperty(provider.getProperty("label.category"), String.class, "");
         ttable.addContainerProperty(provider.getProperty("label.occurrence.count"), String.class, "");
 
@@ -65,21 +70,25 @@ public class ConcordanceList implements CalculationResult {
         final int[] nextItem = {4};
         stats.get("article").forEach((s, aLong) -> {
             ttable.addItem(new Object[]{s, Long.toString(aLong)}, nextItem[0]);
+            ttable.setChildrenAllowed(nextItem[0], false);
             ttable.setParent(nextItem[0], 0);
             nextItem[0]++;
         });
         stats.get("status").forEach((s, aLong) -> {
             ttable.addItem(new Object[]{s, Long.toString(aLong)}, nextItem[0]);
+            ttable.setChildrenAllowed(nextItem[0], false);
             ttable.setParent(nextItem[0], 1);
             nextItem[0]++;
         });
         stats.get("style").forEach((s, aLong) -> {
             ttable.addItem(new Object[]{s, Long.toString(aLong)}, nextItem[0]);
+            ttable.setChildrenAllowed(nextItem[0], false);
             ttable.setParent(nextItem[0], 2);
             nextItem[0]++;
         });
         stats.get("period").forEach((s, aLong) -> {
             ttable.addItem(new Object[]{s, Long.toString(aLong)}, nextItem[0]);
+            ttable.setChildrenAllowed(nextItem[0], false);
             ttable.setParent(nextItem[0], 3);
             nextItem[0]++;
         });
