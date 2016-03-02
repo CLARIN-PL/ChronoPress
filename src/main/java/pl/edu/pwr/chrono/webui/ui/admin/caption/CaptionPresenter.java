@@ -1,10 +1,10 @@
 package pl.edu.pwr.chrono.webui.ui.admin.caption;
 
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.edu.pwr.chrono.domain.Property;
 import pl.edu.pwr.chrono.repository.PropertyRepository;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
@@ -26,29 +26,10 @@ public class CaptionPresenter extends Presenter<CaptionsView> {
 
     public void refreshAction() {
         propertiesProvider.loadProperties();
-        view.hideRefreshButton();
     }
 
-    public void saveProperty() {
-        try {
-            view.getEditSection().commit();
-            // update here
-            loadPropertyList();
-            view.getEditSection().hide();
-            view.showRefreshButton();
-        } catch (FieldGroup.CommitException e) {
-            e.printStackTrace();
-            return;
-        }
-    }
-
-    public void cancel() {
-        view.getEditSection().hide();
-    }
-
-    public void editItem(Long id) {
-        view.getEditSection().setPropertySetting(view.getItem(id));
-        view.getEditSection().show();
+    public void saveProperty(Property property) {
+        repository.save(property);
     }
 
     public void loadPropertyList() {

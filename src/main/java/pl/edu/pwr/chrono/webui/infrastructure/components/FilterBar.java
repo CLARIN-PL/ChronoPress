@@ -20,11 +20,10 @@ public class FilterBar extends HorizontalLayout {
     private final TextField filter;
 
     public FilterBar() {
-        setMargin(true);
         setSizeFull();
 
         filter = new TextField();
-        filter.addStyleName(ChronoTheme.TEXTFIELD_ROUND);
+        filter.setColumns(20);
         filter.addStyleName("inline-icon");
         filter.setIcon(FontAwesome.SEARCH);
         filter.addStyleName(ValoTheme.TEXTFIELD_TINY);
@@ -39,4 +38,7 @@ public class FilterBar extends HorizontalLayout {
         setComponentAlignment(btn, Alignment.TOP_RIGHT);
     }
 
+    public TextField getFilter() {
+        return filter;
+    }
 }

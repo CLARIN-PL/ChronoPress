@@ -262,4 +262,15 @@ $view-padding: round($v-unit-size / 1.5) !default;
          text-align: center;
          font-weight: bold;
      }
+     .ch-page-tab{
+        background-color: white;
+     }
+     .ch-page-table{
+        background-color: white;
+
+        .v-table-table {
+            -webkit-box-shadow: none;
+            box-shadow: none;
+        }
+     }
 }

@@ -60,6 +60,8 @@ public class ConcordanceList implements CalculationResult {
         final TreeTable ttable = new TreeTable();
         ttable.addStyleName(ValoTheme.TREETABLE_SMALL);
         ttable.addStyleName(ValoTheme.TREETABLE_NO_HEADER);
+        ttable.addStyleName(ValoTheme.TREETABLE_NO_VERTICAL_LINES);
+
         ttable.addContainerProperty(provider.getProperty("label.category"), String.class, "");
         ttable.addContainerProperty(provider.getProperty("label.occurrence.count"), String.class, "");
 

@@ -58,4 +58,6 @@ public class ChronoTheme {
     public static final String ADMIN_PANEL_ROW = "ch-admin-panel-row";
     public static final String ADMIN_PANEL_LEFT_COLUMN = "ch-admin-panel-left-column";
     public static final String ADMIN_PANEL_RIGHT_COLUMN = "ch-admin-panel-right-column";
+    public static final String PAGE_TAB = "ch-page-tab";
+    public static final String PAGE_TABLE = "ch-page-table";
 }

@@ -34,6 +34,8 @@ public class GridSection extends VerticalLayout {
         grid.setReadOnly(true);
         grid.setHeightMode(HeightMode.ROW);
         grid.setHeightByRows(20);
+        grid.setEditorSaveCaption(properties.getProperty("button.save"));
+        grid.setEditorCancelCaption(properties.getProperty("button.cancel"));
         loadingNotification = addLoadingNotification();
         noResults = addNoResults();
     }
