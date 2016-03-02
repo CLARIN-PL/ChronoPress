@@ -1,5 +1,6 @@
 package pl.edu.pwr.chrono.webui.ui.admin.education;
 
+import com.vaadin.event.Action;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.FontAwesome;
@@ -8,9 +9,9 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.viritin.fields.MTable;
 import pl.edu.pwr.chrono.domain.Page;
 import pl.edu.pwr.chrono.domain.PageAggregator;
@@ -22,6 +23,8 @@ import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+
+import static com.vaadin.ui.UI.getCurrent;
 
 @SpringView(name = EducationEditorView.VIEW_NAME, ui = MainUI.class)
 @UIScope
@@ -53,34 +56,35 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
 
         initAggregatePageTable();
         initPageTable();
+        initContexMenuActions();
 
         HorizontalLayout buttons = buildButtons();
 
         pageWindow.getCancel().addClickListener(event -> {
-            UI.getCurrent().removeWindow(pageWindow);
+            getCurrent().removeWindow(pageWindow);
         });
 
         categoryWindow.getCancel().addClickListener(event -> {
-            UI.getCurrent().removeWindow(categoryWindow);
+            getCurrent().removeWindow(categoryWindow);
         });
 
         pageWindow.getSave().addClickListener(event -> {
             presenter.savePage(pageWindow.getItem());
             loadAggregator();
-            UI.getCurrent().removeWindow(pageWindow);
+            getCurrent().removeWindow(pageWindow);
         });
 
         pageWindow.getDelete().addClickListener(event -> {
             presenter.removePage(pageWindow.getItem());
             loadAggregator();
-            UI.getCurrent().removeWindow(pageWindow);
+            getCurrent().removeWindow(pageWindow);
         });
 
 
         categoryWindow.getSave().addClickListener(event -> {
             presenter.savePageAggregator(categoryWindow.getItem());
             loadAggregator();
-            UI.getCurrent().removeWindow(categoryWindow);
+            getCurrent().removeWindow(categoryWindow);
         });
 
         HorizontalSplitPanel panel = new HorizontalSplitPanel();
@@ -103,7 +107,7 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
         createCategory.addClickListener(event -> {
             PageAggregator p = new PageAggregator();
             categoryWindow.setItem(p);
-            UI.getCurrent().addWindow(categoryWindow);
+            getCurrent().addWindow(categoryWindow);
         });
 
         Button createPage = new Button(provider.getProperty("button.create.page"));
@@ -115,7 +119,7 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
             p.setPublished(false);
             p.setPageAggregator((PageAggregator) aggregations.getValue());
             pageWindow.setItem(p);
-            UI.getCurrent().addWindow(pageWindow);
+            getCurrent().addWindow(pageWindow);
         });
 
         buttons.addComponent(createCategory);
@@ -135,7 +139,7 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
         pages.setSelectable(true);
         pages.addRowClickListener(event -> {
             pageWindow.setItem((Page) event.getEntity());
-            UI.getCurrent().addWindow(pageWindow);
+            getCurrent().addWindow(pageWindow);
         });
     }
 
@@ -166,6 +170,37 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
         }
     }
 
+    public void initContexMenuActions() {
+        aggregations.addActionHandler(new Action.Handler() {
+
+            Action delete = new Action(provider.getProperty("label.delete"), FontAwesome.TRASH_O);
+
+            @Override
+            public void handleAction(Action action, Object sender, Object target) {
+                if (action == delete && target != null) {
+
+                    ConfirmDialog.show(getCurrent(),
+                            provider.getProperty("window.confirm.delete"),
+                            provider.getProperty("message.delete.with.all.sub.pages"),
+                            provider.getProperty("button.ok"),
+                            provider.getProperty("button.cancel"),
+
+                            (ConfirmDialog.Listener) dialog -> {
+                                // Confirmed to continue
+                                if (dialog.isConfirmed()) {
+                                    presenter.removePageAggregator((PageAggregator) aggregations.getValue());
+                                    loadAggregator();
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public Action[] getActions(Object target, Object sender) {
+                return new Action[]{delete};
+            }
+        });
+    }
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
         loadAggregator();
