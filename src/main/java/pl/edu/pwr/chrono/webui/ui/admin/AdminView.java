@@ -45,6 +45,7 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
 
         addComponent(new Title(properties.getProperty("view.admin.panel.title")));
 
+        layout.setWidth(70, Unit.PERCENTAGE);
         layout.setColumns(3);
         layout.setRows(2);
         layout.setColumnExpandRatio(0, 1);

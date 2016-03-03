@@ -90,10 +90,10 @@ public class DataSelectionPanel extends VerticalLayout {
                         .PanelBuilder
                         .ContentBuilder()
                         .addComponent(provider.getProperty("label.years"), years)
-                        .addComponent(provider.getProperty("label.title"), titles)
+                        .addComponent(provider.getProperty("label.journal.title"), titles)
                         .addComponent(provider.getProperty("label.author"), wrapper)
                         .addComponent(provider.getProperty("label.audience"), audience)
-                        .addComponent(provider.getProperty("label.period.type"), periods)
+                        .addComponent(provider.getProperty("label.period"), periods)
                         .addComponent(provider.getProperty("label.exposition"), expositions)
                         .buildWithFromLayout())
                 .build();

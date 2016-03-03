@@ -11,6 +11,7 @@ import com.vaadin.ui.themes.ValoTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.domain.Page;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
+import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
@@ -39,7 +40,7 @@ public class PageWindow extends Window {
 
     @PostConstruct
     public void init() {
-        setCaption(provider.getProperty("label.window.page"));
+        setCaption(provider.getProperty("window.page"));
         setWidth(80, Unit.PERCENTAGE);
         setHeight(80, Unit.PERCENTAGE);
         addStyleName(ChronoTheme.WINDOW);
@@ -100,6 +101,7 @@ public class PageWindow extends Window {
 
         content.setSizeFull();
         content.setNullRepresentation("");
+        content.setLocale(MainUI.getCurrent().getLocale());
         layout.addComponent(content);
 
         layout.setExpandRatio(form, 0.3f);

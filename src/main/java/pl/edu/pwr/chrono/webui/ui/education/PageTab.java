@@ -1,5 +1,6 @@
 package pl.edu.pwr.chrono.webui.ui.education;
 
+import com.google.common.collect.Lists;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.HorizontalLayout;
@@ -11,6 +12,8 @@ import pl.edu.pwr.chrono.domain.Page;
 import pl.edu.pwr.chrono.domain.PageAggregator;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
+
+import java.util.List;
 
 
 public class PageTab extends HorizontalLayout {
@@ -57,11 +60,17 @@ public class PageTab extends HorizontalLayout {
         pages.addStyleName(ValoTheme.TABLE_NO_HORIZONTAL_LINES);
         pages.addStyleName(ChronoTheme.PAGE_TABLE);
         pages.setSelectable(true);
-        pages.addBeans(aggregator.getPages());
+        List<Page> list = Lists.newArrayList();
+        aggregator.getPages().forEach(page -> {
+            if (page.isPublished())
+                list.add(page);
+        });
 
-        if (aggregator.getPages().size() > 0) {
-            pages.select(aggregator.getPages().get(0));
-            content.setValue(aggregator.getPages().get(0).getContent());
+        pages.addBeans(list);
+
+        if (list.size() > 0) {
+            pages.select(list.get(0));
+            content.setValue(list.get(0).getContent());
         }
 
         pages.addRowClickListener(event -> {

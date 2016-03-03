@@ -3,6 +3,7 @@ package pl.edu.pwr.chrono.webui.ui.admin.education;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
@@ -31,13 +32,19 @@ public class CategoryWindow extends Window {
 
     @PostConstruct
     public void init() {
-        setCaption(provider.getProperty("label.window.page.category"));
+        setCaption(provider.getProperty("window.page.category"));
         addStyleName(ChronoTheme.WINDOW);
         setWidth(35, Unit.PERCENTAGE);
         setHeight(21, Unit.PERCENTAGE);
 
         save.setCaption(provider.getProperty("button.save"));
+        save.addStyleName(ValoTheme.BUTTON_PRIMARY);
+        save.addStyleName(ValoTheme.BUTTON_SMALL);
+        save.setIcon(FontAwesome.SAVE);
+
         cancel.setCaption(provider.getProperty("button.cancel"));
+        cancel.addStyleName(ValoTheme.BUTTON_SMALL);
+        cancel.setIcon(FontAwesome.TIMES);
 
         binder.bindMemberFields(this);
         setModal(true);
@@ -82,8 +89,8 @@ public class CategoryWindow extends Window {
 
         HorizontalLayout wrapper = new HorizontalLayout();
         wrapper.setSpacing(true);
-        wrapper.addComponent(cancel);
         wrapper.addComponent(save);
+        wrapper.addComponent(cancel);
         buttons.addComponent(wrapper);
         buttons.setComponentAlignment(wrapper, Alignment.MIDDLE_RIGHT);
 

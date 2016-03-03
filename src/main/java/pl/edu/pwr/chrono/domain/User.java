@@ -1,6 +1,7 @@
 package pl.edu.pwr.chrono.domain;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Email;
 
 import javax.persistence.*;
 
@@ -19,4 +20,6 @@ public class User {
     private String password;
     private Boolean active;
 
+    @Email
+    private String email;
 }

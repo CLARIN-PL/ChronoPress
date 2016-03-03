@@ -136,6 +136,7 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
                 .withFullHeight().withFullWidth();
         pages.addStyleName(ValoTheme.TABLE_COMPACT);
         pages.addStyleName(ValoTheme.TABLE_SMALL);
+        pages.addStyleName(ValoTheme.TABLE_BORDERLESS);
         pages.setSelectable(true);
         pages.addRowClickListener(event -> {
             pageWindow.setItem((Page) event.getEntity());
@@ -152,6 +153,7 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
 
         aggregations.addStyleName(ValoTheme.TABLE_COMPACT);
         aggregations.addStyleName(ValoTheme.TABLE_SMALL);
+        aggregations.addStyleName(ValoTheme.TABLE_BORDERLESS);
         aggregations.setSelectable(true);
         aggregations.addRowClickListener(event -> {
             pages.removeAllItems();
@@ -173,6 +175,7 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
     public void initContexMenuActions() {
         aggregations.addActionHandler(new Action.Handler() {
 
+            Action edit = new Action(provider.getProperty("label.edit"), FontAwesome.EDIT);
             Action delete = new Action(provider.getProperty("label.delete"), FontAwesome.TRASH_O);
 
             @Override
@@ -193,11 +196,15 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
                                 }
                             });
                 }
+                if (action == edit && target != null) {
+                    categoryWindow.setItem((PageAggregator) aggregations.getValue());
+                    getCurrent().addWindow(categoryWindow);
+                }
             }
 
             @Override
             public Action[] getActions(Object target, Object sender) {
-                return new Action[]{delete};
+                return new Action[]{delete, edit};
             }
         });
     }

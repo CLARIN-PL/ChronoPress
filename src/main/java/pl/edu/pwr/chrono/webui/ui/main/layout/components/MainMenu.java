@@ -77,6 +77,7 @@ public class MainMenu extends HorizontalLayout{
                 Authentication result = auth.authenticate(request);
                 SecurityContextHolder.getContext().setAuthentication(result);
                 user.removeChildren();
+                uiEventBus.post(new NavigationEvent(AdminView.VIEW_NAME));
 
                 user.addItem(provider.getProperty("menu.administration"), FontAwesome.COG, (MenuBar.Command) selectedItem ->
                         uiEventBus.post(new NavigationEvent(AdminView.VIEW_NAME)));

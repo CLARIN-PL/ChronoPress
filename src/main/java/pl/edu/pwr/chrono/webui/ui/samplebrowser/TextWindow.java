@@ -43,7 +43,7 @@ public class TextWindow extends Window {
 
     @PostConstruct
     public void init() {
-        setCaption(provider.getProperty("label.window.text"));
+        setCaption(provider.getProperty("window.text"));
         setWidth(80, Unit.PERCENTAGE);
         setHeight(80, Unit.PERCENTAGE);
         addStyleName(ChronoTheme.WINDOW);
@@ -87,29 +87,29 @@ public class TextWindow extends Window {
         articleTitle.setCaption(provider.getProperty("label.article.title"));
         left.addComponent(articleTitle);
 
-        journalTitle.setCaption("label.journal.title");
+        journalTitle.setCaption(provider.getProperty("label.journal.title"));
         left.addComponent(journalTitle);
 
-        authors.setCaption("label.author");
+        authors.setCaption(provider.getProperty("label.author"));
         left.addComponent(authors);
 
-        publishedDate.setCaption("label.published.date");
+        publishedDate.setCaption(provider.getProperty("label.published.date"));
         left.addComponent(publishedDate);
 
-        period.setCaption("label.period");
+        period.setCaption(provider.getProperty("label.period"));
         right.addComponent(period);
 
-        style.setCaption("label.style");
+        style.setCaption(provider.getProperty("label.style"));
         right.addComponent(style);
 
-        medium.setCaption("label.medium");
+        medium.setCaption(provider.getProperty("label.medium"));
         right.addComponent(medium);
 
-        exposition.setCaption("label.exposition");
+        exposition.setCaption(provider.getProperty("label.exposition"));
         exposition.setNullRepresentation("");
         right.addComponent(exposition);
 
-        fileName.setCaption("label.filename");
+        fileName.setCaption(provider.getProperty("label.filename"));
         left.addComponent(fileName);
 
         right.addComponent(new HorizontalLayout());

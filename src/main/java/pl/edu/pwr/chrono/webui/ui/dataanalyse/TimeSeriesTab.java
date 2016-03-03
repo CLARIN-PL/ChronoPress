@@ -91,9 +91,9 @@ public class TimeSeriesTab extends Tab {
                 .addPanel(provider.getProperty("label.time.series.selection"), new MultiColumnPanel
                         .PanelBuilder
                         .ContentBuilder()
-                        .addComponent("label.lexeme", lexeme)
-                        .addComponent("label.lexical", lexical)
-                        .addComponent("label.regular.expression", regularExpression)
+                        .addComponent(provider.getProperty("label.lexeme"), lexeme)
+                        .addComponent(provider.getProperty("label.lexical"), lexical)
+                        .addComponent(provider.getProperty("label.regular.expression"), regularExpression)
                         .buildWithFromLayout())
                 .addPanel(provider.getProperty("label.time.series.units"), new MultiColumnPanel
                         .PanelBuilder
@@ -103,7 +103,7 @@ public class TimeSeriesTab extends Tab {
                 .addPanel(provider.getProperty("label.time.series.tools"), new MultiColumnPanel
                         .PanelBuilder
                         .ContentBuilder()
-                        .addComponent("label.tool.time.series", timeSeries)
+                        .addComponent(provider.getProperty("label.tool.time.series"), timeSeries)
                         .build())
                 .addButton(getClearButton())
                 .addButton(getAcceptButton())
