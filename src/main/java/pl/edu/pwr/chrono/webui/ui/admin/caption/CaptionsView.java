@@ -160,12 +160,14 @@ public class CaptionsView extends DefaultView<CaptionPresenter> implements View 
         @Override
         public boolean passesFilter(Object itemId, Item item)
                 throws UnsupportedOperationException {
-            return needle == null || "".equals(needle) || filterByProperty("key", item, needle);
+            return needle == null || "".equals(needle)
+                    || filterByProperty("key", item, needle)
+                    || filterByProperty("value", item, needle);
         }
 
         @Override
         public boolean appliesToProperty(Object propertyId) {
-            return propertyId.equals("key");
+            return propertyId.equals("key") || propertyId.equals("value");
         }
     }
 }

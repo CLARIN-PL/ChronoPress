@@ -9,5 +9,4 @@ import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 @UIScope
 @Slf4j
 public class AdminPresenter extends Presenter<AdminView> {
-
 }

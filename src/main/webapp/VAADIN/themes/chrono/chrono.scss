@@ -8,6 +8,7 @@ $v-unit-size: 32px;
 @import "components/icons.scss";
 @import "components/details.scss";
 @import "components/read.scss";
+@import "components/table.scss";
 
 
 $v-font-family: Arial, Verdana,  sans-serif;
@@ -23,6 +24,7 @@ $view-padding: round($v-unit-size / 1.5) !default;
     @include details;
     @include read;
     @include textfields;
+    @include table;
 
 	.ch-header{
 		background: #fff url("/VAADIN/themes/chrono/img/bg.jpg") no-repeat 50% 0%;

@@ -67,6 +67,10 @@ public class DataExplorationTab extends Tab {
         operationType.setItemCaption(DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST,
                 provider.getProperty("label.not.lemmatized.frequency.list"));
 
+        operationType.setItemCaption(DataExplorationType.PLACE_NAME_MAP,
+                provider.getProperty("label.place.map"));
+        operationType.addItem(DataExplorationType.PLACE_NAME_MAP);
+
         operationType.addItem(DataExplorationType.LEXEME_CONCORDANCE);
         operationType.setItemCaption(DataExplorationType.LEXEME_CONCORDANCE,
                 provider.getProperty("label.concordance.list"));
@@ -96,6 +100,6 @@ public class DataExplorationTab extends Tab {
     }
 
     public enum DataExplorationType {
-        LEXEME_FREQUENCY_LIST, NOT_LEMMATIZED_FREQUENCY_LIST, LEXEME_CONCORDANCE
+        LEXEME_FREQUENCY_LIST, NOT_LEMMATIZED_FREQUENCY_LIST, LEXEME_CONCORDANCE, PLACE_NAME_MAP
     }
 }

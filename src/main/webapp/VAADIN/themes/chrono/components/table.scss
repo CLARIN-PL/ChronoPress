@@ -1,0 +1,19 @@
+@mixin table{
+	.ch-table {
+        .v-table-header{
+            border-top: 1px solid #999;
+            border-bottom: 1px solid #999;
+        }
+    }
+    .v-table-caption-container{
+        font-size: 11px;
+        font-weight: bold;
+        color: #333;
+        line-height: 17px;
+        border-left: none;
+    }
+
+    .v-table-header-wrap{
+        border-bottom: none !important;
+    }
+}

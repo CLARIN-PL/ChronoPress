@@ -18,6 +18,7 @@ import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -194,5 +195,12 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 
 	@Override
 	public void enter(ViewChangeEvent event) {
+	}
+
+	public void showLocationMap() {
+		NamesOnGoogleMap map = new NamesOnGoogleMap(provider);
+		map.loadData(Arrays.asList("Wrocław", "Kraków", "Warszawa", "Szczecin"));
+		this.result.setCalculation(map);
+		this.result.show();
 	}
 }

@@ -18,7 +18,7 @@ public class User {
     @Column(name = "username")
     private String userName;
     private String password;
-    private Boolean active;
+    private Boolean active = false;
 
     @Email
     private String email;

@@ -63,13 +63,12 @@ INSERT INTO koper.property (key, value, lang) VALUES ('view.tab.time.series.titl
 INSERT INTO koper.property (key, value, lang) VALUES ('view.tab.data.exploration.title', 'Eksploracja danych','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.lexeme', 'Leksem','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.lexical', 'Pole leksykalne','PL');
-INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.units', '','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.units', 'Jednostka','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.month', 'miesiąc','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.year', 'rok','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.tools', 'Narzędzia podstawowe','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.tool.time.series', 'Szeregi czasowe','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.selection', 'Selekcja','PL');
-INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.units', 'Jednostki','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.operations', 'Operacje','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.lexeme.frequency.list', 'Lista frekwencyjna leksemów','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.not.lemmatized.frequency.list', 'Lista frekwencyjna jednostek niezlematyzowanych','PL');
@@ -84,12 +83,13 @@ INSERT INTO koper.property (key, value, lang) VALUES ('menu.contact', 'Kontakt',
 INSERT INTO koper.property (key, value, lang) VALUES ('menu.administration', 'Administracja','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('menu.sample.viewer', 'Przegląd próbek','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('menu.data.analyse', 'Analiza danych','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('menu.change.password', 'Zmień hasło','PL');
+
 
 INSERT INTO koper.property (key, value, lang) VALUES ('menu.sign.in', 'Zaloguj się','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('menu.sign.out', 'Wyloguj się','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('menu.search', 'Wyszukaj','PL');
 
-INSERT INTO koper.property (key, value, lang) VALUES ('window.login.title', 'Logowanie','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('window.login.title', 'Logowanie','PL');
 
 INSERT INTO koper.property (key, value, lang) VALUES ('label.username', 'Nazwa użytkownika','PL');
@@ -113,3 +113,19 @@ INSERT INTO koper.property (key, value, lang) VALUES ('table.headers.key', 'Etyk
 INSERT INTO koper.property (key, value, lang) VALUES ('table.headers.value', 'Wartość','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('table.headers.language', 'Język','PL');
 INSERT INTO koper.property (key, value, lang) VALUES ('label.page.published', 'Publikacja strony','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.confirm.password', 'Potwierdź hasło','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('window.change.password', 'Zmiana hasła','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('view.admin.users.title', 'Użytkownicy','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('button.create.user', 'Nowy użytkownik','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.email', 'Email','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.active', 'Aktywne','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('window.user', 'Użytkownik','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.place.map', 'Mapa nazw miejscowych','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('validation.passwords.must.be.same', 'Podane hasła muszą być jednakowe','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('info.password.changed', 'Hasło zostało zmienione','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.names.map', 'Mapa nazw','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('security.no.access', 'Brak dostępu do strony','PL');

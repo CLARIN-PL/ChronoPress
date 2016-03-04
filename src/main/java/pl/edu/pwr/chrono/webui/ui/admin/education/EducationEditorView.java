@@ -137,6 +137,8 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
         pages.addStyleName(ValoTheme.TABLE_COMPACT);
         pages.addStyleName(ValoTheme.TABLE_SMALL);
         pages.addStyleName(ValoTheme.TABLE_BORDERLESS);
+        pages.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
+        pages.addStyleName(ChronoTheme.TABLE);
         pages.setSelectable(true);
         pages.addRowClickListener(event -> {
             pageWindow.setItem((Page) event.getEntity());
@@ -154,6 +156,8 @@ public class EducationEditorView extends DefaultView<EducationEditorPresenter> i
         aggregations.addStyleName(ValoTheme.TABLE_COMPACT);
         aggregations.addStyleName(ValoTheme.TABLE_SMALL);
         aggregations.addStyleName(ValoTheme.TABLE_BORDERLESS);
+        aggregations.addStyleName(ValoTheme.TABLE_NO_VERTICAL_LINES);
+        aggregations.addStyleName(ChronoTheme.TABLE);
         aggregations.setSelectable(true);
         aggregations.addRowClickListener(event -> {
             pages.removeAllItems();

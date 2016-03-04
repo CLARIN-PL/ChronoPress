@@ -15,16 +15,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import pl.edu.pwr.chrono.application.UCUserEditing;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
 import pl.edu.pwr.chrono.webui.ui.admin.AdminView;
 import pl.edu.pwr.chrono.webui.ui.admin.LoginWindow;
+import pl.edu.pwr.chrono.webui.ui.admin.user.ChangePasswordWindow;
 import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataAnalysisView;
 import pl.edu.pwr.chrono.webui.ui.education.EducationView;
 import pl.edu.pwr.chrono.webui.ui.home.HomeView;
 import pl.edu.pwr.chrono.webui.ui.samplebrowser.SampleBrowserView;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
+import pl.edu.pwr.configuration.security.ProfileAdapter;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -43,6 +46,12 @@ public class MainMenu extends HorizontalLayout{
     @Autowired
     private AuthenticationManager auth;
     private MenuBar.MenuItem user;
+
+    @Autowired
+    private ChangePasswordWindow changePasswordWindow;
+
+    @Autowired
+    private UCUserEditing ucUserEditing;
 
     @PostConstruct
     public  void init(){
@@ -67,6 +76,17 @@ public class MainMenu extends HorizontalLayout{
         setComponentAlignment(wrapper, Alignment.BOTTOM_RIGHT);
 
         initSignIn();
+
+        changePasswordWindow.getCancel().addClickListener(event -> {
+            UI.getCurrent().removeWindow(changePasswordWindow);
+        });
+        changePasswordWindow.getSave().addClickListener(event -> {
+            Long userId = ((ProfileAdapter) SecurityContextHolder
+                    .getContext().getAuthentication().getPrincipal()).getUser().getId();
+            ucUserEditing.changePassword(userId, changePasswordWindow.getItem());
+            UI.getCurrent().removeWindow(changePasswordWindow);
+            Notification.show(provider.getProperty("info.password.changed"), Notification.Type.TRAY_NOTIFICATION);
+        });
     }
 
     private void initSignIn() {
@@ -81,6 +101,11 @@ public class MainMenu extends HorizontalLayout{
 
                 user.addItem(provider.getProperty("menu.administration"), FontAwesome.COG, (MenuBar.Command) selectedItem ->
                         uiEventBus.post(new NavigationEvent(AdminView.VIEW_NAME)));
+
+                user.addItem(provider.getProperty("menu.change.password"), FontAwesome.LOCK, (MenuBar.Command) selectedItem -> {
+                    changePasswordWindow.reset();
+                    UI.getCurrent().addWindow(changePasswordWindow);
+                });
 
                 user.addItem(provider.getProperty("menu.sign.out"), FontAwesome.SIGN_OUT,
                         (MenuBar.Command) selectedItem -> {

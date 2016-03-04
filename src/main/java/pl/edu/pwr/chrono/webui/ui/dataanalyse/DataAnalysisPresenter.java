@@ -194,6 +194,13 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
                             }
                         });
             }
+
+            if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
+                    DataExplorationTab.DataExplorationType.PLACE_NAME_MAP) {
+                view.showLocationMap();
+            }
+
+
         } catch (FieldGroup.CommitException e) {
             log.debug("Validation failed", e);
         }
