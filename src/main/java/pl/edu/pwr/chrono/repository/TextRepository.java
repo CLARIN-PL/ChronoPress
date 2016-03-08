@@ -33,4 +33,7 @@ public interface TextRepository extends JpaRepository<Text, Integer>, JpaSpecifi
     int countByTexts();
 
     List<Text> findAllBy(Pageable pageable);
+
+    @Query("SELECT t.id FROM Text t")
+    List<Integer> findAllTexts();
 }

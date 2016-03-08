@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface UCLoadingAuthors {
+public interface UCLoadingAudience {
+
     List<String> load();
 }

@@ -26,7 +26,6 @@ public class DefaultUCDataExplorationTest {
         list.add(dto);
 
         List<ConcordanceDTO> after = service.splitSentenceOnWord(list);
-        System.out.println(after);
         assertThat("janusz miał dużo").isEqualTo(after.get(0).getLeft());
         assertThat("i robił w polu cały dzień").isEqualTo(after.get(0).getRight());
     }

@@ -5,10 +5,7 @@ import pl.edu.pwr.chrono.application.service.UCCalculatingWordMeasurements;
 import pl.edu.pwr.chrono.domain.Word;
 import pl.edu.pwr.chrono.infrastructure.Unit;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.LongConsumer;
 import java.util.stream.Collectors;
 
@@ -103,6 +100,25 @@ public class DefaultUCCalculatingWordMeasurements implements UCCalculatingWordMe
             final long[] fourthCentralMoment = {0};
             elements.forEach(i -> fourthCentralMoment[0] += Math.pow((i - getAverage()), 4));
             return (double) fourthCentralMoment[0] / total;
+        }
+
+        public double getMedian() {
+            Collections.sort(elements);
+            double median = 0;
+            double centralElementsAverage = 0.0;
+
+            if (elements.size() % 2 == 0) {
+                centralElementsAverage = elements.get(elements.size() / 2) + elements.get((elements.size() / 2) - 1);
+                median = centralElementsAverage / 2.0;
+
+            } else {
+                median = elements.get(elements.size() / 2);
+            }
+            return median;
+        }
+
+        public double getSkewness() {
+            return (3 * (getAverage() - getMedian())) / getStandardDeviation();
         }
 
         public double getKurtoze() {

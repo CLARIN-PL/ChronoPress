@@ -15,8 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.viritin.layouts.MGridLayout;
 import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
+import pl.edu.pwr.chrono.webui.ui.admin.audience.AudienceView;
 import pl.edu.pwr.chrono.webui.ui.admin.caption.CaptionsView;
 import pl.edu.pwr.chrono.webui.ui.admin.education.EducationEditorView;
+import pl.edu.pwr.chrono.webui.ui.admin.lexicalfield.LexicalFieldView;
 import pl.edu.pwr.chrono.webui.ui.admin.user.UserView;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
@@ -66,8 +68,10 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
     public void initButtons() {
 
         Button lexicalFiledManagement = addButton(properties.getProperty("view.admin.panel.lexical.field.button"), FontAwesome.LEAF);
+        lexicalFiledManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(LexicalFieldView.VIEW_NAME));
 
         Button audienceManagement = addButton(properties.getProperty("view.admin.panel.audience.button"), FontAwesome.USERS);
+        audienceManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(AudienceView.VIEW_NAME));
 
         Button educationManagement = addButton(properties.getProperty("view.admin.panel.education.button"), FontAwesome.GRADUATION_CAP);
         educationManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(EducationEditorView.VIEW_NAME));

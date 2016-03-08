@@ -177,7 +177,7 @@ public class ChartPanel extends VerticalLayout {
         public FormBuilder addDoubleField(String caption, Double value) {
             final TextField field = new TextField();
             field.setCaption(caption);
-            field.setValue(Double.toString(value));
+            field.setValue(String.format("%.3f", value));
             form.addComponent(field);
             return this;
         }

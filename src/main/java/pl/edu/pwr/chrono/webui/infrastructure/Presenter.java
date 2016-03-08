@@ -17,19 +17,20 @@ public abstract class Presenter<T> implements Serializable {
     @Autowired
     private UIEventBus eventBus;
 
+    public T getView() {
+        return view;
+    }
+
     public void setView(T view) {
         Assert.notNull(view);
         this.view = view;
         eventBus.register(this);
     }
 
-    public T getView(){
-        return view;
-    }
-
     @PreDestroy
     public void destroy() {
         eventBus.unregister(this);
     }
+
 
 }

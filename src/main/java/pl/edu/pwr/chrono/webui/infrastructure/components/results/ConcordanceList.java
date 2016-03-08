@@ -106,11 +106,11 @@ public class ConcordanceList implements CalculationResult {
         grid.setContainerDataSource(container);
         grid.setColumnOrder("left", "word", "right", "publicationDate", "journalTitle");
 
-        grid.getColumn("left").setHeaderCaption("label.left.context");
-        grid.getColumn("word").setHeaderCaption("label.searched.word");
-        grid.getColumn("right").setHeaderCaption("label.right.context");
-        grid.getColumn("publicationDate").setHeaderCaption("label.publication.date");
-        grid.getColumn("journalTitle").setHeaderCaption("label.journal.title");
+        grid.getColumn("left").setHeaderCaption(provider.getProperty("label.left.context"));
+        grid.getColumn("word").setHeaderCaption(provider.getProperty("label.searched.word"));
+        grid.getColumn("right").setHeaderCaption(provider.getProperty("label.right.context"));
+        grid.getColumn("publicationDate").setHeaderCaption(provider.getProperty("label.publication.date"));
+        grid.getColumn("journalTitle").setHeaderCaption(provider.getProperty("provider.getProperty(label.journal.title"));
 
         grid.getColumn("sentence").setHidden(true);
         grid.getColumn("lemma").setHidden(true);

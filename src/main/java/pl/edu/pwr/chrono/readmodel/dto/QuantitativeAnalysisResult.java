@@ -23,6 +23,7 @@ public class QuantitativeAnalysisResult {
         word.setAveragesLength(avr.getAverage());
         word.setStandardDeviation(avr.getStandardDeviation());
         word.setCoefficientOfVariation(avr.getCoefficientOfVariation());
+        word.setSkewness(avr.getSkewness());
         word.setKurtosis(avr.getKurtoze());
     }
 
@@ -30,5 +31,6 @@ public class QuantitativeAnalysisResult {
         sentence.setAveragesLength(avr.getAverage());
         sentence.setStandardDeviation(avr.getStandardDeviation());
         sentence.setCoefficientOfVariation(avr.getCoefficientOfVariation());
+        sentence.setSkewness(avr.getSkewness());
     }
 }

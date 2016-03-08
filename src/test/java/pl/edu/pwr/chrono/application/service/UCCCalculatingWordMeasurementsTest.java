@@ -158,6 +158,72 @@ public class UCCCalculatingWordMeasurementsTest {
     }
 
     @Test
+    public void calculateMedian_CorrectValuesEvenListSize_ReturnsmMedianValue() {
+        List<Word> words = Lists.newArrayList();
+        Word w1 = new Word();
+        w1.setTxt("zamek"); //5
+        words.add(w1);
+
+        Word w2 = new Word();
+        w2.setTxt("dom"); //3
+        words.add(w2);
+
+        Word w3 = new Word();
+        w3.setTxt("dom"); //3
+        words.add(w3);
+
+        Word w4 = new Word();
+        w4.setTxt("dom"); //3
+        words.add(w4);
+
+        Word w5 = new Word();
+        w5.setTxt("Krowa"); //5
+        words.add(w5);
+
+        Word w6 = new Word();
+        w6.setTxt("pies"); //5
+        words.add(w6);
+
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
+        assertThat(calculated.getMedian()).isEqualTo(3.5);
+    }
+
+    @Test
+    public void calculateMedian_CorrectValuesOddListSize_ReturnsmMedianValue() {
+        List<Word> words = Lists.newArrayList();
+        Word w1 = new Word();
+        w1.setTxt("zamek"); //5
+        words.add(w1);
+
+        Word w2 = new Word();
+        w2.setTxt("dom"); //3
+        words.add(w2);
+
+        Word w3 = new Word();
+        w3.setTxt("dom"); //3
+        words.add(w3);
+
+        Word w4 = new Word();
+        w4.setTxt("dom"); //3
+        words.add(w4);
+
+        Word w5 = new Word();
+        w5.setTxt("Krowa"); //5
+        words.add(w5);
+
+        Word w6 = new Word();
+        w6.setTxt("pies"); //5
+        words.add(w6);
+
+        Word w7 = new Word();
+        w7.setTxt("łopatka"); //5
+        words.add(w7);
+
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
+        assertThat(calculated.getMedian()).isEqualTo(4);
+    }
+
+    @Test
     public void calculateWordFrequencyHistogram_CorrectValues_ReturnsFrequencyMap(){
         List<Word> words = Lists.newArrayList();
         Word w1 = new Word();
@@ -193,5 +259,42 @@ public class UCCCalculatingWordMeasurementsTest {
         words.add(w8);
 
         Map calculated = service.frequencyHistogram(words);
+    }
+
+    @Test
+    public void calculateSkewness_CorrectValuesOddListSize_ReturnsSkewnessValue() {
+        List<Word> words = Lists.newArrayList();
+        Word w1 = new Word();
+        w1.setTxt("zamek"); //5
+        words.add(w1);
+
+        Word w2 = new Word();
+        w2.setTxt("dom"); //3
+        words.add(w2);
+
+        Word w3 = new Word();
+        w3.setTxt("dom"); //3
+        words.add(w3);
+
+        Word w4 = new Word();
+        w4.setTxt("dom"); //3
+        words.add(w4);
+
+        Word w5 = new Word();
+        w5.setTxt("Krowa"); //5
+        words.add(w5);
+
+        Word w6 = new Word();
+        w6.setTxt("pies"); //5
+        words.add(w6);
+
+        Word w7 = new Word();
+        w7.setTxt("łopatka"); //5
+        words.add(w7);
+
+
+        DefaultUCCalculatingWordMeasurements.Average calculated = service.calculate(words, Unit.LETTER);
+        double skewness = (3 * (calculated.getAverage() - calculated.getMedian())) / calculated.getStandardDeviation();
+        assertThat(calculated.getSkewness()).isEqualTo(skewness);
     }
 }

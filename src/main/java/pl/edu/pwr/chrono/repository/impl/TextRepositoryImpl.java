@@ -1,6 +1,7 @@
 package pl.edu.pwr.chrono.repository.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.edu.pwr.chrono.application.util.WordToCllDTO;
 import pl.edu.pwr.chrono.domain.Sentence;
 import pl.edu.pwr.chrono.domain.Text;
 import pl.edu.pwr.chrono.domain.Word;
@@ -241,4 +242,33 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         return queryResult;
     }
 
+
+    @Override
+    public List<WordToCllDTO> findWordCCL(Integer textId) {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<WordToCllDTO> q = cb.createQuery(WordToCllDTO.class);
+
+        Root<Word> root = q.from(Word.class);
+        Join<Word, Sentence> sentence = root.join("sentence");
+        Root<Text> text = q.from(Text.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(cb.equal(text.get("id"), textId));
+
+        q.select(cb.construct(WordToCllDTO.class,
+                text.get("fileName"),
+                root.get("txt"),
+                root.get("posLemma"),
+                root.get("partOfSpeech"),
+                sentence.get("id")
+        ));
+
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+        q.orderBy(cb.asc(sentence.get("id")), cb.asc(root.get("id")));
+
+        List<WordToCllDTO> queryResult = em.createQuery(q).getResultList();
+        return queryResult;
+    }
 }

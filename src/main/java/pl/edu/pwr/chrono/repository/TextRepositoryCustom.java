@@ -1,5 +1,6 @@
 package pl.edu.pwr.chrono.repository;
 
+import pl.edu.pwr.chrono.application.util.WordToCllDTO;
 import pl.edu.pwr.chrono.domain.Word;
 import pl.edu.pwr.chrono.readmodel.dto.*;
 
@@ -21,4 +22,6 @@ public interface TextRepositoryCustom {
     List<WordFrequencyDTO> findWordFrequencyNotLemmatized(DataSelectionDTO selection);
 
     List<ConcordanceDTO> findConcordance(DataSelectionDTO selection, String lemma);
+
+    List<WordToCllDTO> findWordCCL(Integer textId);
 }

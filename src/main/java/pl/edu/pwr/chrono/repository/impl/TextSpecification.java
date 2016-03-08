@@ -34,7 +34,11 @@ public class TextSpecification {
                 criteriaList.add(isInExposition(dto.getExposition()).toPredicate(root,query,cb));
             }
 
-            if(dto.getAuthors() !=null && !dto.getAuthors().isEmpty()){
+			if (dto.getAudience() != null && !dto.getAudience().isEmpty()) {
+				criteriaList.add(inAudience(dto.getAudience()).toPredicate(root, query, cb));
+			}
+
+			if (dto.getAuthors() != null && !dto.getAuthors().isEmpty()) {
 					criteriaList.add(isLikeAuthor(dto.getAuthors()).toPredicate(root,query,cb));
             }
 
@@ -52,6 +56,10 @@ public class TextSpecification {
 
 	public static Specification<Text> isInExposition(final Collection<Integer> exposition){
 		return (root, query, cb) -> root.get("exposition").in(exposition);
+	}
+
+	public static Specification<Text> inAudience(final Collection<String> audience) {
+		return (root, query, cb) -> root.get("journalTitle").in(audience);
 	}
 
 	public static Specification<Text> isLikeAuthor(final Collection<String> authors){

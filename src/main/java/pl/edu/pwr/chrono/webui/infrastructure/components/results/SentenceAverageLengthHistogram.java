@@ -37,7 +37,6 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
         } else {
             unitValue = provider.getProperty("label.unit.word");
         }
-
         panel.gridWithTab(
                 provider.getProperty("label.sample"),
                 new ChartPanel.FormBuilder()

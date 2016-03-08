@@ -10,6 +10,7 @@ import org.vaadin.addons.comboboxmultiselect.ComboBoxMultiselect;
 import org.vaadin.hene.popupbutton.PopupButton;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionResult;
+import pl.edu.pwr.chrono.repository.AudienceRepository;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.chrono.webui.infrastructure.components.MultiColumnPanel;
 import pl.edu.pwr.chrono.webui.infrastructure.components.SearchableTablePanel;
@@ -32,8 +33,13 @@ public class DataSelectionPanel extends VerticalLayout {
 
     private final Label sampleCount = new Label();
     private final Label wordCount = new Label();
+
     @Autowired
     protected DbPropertiesProvider provider;
+
+    @Autowired
+    private AudienceRepository repository;
+
     private CssLayout results;
     private VerticalLayout loading;
     private MultiColumnPanel panel;
@@ -126,6 +132,8 @@ public class DataSelectionPanel extends VerticalLayout {
         dto.setTitles((Set<String>) titles.getValue());
         dto.setPeriodicType((Set<String>) periods.getValue());
         dto.setExposition((Set<Integer>) expositions.getValue());
+        if (audience.getValue() != null && ((Set<String>) audience.getValue()).size() > 0)
+            dto.setAudience(repository.findAudienceJournalTitles((Set<String>) audience.getValue()));
         dto.setAuthors(searchAuthorsPanel.getSelectedItems());
         return dto;
     }
@@ -167,4 +175,7 @@ public class DataSelectionPanel extends VerticalLayout {
         return searchAuthorsPanel;
     }
 
+    public ComboBoxMultiselect getAudience() {
+        return audience;
+    }
 }

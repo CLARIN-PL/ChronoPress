@@ -80,6 +80,7 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 		dataSelectionPanel.getTitles().addItems(presenter.loadTitles());
 		dataSelectionPanel.getExpositions().addItems(presenter.loadExpositions());
 		dataSelectionPanel.getPeriods().addItems(presenter.loadPeriods());
+		dataSelectionPanel.getAudience().addItems(presenter.loadAudience());
 		dataSelectionPanel.getSearchAuthorsPanel().populateContainer(presenter.loadAuthors());
 	}
 

@@ -12,6 +12,7 @@ import pl.edu.pwr.chrono.readmodel.*;
 import pl.edu.pwr.chrono.readmodel.dto.*;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,10 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
     @Autowired
     private UCDataExploration ucDataExploration;
+
+    @Autowired
+    private UCLoadingAudience ucLoadingAudience;
+
 
     public void executeQuantitativeCalculations() {
         try {
@@ -226,4 +231,7 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
         return ucLoadingAuthors.load();
     }
 
+    public Collection<?> loadAudience() {
+        return ucLoadingAudience.load();
+    }
 }

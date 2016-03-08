@@ -129,3 +129,62 @@ INSERT INTO koper.property (key, value, lang) VALUES ('info.password.changed', '
 INSERT INTO koper.property (key, value, lang) VALUES ('label.names.map', 'Mapa nazw','PL');
 
 INSERT INTO koper.property (key, value, lang) VALUES ('security.no.access', 'Brak dostępu do strony','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.syllable', 'Sylaba','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.sample', 'Próbka','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.standard.deviation', 'Odchylenie standartowe','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.kurtosis', 'Kurtoza','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.skewness', 'Skrętność','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.coefficient', 'Współczynnik zmienności','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.average.length', 'Długość średnia','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.average.word.qt.panel.title', 'Wynik - słowo','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.word.qa.chart.x.axis.title', 'długość','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.word.qa.chart.y.axis.title', 'częstość','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.word.qa.chart.title', 'Wykres','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.frequency.word.qt.panel.title', 'Rezultat frekwencja','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.frequency.word.qa.chart.x.axis.title', 'frwkwencja','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.frequency.word.qa.chart.y.axis.title', 'długość','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.frequency.word.qa.chart.title', 'Wykres frekwencji','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.close', 'Zamknij','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.export', 'Eksport','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.sentence.qa.chart.title', 'Rezultat- zdanie','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.unit.word', 'wyraz','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.unit.letter', 'litera','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.unit.syllable', 'sylaba','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.average.sentence.qt.panel.title', 'Wynik - zdanie','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.sentence.qa.chart.title', 'Wykres -zdanie','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.sentence.qa.chart.x.axis.title', ' częstość','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.result.sentence.qa.chart.y.axis.title', 'długość','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.chart.title', 'Wykres szregi czasowe','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.x.axis.title', 'data','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.y.axis.title', 'częstość','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.time.series.panel.title', 'Wynik szeregi czasowe','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.part.of.speech', 'Część mowy','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.frequency.count', 'Frekwencja','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.percentage', 'Udział procentowy','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.lemma', 'Lemat','PL');
+
+INSERT INTO koper.property (key, value, lang) VALUES ('label.left.context', 'Lewy kontekst','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.searched.word', 'Szukane słowo','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.right.context', 'Prawy kontekst','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.publication.date', 'Data publikacji','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.journal.title', 'Tytuł periodyku','PL');
+INSERT INTO koper.property (key, value, lang) VALUES ('label.lexeme.concordance.list', 'Lista konordancji','PL');
+
+
+
+
+
+
+
+
