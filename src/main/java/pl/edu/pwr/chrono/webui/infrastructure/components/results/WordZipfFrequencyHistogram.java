@@ -23,6 +23,11 @@ public class WordZipfFrequencyHistogram implements CalculationResult {
     }
 
     @Override
+    public String getType() {
+        return "word_zipf";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }

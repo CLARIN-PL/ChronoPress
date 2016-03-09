@@ -1,6 +1,9 @@
 package pl.edu.pwr.chrono.repository.impl;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.edu.pwr.chrono.application.service.impl.MovingAverage;
 import pl.edu.pwr.chrono.application.util.WordToCllDTO;
 import pl.edu.pwr.chrono.domain.Sentence;
 import pl.edu.pwr.chrono.domain.Text;
@@ -199,7 +202,26 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
 
         Map<String, List<TimeProbe>> sorted = queryResult.stream()
                 .collect(groupingBy(TimeProbe::getLexeme, mapping(s -> s, toList())));
-        return new TimeSeriesResult(dto.getUnit(), sorted);
+
+        TimeSeriesResult seriesResult = new TimeSeriesResult(dto.getUnit(), sorted);
+        if (dto.getMovingAverage()) {
+            seriesResult.setMovingAverage(movingAverage(sorted, dto.getMovingAverageWindowSize()));
+        }
+        return seriesResult;
+    }
+
+    private Map<String, List<TimeProbe>> movingAverage(Map<String, List<TimeProbe>> data, Integer windowSize) {
+        Map<String, List<TimeProbe>> result = Maps.newHashMap();
+        data.forEach((s, timeProbes) -> {
+            MovingAverage average = new MovingAverage(windowSize);
+            List<TimeProbe> probes = Lists.newArrayList();
+            timeProbes.forEach(p -> {
+                average.add(p.getCount());
+                probes.add(new TimeProbe(p.getLexeme(), p.getYear(), p.getMonth(), average.getAverage()));
+            });
+            result.put(s, probes);
+        });
+        return result;
     }
 
     @Override

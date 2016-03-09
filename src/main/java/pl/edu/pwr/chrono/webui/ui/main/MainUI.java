@@ -20,8 +20,10 @@ import pl.edu.pwr.chrono.domain.User;
 import pl.edu.pwr.chrono.webui.infrastructure.event.NavigationEvent;
 import pl.edu.pwr.chrono.webui.infrastructure.event.UIEventBus;
 import pl.edu.pwr.chrono.webui.ui.admin.AdminView;
+import pl.edu.pwr.chrono.webui.ui.admin.audience.AudienceView;
 import pl.edu.pwr.chrono.webui.ui.admin.caption.CaptionsView;
 import pl.edu.pwr.chrono.webui.ui.admin.education.EducationEditorView;
+import pl.edu.pwr.chrono.webui.ui.admin.lexicalfield.LexicalFieldView;
 import pl.edu.pwr.chrono.webui.ui.admin.user.UserView;
 import pl.edu.pwr.chrono.webui.ui.main.layout.MainLayout;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
@@ -65,7 +67,9 @@ public final class MainUI extends UI {
 						event.getNewView() instanceof AdminView ||
 								event.getNewView() instanceof CaptionsView ||
 								event.getNewView() instanceof EducationEditorView ||
-								event.getNewView() instanceof UserView
+								event.getNewView() instanceof UserView ||
+								event.getNewView() instanceof AudienceView ||
+								event.getNewView() instanceof LexicalFieldView
 				)
 						&& (((MainUI) UI.getCurrent()).getLoggedInUser() == null)) {
 					Notification.show(provider.getProperty("security.no.access"), Notification.Type.ERROR_MESSAGE);

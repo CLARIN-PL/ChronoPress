@@ -5,17 +5,25 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import com.vaadin.ui.*;
+import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.tokenfield.TokenField;
+import pl.edu.pwr.chrono.domain.LexicalField;
 import pl.edu.pwr.chrono.infrastructure.Time;
 import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesDTO;
+import pl.edu.pwr.chrono.repository.LexicalFieldRepository;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
+import pl.edu.pwr.chrono.webui.infrastructure.components.EntityComboBox;
 import pl.edu.pwr.chrono.webui.infrastructure.components.MultiColumnPanel;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Tab;
 import pl.edu.pwr.chrono.webui.infrastructure.validators.RegularExpressionValidator;
+
+import java.util.Set;
 
 @Slf4j
 @SpringComponent
@@ -25,10 +33,13 @@ public class TimeSeriesTab extends Tab {
     @PropertyId("lexeme")
     private final TokenField lexeme = new TokenField(new VerticalLayout());
 
-    private final ComboBox lexical = new ComboBox();
+    private final EntityComboBox<LexicalField> lexical = new EntityComboBox("groupName", LexicalField.class);
 
     @PropertyId("regularExpression")
     private final TextField regularExpression = new TextField();
+
+    @PropertyId("movingAverageWindowSize")
+    private final TextField movingAverageWindowSize = new TextField();
 
     @PropertyId("unit")
     private final OptionGroup unit = new OptionGroup();
@@ -36,12 +47,18 @@ public class TimeSeriesTab extends Tab {
     @PropertyId("timeSeriesCalculation")
     private final CheckBox timeSeries = new CheckBox();
 
+    @PropertyId("movingAverage")
+    private final CheckBox movingAverage = new CheckBox();
+
     private final BeanFieldGroup<TimeSeriesDTO> binder = new BeanFieldGroup<>(TimeSeriesDTO.class);
 
     private MultiColumnPanel panel;
 
     @Autowired
     private RegularExpressionValidator regularExpressionValidator;
+
+    @Autowired
+    private LexicalFieldRepository repository;
 
     @Override
     public void initializeTab() {
@@ -54,6 +71,11 @@ public class TimeSeriesTab extends Tab {
 
         initializeTimeUnit();
         initLexemeField();
+
+        lexical.load(repository.findAll());
+        movingAverageWindowSize.setVisible(false);
+        movingAverage.addValueChangeListener(event ->
+                movingAverageWindowSize.setVisible(!movingAverageWindowSize.isVisible()));
     }
 
     private void initLexemeField() {
@@ -83,6 +105,7 @@ public class TimeSeriesTab extends Tab {
         lexeme.clear();
         regularExpression.setValue("");
         timeSeries.setValue(false);
+        lexical.setValue(null);
     }
 
     public MultiColumnPanel initPanel() {
@@ -104,6 +127,8 @@ public class TimeSeriesTab extends Tab {
                         .PanelBuilder
                         .ContentBuilder()
                         .addComponent(provider.getProperty("label.tool.time.series"), timeSeries)
+                        .addComponent(provider.getProperty("label.tool.moving.average"), movingAverage)
+                        .addComponent(provider.getProperty("label.tool.moving.average.window.size"), movingAverageWindowSize)
                         .build())
                 .addButton(getClearButton())
                 .addButton(getAcceptButton())
@@ -120,6 +145,14 @@ public class TimeSeriesTab extends Tab {
 
     public TimeSeriesDTO getTimeSeriesDTO() throws FieldGroup.CommitException {
         binder.commit();
+        if (lexical.getValue() != null) {
+            LexicalField item = lexical.getContainer().getItem(lexical.getValue()).getBean();
+            Set<String> names = item.getLexicalnames();
+            if (names.size() > 0) {
+                binder.getItemDataSource().getBean().getLexeme().addAll(names);
+            }
+        }
+
         return binder.getItemDataSource().getBean();
     }
 }

@@ -25,4 +25,8 @@ public class AudiencePresenter extends Presenter<AudienceView> {
     public List<Audience> getAudience() {
         return repository.findAll();
     }
+
+    public void delete(Audience item) {
+        repository.delete(item);
+    }
 }

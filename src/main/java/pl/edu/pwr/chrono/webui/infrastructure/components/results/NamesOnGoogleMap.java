@@ -66,6 +66,11 @@ public class NamesOnGoogleMap implements CalculationResult {
 
 
     @Override
+    public String getType() {
+        return "googleNames";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }

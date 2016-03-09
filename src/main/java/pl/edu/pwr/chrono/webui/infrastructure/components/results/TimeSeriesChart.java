@@ -22,11 +22,16 @@ public class TimeSeriesChart implements CalculationResult {
     }
 
     @Override
+    public String getType() {
+        return "timeSeries";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }
 
     public void addData(TimeSeriesResult data) {
-        panel.addDataWithDates(data);
+        panel.addDataWithDates(data, provider);
     }
 }

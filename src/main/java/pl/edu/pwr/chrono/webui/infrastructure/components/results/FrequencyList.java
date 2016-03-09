@@ -34,6 +34,11 @@ public class FrequencyList implements CalculationResult {
     }
 
     @Override
+    public String getType() {
+        return "frequency";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }

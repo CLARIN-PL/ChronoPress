@@ -4,6 +4,7 @@ import com.vaadin.ui.Component;
 
 public interface CalculationResult {
 
+    String getType();
     Component showResult();
 
 }

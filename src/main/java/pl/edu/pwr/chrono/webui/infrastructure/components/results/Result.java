@@ -1,5 +1,6 @@
 package pl.edu.pwr.chrono.webui.infrastructure.components.results;
 
+import com.google.common.collect.Maps;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
@@ -10,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
+import java.util.Map;
+
 @SpringComponent
 @ViewScope
 public class Result extends VerticalLayout {
 
+    private final Map<String, CalculationResult> results = Maps.newHashMap();
     CalculationResult calculation;
-
     @Autowired
     private DbPropertiesProvider provider;
 
@@ -26,15 +29,27 @@ public class Result extends VerticalLayout {
 
     public void setCalculation(CalculationResult calculation) {
         this.calculation = calculation;
+        if (!results.containsKey(calculation.getType())) {
+            results.put(calculation.getType(), calculation);
+        }
+    }
+
+    public Boolean hasResult(String str) {
+        return results.containsKey(str);
+    }
+
+    public CalculationResult getResult(String type) {
+        return results.get(type);
     }
 
     public void show() {
-        Component panel = createContentWrapper(calculation.showResult());
+        Component panel = createContentWrapper(calculation.showResult(), calculation.getType());
         addComponent(panel);
     }
 
-    private Component createContentWrapper(final Component content) {
+    private Component createContentWrapper(final Component content, String type) {
         final CssLayout slot = new CssLayout();
+        slot.setId(type);
         slot.setWidth("100%");
 
         CssLayout card = new CssLayout();
@@ -57,7 +72,10 @@ public class Result extends VerticalLayout {
         MenuBar.MenuItem root = tools.addItem("", FontAwesome.COG, null);
         root.addItem(provider.getProperty("label.export"), (MenuBar.Command) selectedItem -> Notification.show("Not implemented"));
         root.addSeparator();
-        root.addItem(provider.getProperty("label.close"), (MenuBar.Command) selectedItem -> this.removeComponent(slot));
+        root.addItem(provider.getProperty("label.close"), (MenuBar.Command) selectedItem -> {
+            results.remove(slot.getId());
+            this.removeComponent(slot);
+        });
 
         toolbar.addComponents(caption, tools);
         toolbar.setExpandRatio(caption, 1);

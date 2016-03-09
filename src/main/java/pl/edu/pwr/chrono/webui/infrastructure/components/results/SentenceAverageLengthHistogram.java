@@ -25,6 +25,11 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
     }
 
     @Override
+    public String getType() {
+        return "sentence_average";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }

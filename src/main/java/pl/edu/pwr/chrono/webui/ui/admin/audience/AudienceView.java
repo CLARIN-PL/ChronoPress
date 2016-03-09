@@ -17,6 +17,7 @@ import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
+import java.util.List;
 
 @SpringView(name = AudienceView.VIEW_NAME, ui = MainUI.class)
 @UIScope
@@ -106,7 +107,9 @@ public class AudienceView extends DefaultView<AudiencePresenter> implements View
 
     private void loadAudience() {
         audience.getContainer().removeAllItems();
-        audience.load(presenter.getAudience());
+        List<Audience> items = presenter.getAudience();
+        audience.load(items);
+        audience.select(items.get(0).getId());
     }
 
     private HorizontalLayout buildButtons() {
@@ -122,7 +125,20 @@ public class AudienceView extends DefaultView<AudiencePresenter> implements View
             UI.getCurrent().addWindow(window);
         });
 
+        Button delete = new Button(provider.getProperty("button.delete.audience.group"));
+        delete.addStyleName(ValoTheme.BUTTON_TINY);
+        delete.addStyleName(ChronoTheme.BUTTON);
+        delete.setIcon(FontAwesome.TRASH_O);
+        delete.addClickListener(event -> {
+            Audience item = audience.getContainer().getItem(audience.getValue()).getBean();
+            if (item != null) {
+                presenter.delete(item);
+                loadAudience();
+            }
+        });
+
         buttons.addComponent(createAudience);
+        buttons.addComponent(delete);
         return buttons;
     }
 

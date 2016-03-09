@@ -7,6 +7,7 @@ import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import pl.edu.pwr.chrono.readmodel.dto.TimeSeriesResult;
+import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -34,7 +35,7 @@ public class ChartPanel extends VerticalLayout {
         addComponent(content);
     }
 
-    public void addDataWithDates(TimeSeriesResult result) {
+    public void addDataWithDates(TimeSeriesResult result, DbPropertiesProvider provider) {
 
         final Set<DataSeries> series = Sets.newConcurrentHashSet();
 
@@ -51,6 +52,21 @@ public class ChartPanel extends VerticalLayout {
             });
             series.add(s);
         });
+
+        if (result.getMovingAverage() != null && result.getMovingAverage().size() > 0) {
+
+            result.getMovingAverage().entrySet().forEach(e -> {
+                final DataSeries s = new DataSeries(e.getKey() + "-" + provider.getProperty("label.moving.average"));
+                e.getValue().forEach(t -> {
+                    LocalDate ld = LocalDate.of(t.getYear(), t.getMonth() == 0 ? 1 : t.getMonth(), 1);
+                    s.add(new DataSeriesItem(Date.from(
+                            ld.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()),
+                            t.getCount()));
+
+                });
+                series.add(s);
+            });
+        }
 
         series.forEach(s -> chart.getConfiguration().addSeries(s));
         chart.getConfiguration().getChart().setZoomType(ZoomType.X);

@@ -1,15 +1,17 @@
 package pl.edu.pwr.chrono.domain;
 
+import com.google.common.collect.Sets;
 import lombok.Data;
+import pl.edu.pwr.chrono.infrastructure.Identifiable;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "lexical_field")
 @Data
-public class LexicalField implements Serializable {
+public class LexicalField implements Serializable, Identifiable<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "lexicalSeq")
@@ -24,6 +26,6 @@ public class LexicalField implements Serializable {
             name = "lexical_names",
             joinColumns = @JoinColumn(name = "lexical_field_id")
     )
-    private List<String> lexicalnames;
+    private Set<String> lexicalnames = Sets.newHashSet();
 
 }

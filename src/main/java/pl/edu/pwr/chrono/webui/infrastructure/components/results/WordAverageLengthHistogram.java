@@ -24,6 +24,11 @@ public class WordAverageLengthHistogram implements CalculationResult {
     }
 
     @Override
+    public String getType() {
+        return "word_average";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }

@@ -120,21 +120,36 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 			if (result.isWordAverageCalculations()) {
 				WordAverageLengthHistogram histogram =
 						new WordAverageLengthHistogram(provider);
-				histogram.addData(result);
-				this.result.setCalculation(histogram);
-				this.result.show();
+				if (!this.result.hasResult(histogram.getType())) {
+					histogram.addData(result);
+					this.result.setCalculation(histogram);
+					this.result.show();
+				} else {
+					histogram = (WordAverageLengthHistogram) this.result.getResult(histogram.getType());
+					histogram.addData(result);
+				}
 			}
 			if (result.isWordFrequencyCalculations()) {
 				WordZipfFrequencyHistogram histogram = new WordZipfFrequencyHistogram(provider);
-				histogram.addData(result);
-				this.result.setCalculation(histogram);
-				this.result.show();
+				if (!this.result.hasResult(histogram.getType())) {
+					histogram.addData(result);
+					this.result.setCalculation(histogram);
+					this.result.show();
+				} else {
+					histogram = (WordZipfFrequencyHistogram) this.result.getResult(histogram.getType());
+					histogram.addData(result);
+				}
 			}
 			if (result.isSentenceAverageCalculations()) {
 				SentenceAverageLengthHistogram histogram = new SentenceAverageLengthHistogram(provider);
-				histogram.addData(result);
-				this.result.setCalculation(histogram);
-				this.result.show();
+				if (!this.result.hasResult(histogram.getType())) {
+					histogram.addData(result);
+					this.result.setCalculation(histogram);
+					this.result.show();
+				} else {
+					histogram = (SentenceAverageLengthHistogram) this.result.getResult(histogram.getType());
+					histogram.addData(result);
+				}
 			}
 			quantitativeAnalysisTab.showLoading(false);
 		});

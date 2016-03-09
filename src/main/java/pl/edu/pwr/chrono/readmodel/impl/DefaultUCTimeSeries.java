@@ -26,5 +26,4 @@ public class DefaultUCTimeSeries implements UCTimeSeries {
         return service.submit(() -> repository.findTimeSeries(selection, dto));
     }
 
-
 }

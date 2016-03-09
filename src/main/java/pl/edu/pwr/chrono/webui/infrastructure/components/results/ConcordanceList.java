@@ -42,6 +42,11 @@ public class ConcordanceList implements CalculationResult {
     }
 
     @Override
+    public String getType() {
+        return "concordance";
+    }
+
+    @Override
     public Component showResult() {
         return panel;
     }
