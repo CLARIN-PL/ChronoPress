@@ -3,9 +3,11 @@ package pl.edu.pwr.chrono.webui.ui.dataanalyse;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
 import com.vaadin.ui.CheckBox;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.themes.ValoTheme;
@@ -57,6 +59,9 @@ public class QuantitativeAnalysisTab extends Tab {
     @PropertyId("sentenceUnit")
     private final OptionGroup sentenceUnit = new OptionGroup();
 
+    private Label regexpHelp1 = new Label();
+    private Label regexpHelp2 = new Label();
+
     @PropertyId("sentenceAverageLengthHistogram")
     private final CheckBox sentenceAverageLengthHistogram = new CheckBox();
 
@@ -76,6 +81,9 @@ public class QuantitativeAnalysisTab extends Tab {
         panel = initMainPanel();
         addComponent(panel);
         initListeners();
+
+        regexpHelp1.setIcon(FontAwesome.QUESTION_CIRCLE);
+        regexpHelp2.setIcon(FontAwesome.QUESTION_CIRCLE);
 
         wordRegularExpression.addValidator(regularExpressionValidator);
         sentenceRegularExpression.addValidator(regularExpressionValidator);
@@ -104,7 +112,7 @@ public class QuantitativeAnalysisTab extends Tab {
                         .addRow(provider.getProperty("label.adjective"), adjective,
                                 provider.getProperty("label.adverb"), adverb)
                         .addComponent(provider.getProperty("label.namingUnit"), namingUnit)
-                        .addComponentInForm(provider.getProperty("label.regular.expression"), wordRegularExpression)
+                        .addComponentInFormWithHelp(provider.getProperty("label.regular.expression"), wordRegularExpression,regexpHelp1)
                         .addTitle(provider.getProperty("label.tool"))
                         .addComponent(provider.getProperty("label.word.zipfa.histogram"), wordZipfHistogram)
                         .addComponent(provider.getProperty("label.word.average.length.histogram"), wordAveragesLengthHistogram)
@@ -115,7 +123,7 @@ public class QuantitativeAnalysisTab extends Tab {
                         .ContentBuilder()
                         .addLeadTitle(provider.getProperty(provider.getProperty("label.sentence")))
                         .addTitle(provider.getProperty("label.filter"))
-                        .addComponentInForm(provider.getProperty("label.regular.expression"), sentenceRegularExpression)
+                        .addComponentInFormWithHelp(provider.getProperty("label.regular.expression"), sentenceRegularExpression, regexpHelp2)
                         .addTitle(provider.getProperty("label.tool"))
                         .addComponent(provider.getProperty("label.sentence.average.length.histogram"), sentenceAverageLengthHistogram)
                         .addComponentInForm(provider.getProperty("label.unit"), sentenceUnit)

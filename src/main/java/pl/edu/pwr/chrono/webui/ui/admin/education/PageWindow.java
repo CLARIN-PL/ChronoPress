@@ -29,6 +29,8 @@ public class PageWindow extends Window {
     @PropertyId("content")
     private final RichTextArea content = new RichTextArea();
 
+    private final TextArea html = new TextArea();
+
     private final BeanFieldGroup<Page> binder = new BeanFieldGroup<>(Page.class);
 
     private final Button save = new Button();
@@ -99,13 +101,37 @@ public class PageWindow extends Window {
         published.setCaption(provider.getProperty("label.page.published"));
         form.addComponent(published);
 
+        TabSheet sheet = new TabSheet();
+        sheet.setSizeFull();
+        sheet.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
+
         content.setSizeFull();
+        content.setCaption(provider.getProperty("label.tab.wsiwg"));
         content.setNullRepresentation("");
         content.setLocale(MainUI.getCurrent().getLocale());
-        layout.addComponent(content);
+        content.setImmediate(true);
+        sheet.addComponent(content);
+
+        html.setSizeFull();
+        html.setCaption(provider.getProperty("label.tab.html"));
+        html.setNullRepresentation("");
+        html.setLocale(MainUI.getCurrent().getLocale());
+        sheet.addComponent(html);
+
+        sheet.addSelectedTabChangeListener(event -> {
+            if (event.getTabSheet().getSelectedTab().equals(html)) {
+                html.setValue(content.getValue());
+            }
+            if (event.getTabSheet().getSelectedTab().equals(content)){
+                content.setValue(html.getValue());
+            }
+
+        });
+
+        layout.addComponent(sheet);
 
         layout.setExpandRatio(form, 0.3f);
-        layout.setExpandRatio(content, 2);
+        layout.setExpandRatio(sheet, 2);
 
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setWidth(100, Unit.PERCENTAGE);

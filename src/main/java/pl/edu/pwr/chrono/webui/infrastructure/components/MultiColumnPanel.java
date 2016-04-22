@@ -141,6 +141,19 @@ public class MultiColumnPanel extends VerticalLayout {
                 return this;
             }
 
+            public ContentBuilder addComponentInFormWithHelp(String caption, Component cmp, Component help) {
+                HorizontalLayout l = new HorizontalLayout();
+                FormLayout layout = new FormLayout();
+                layout.addStyleName(ChronoTheme.COMPACT_FORM);
+                applyStyle(cmp);
+                cmp.setCaption(caption);
+                layout.addComponent(cmp);
+                l.addComponent(layout);
+                l.addComponent(help);
+                components.add(l);
+                return this;
+            }
+
             public ContentBuilder addRow(String firstCaption, Component firstCmp,
                                          String secondCaption, Component secondCmp) {
                 HorizontalLayout layout = new HorizontalLayout();
@@ -159,6 +172,16 @@ public class MultiColumnPanel extends VerticalLayout {
                 applyStyle(cmp);
                 cmp.setCaption(caption);
                 components.add(cmp);
+                return this;
+            }
+
+            public ContentBuilder addComponentWithHelp(String caption, Component cmp, Component help) {
+                HorizontalLayout h = new HorizontalLayout();
+                h.setCaption(caption);
+                applyStyle(cmp);
+                h.addComponent(cmp);
+                h.addComponent(help);
+                components.add(h);
                 return this;
             }
 

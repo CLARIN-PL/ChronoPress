@@ -18,7 +18,6 @@ import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -193,6 +192,16 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 		});
 	}
 
+	public void showLexemeProfileResults(List<LexemeProfile> result){
+		getUI().access(() -> {
+			LexemeProfileList profile = new LexemeProfileList(provider);
+			profile.addData(result);
+			this.result.setCalculation(profile);
+			this.result.show();
+			dataExplorationTab.showLoading(false);
+		});
+	}
+
 	public DataSelectionPanel getDataSelectionPanel() {
 		return dataSelectionPanel;
 	}
@@ -215,7 +224,7 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 
 	public void showLocationMap() {
 		NamesOnGoogleMap map = new NamesOnGoogleMap(provider);
-		map.loadData(Arrays.asList("Wrocław", "Kraków", "Warszawa", "Szczecin"));
+		map.loadData(presenter.getGoogleMapLocations());
 		this.result.setCalculation(map);
 		this.result.show();
 	}

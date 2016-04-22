@@ -51,6 +51,8 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     @Autowired
     private UCLoadingAudience ucLoadingAudience;
 
+    @Autowired
+    private UCLoadGoogleLocations loadGoogleLocations;
 
     public void executeQuantitativeCalculations() {
         try {
@@ -202,7 +204,35 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
             if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
                     DataExplorationTab.DataExplorationType.PLACE_NAME_MAP) {
+                executeDataSelection(view.getDataSelectionPanel().getData());
                 view.showLocationMap();
+            }
+
+            if (view.getDataExplorationTab().getDataExplorationDTO().getDataExplorationType() ==
+                    DataExplorationTab.DataExplorationType.PROFILE) {
+
+                view.getDataExplorationTab().showLoading(true);
+                Futures.addCallback(ucDataExploration.findLexemeProfiles(
+                                view.getDataSelectionPanel().getData(),
+                                view.getDataExplorationTab().getDataExplorationDTO().getLemma(),
+                                view.getDataExplorationTab().getDataExplorationDTO().getContextPos(),
+                                view.getDataExplorationTab().getDataExplorationDTO().getLeftContextGap(),
+                                view.getDataExplorationTab().getDataExplorationDTO().getRightContextGap()
+                        ),
+                        new FutureCallback<List<LexemeProfile>>() {
+
+                            @Override
+                            public void onSuccess(List<LexemeProfile> result) {
+                                view.showLexemeProfileResults(result);
+                            }
+
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                Notification.show("Error:" + throwable.getLocalizedMessage(), Notification.Type.ERROR_MESSAGE);
+                                log.warn("Item loading failed ", throwable);
+                                view.getDataExplorationTab().showLoading(false);
+                            }
+                        });
             }
 
 
@@ -234,4 +264,9 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
     public Collection<?> loadAudience() {
         return ucLoadingAudience.load();
     }
+
+    public List<SimpleGeolocation> getGoogleMapLocations() {
+        return loadGoogleLocations.load(view.getDataSelectionPanel().getData());
+    }
+
 }

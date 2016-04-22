@@ -27,3 +27,4 @@ logging:
       spring: INFO
 server:
   port: 8888
+geolocation: http://maps.clarin-pl.eu/

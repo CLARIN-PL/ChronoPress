@@ -33,6 +33,6 @@ public class WordZipfFrequencyHistogram implements CalculationResult {
     }
 
     public void addData(QuantitativeAnalysisResult data) {
-        panel.onlyGrid("", data.getWordFrequencyHistogram());
+        panel.onlyGrid(provider.getProperty("label.sample"), data.getWordFrequencyHistogram());
     }
 }

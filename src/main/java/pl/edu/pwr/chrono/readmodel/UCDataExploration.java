@@ -4,7 +4,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.springframework.stereotype.Service;
 import pl.edu.pwr.chrono.readmodel.dto.ConcordanceDTO;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
+import pl.edu.pwr.chrono.readmodel.dto.LexemeProfile;
 import pl.edu.pwr.chrono.readmodel.dto.WordFrequencyDTO;
+import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataExplorationTab;
 
 import java.util.List;
 
@@ -16,4 +18,7 @@ public interface UCDataExploration {
     ListenableFuture<List<WordFrequencyDTO>> calculateWordFrequencyNotLematized(DataSelectionDTO data);
 
     ListenableFuture<List<ConcordanceDTO>> calculateConcordance(DataSelectionDTO data, String lemma);
+
+    ListenableFuture<List<LexemeProfile>> findLexemeProfiles(DataSelectionDTO data, String lemma,
+                                                             DataExplorationTab.PartOfSpeech pos, Integer left, Integer right);
 }

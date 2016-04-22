@@ -5,15 +5,16 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.application.service.impl.MovingAverage;
 import pl.edu.pwr.chrono.application.util.WordToCllDTO;
-import pl.edu.pwr.chrono.domain.Sentence;
-import pl.edu.pwr.chrono.domain.Text;
-import pl.edu.pwr.chrono.domain.Word;
+import pl.edu.pwr.chrono.domain.*;
 import pl.edu.pwr.chrono.infrastructure.Time;
 import pl.edu.pwr.chrono.readmodel.dto.*;
+import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataExplorationTab;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -292,5 +293,103 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
 
         List<WordToCllDTO> queryResult = em.createQuery(q).getResultList();
         return queryResult;
+    }
+
+    @Override
+    public List<SimpleGeolocation> findProperNames(DataSelectionDTO selection) {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<SimpleGeolocation> q = cb.createQuery(SimpleGeolocation.class);
+
+        Root<SentenceProperName> root = q.from(SentenceProperName.class);
+        Join<SentenceProperName, ProperName> properName = root.join("properName");
+        Join<SentenceProperName ,Sentence> sentence = root.join("sentence");
+
+        Root<Text> text = q.from(Text.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(TextSpecification.search(selection).toPredicate(text, q, cb));
+        predicates.add(cb.equal(properName.get("processed"), true));
+
+        q.select(cb.construct(SimpleGeolocation.class,
+                properName.get("alias"),
+                properName.get("lat"),
+                properName.get("lon")
+        ));
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        return em.createQuery(q).getResultList();
+    }
+
+    @Override
+    public List<LexemeProfile> findLexemeProfile(DataSelectionDTO data, String lemma,
+                                                 DataExplorationTab.PartOfSpeech pos, Integer left, Integer right){
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Word> q = cb.createQuery(Word.class);
+
+        Root<Word> root = q.from(Word.class);
+        Join<Word ,Sentence> sentence = root.join("sentence");
+        Root<Text> text = q.from(Text.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("text").get("id"), text.get("id")));
+        predicates.add(TextSpecification.search(data).toPredicate(text, q, cb));
+        predicates.add(cb.equal(root.get("txt"), lemma));
+
+        q.select(root);
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        List<LexemeProfile> results = Lists.newArrayList();
+
+        List<Word> words = em.createQuery(q).getResultList();
+
+        words.forEach(w -> {
+            String findContextWords = "FROM Word w WHERE w.sentence.id = :sentenceId AND w.posAlias = :pos  AND w.seq BETWEEN :left AND :right";
+            List<Word> contextWords =  em.createQuery(findContextWords)
+                    .setParameter("sentenceId", w.getSentence().getId())
+                    .setParameter("pos", pos.toString())
+                    .setParameter("left", w.getSeq() - left)
+                    .setParameter("right", w.getSeq() + right)
+                    .getResultList();
+
+            contextWords.forEach(cw -> {
+
+                String baseColocat = cw.getPosLemma();
+                String match = w.getSeq() < cw.getSeq() ? cw.getTxt() + "_" + w.getTxt() : w.getTxt() + "_" + cw.getTxt();
+                results.add(new LexemeProfile(baseColocat, match));
+
+            });
+        });
+
+        Map<LexemeProfile, Long> count =  results.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+        int totalResults = results.size();
+
+        count.forEach((r, c) ->  {
+            r.setCount(c);
+            r.setPercentage((c*100f)/(totalResults));
+            r.setMatch(r.getMatch() + "("+c+")");
+        });
+
+        Map<String, LexemeProfile> map = Maps.newHashMap();
+        count.forEach((r, c) -> {
+            if (map.containsKey(r.getBaseColocat())) {
+                if (!map.get(r.getBaseColocat()).getMatch().contains(r.getMatch())) {
+                    String match = map.get(r.getBaseColocat()).getMatch() + " , " + r.getMatch();
+                    map.get(r.getBaseColocat()).setMatch(match);
+                }
+                map.get(r.getBaseColocat()).setCount(map.get(r.getBaseColocat()).getCount() + r.getCount());
+            } else {
+                map.put(r.getBaseColocat(), r);
+            }
+        });
+
+        List<LexemeProfile> list = Lists.newArrayList();
+        map.forEach((k, v) -> list.add(v));
+
+        return list;
     }
 }

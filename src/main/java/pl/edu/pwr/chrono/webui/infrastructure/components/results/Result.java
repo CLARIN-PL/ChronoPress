@@ -1,7 +1,10 @@
 package pl.edu.pwr.chrono.webui.infrastructure.components.results;
 
 import com.google.common.collect.Maps;
+import com.vaadin.addon.charts.model.Configuration;
+import com.vaadin.addon.charts.util.SVGGenerator;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
+import java.io.ByteArrayInputStream;
 import java.util.Map;
 
 @SpringComponent
@@ -70,7 +74,10 @@ public class Result extends VerticalLayout {
         tools.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
 
         MenuBar.MenuItem root = tools.addItem("", FontAwesome.COG, null);
-        root.addItem(provider.getProperty("label.export"), (MenuBar.Command) selectedItem -> Notification.show("Not implemented"));
+        root.addItem(provider.getProperty("label.export"), (MenuBar.Command) selectedItem -> {
+            ChartPanel current = (ChartPanel) content;
+        });
+
         root.addSeparator();
         root.addItem(provider.getProperty("label.close"), (MenuBar.Command) selectedItem -> {
             results.remove(slot.getId());
@@ -87,4 +94,15 @@ public class Result extends VerticalLayout {
         slot.addComponent(card);
         return slot;
     }
+
+    private StreamResource.StreamSource createSVGStreamSource(final Configuration conf) {
+        return () -> {
+            String svg = SVGGenerator.getInstance().generate(conf);
+            if (svg != null) {
+                return new ByteArrayInputStream(svg.getBytes());
+            }
+            return null;
+        };
+    }
+
 }

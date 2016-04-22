@@ -10,6 +10,9 @@ import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataExplorationTab;
 public class DataExplorationDTO {
 
     private String lemma = "";
+    private Integer leftContextGap = 1;
+    private Integer rightContextGap = 1;
+    private DataExplorationTab.PartOfSpeech contextPos;
     private DataExplorationTab.DataExplorationType dataExplorationType;
 
 }

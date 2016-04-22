@@ -3,12 +3,10 @@ package pl.edu.pwr.chrono.webui.ui.dataanalyse;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.OptionGroup;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +50,8 @@ public class TimeSeriesTab extends Tab {
 
     private final BeanFieldGroup<TimeSeriesDTO> binder = new BeanFieldGroup<>(TimeSeriesDTO.class);
 
+    private Label regexpHelp = new Label();
+
     private MultiColumnPanel panel;
 
     @Autowired
@@ -71,6 +71,9 @@ public class TimeSeriesTab extends Tab {
 
         initializeTimeUnit();
         initLexemeField();
+
+        regexpHelp.setIcon(FontAwesome.QUESTION_CIRCLE);
+        regexpHelp.setDescription(provider.getProperty("help.regexp"));
 
         lexical.load(repository.findAll());
         movingAverageWindowSize.setVisible(false);
@@ -116,7 +119,7 @@ public class TimeSeriesTab extends Tab {
                         .ContentBuilder()
                         .addComponent(provider.getProperty("label.lexeme"), lexeme)
                         .addComponent(provider.getProperty("label.lexical"), lexical)
-                        .addComponent(provider.getProperty("label.regular.expression"), regularExpression)
+                        .addComponentWithHelp(provider.getProperty("label.regular.expression"), regularExpression,regexpHelp)
                         .buildWithFromLayout())
                 .addPanel(provider.getProperty("label.time.series.units"), new MultiColumnPanel
                         .PanelBuilder

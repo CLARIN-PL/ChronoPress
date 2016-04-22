@@ -5,10 +5,6 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * Created by tnaskret on 08.02.16.
- */
-
 @Entity
 @Table(name = "property")
 @Data

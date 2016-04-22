@@ -73,6 +73,10 @@ public class ChartPanel extends VerticalLayout {
         chart.drawChart();
     }
 
+    public Configuration getConfiguration(){
+        return chart.getConfiguration();
+    }
+
     public void onlyGrid(String name, Map<Long, Long> map) {
         addDataSeries(chart, loadData(map, name));
 

@@ -32,5 +32,4 @@ public class Sentence implements Serializable {
     @ManyToOne
     @JoinColumn(name = "text_id", referencedColumnName = "id")
     private Text text;
-
 }

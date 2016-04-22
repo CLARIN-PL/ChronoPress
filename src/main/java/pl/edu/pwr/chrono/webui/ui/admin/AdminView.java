@@ -17,6 +17,7 @@ import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
 import pl.edu.pwr.chrono.webui.ui.admin.audience.AudienceView;
 import pl.edu.pwr.chrono.webui.ui.admin.caption.CaptionsView;
+import pl.edu.pwr.chrono.webui.ui.admin.data.DataManagementView;
 import pl.edu.pwr.chrono.webui.ui.admin.education.EducationEditorView;
 import pl.edu.pwr.chrono.webui.ui.admin.lexicalfield.LexicalFieldView;
 import pl.edu.pwr.chrono.webui.ui.admin.user.UserView;
@@ -82,12 +83,16 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
         Button userManagement = addButton(properties.getProperty("view.admin.panel.user.button"), FontAwesome.USER);
         userManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(UserView.VIEW_NAME));
 
+        Button dataManagement = addButton(properties.getProperty("view.admin.panel.data.button"), FontAwesome.DATABASE);
+        dataManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(DataManagementView.VIEW_NAME));
+
         layout.addComponent(lexicalFiledManagement, 0, 0);
         layout.addComponent(audienceManagement, 1, 0);
         layout.addComponent(educationManagement, 2, 0);
 
         layout.addComponent(captionsManagement, 0, 1);
         layout.addComponent(userManagement, 1, 1);
+        layout.addComponent(dataManagement, 2, 1);
 
     }
 

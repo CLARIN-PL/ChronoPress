@@ -10,8 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.edu.pwr.chrono.readmodel.UCDataExploration;
 import pl.edu.pwr.chrono.readmodel.dto.ConcordanceDTO;
 import pl.edu.pwr.chrono.readmodel.dto.DataSelectionDTO;
+import pl.edu.pwr.chrono.readmodel.dto.LexemeProfile;
 import pl.edu.pwr.chrono.readmodel.dto.WordFrequencyDTO;
 import pl.edu.pwr.chrono.repository.TextRepository;
+import pl.edu.pwr.chrono.webui.ui.dataanalyse.DataExplorationTab;
 
 import java.util.List;
 
@@ -38,6 +40,11 @@ public class DefaultUCDataExploration implements UCDataExploration {
     @Override
     public ListenableFuture<List<ConcordanceDTO>> calculateConcordance(DataSelectionDTO data, String lemma) {
         return service.submit(() -> splitSentenceOnWord(repository.findConcordance(data, lemma)));
+    }
+
+    @Override
+    public ListenableFuture<List<LexemeProfile>> findLexemeProfiles(DataSelectionDTO data, String lemma, DataExplorationTab.PartOfSpeech pos, Integer left, Integer right) {
+        return service.submit(() -> repository.findLexemeProfile(data, lemma,pos,left,right));
     }
 
     public List<ConcordanceDTO> splitSentenceOnWord(final List<ConcordanceDTO> list) {

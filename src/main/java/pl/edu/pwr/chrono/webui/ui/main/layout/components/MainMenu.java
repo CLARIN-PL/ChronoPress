@@ -136,7 +136,6 @@ public class MainMenu extends HorizontalLayout{
                 (MenuBar.Command) selectedItem -> uiEventBus.post(new NavigationEvent(HomeView.VIEW_NAME)));
 
         MenuBar.MenuItem tools = menuBar.addItem(provider.getProperty("menu.tools"), FontAwesome.WRENCH, null);
-        tools.addItem(provider.getProperty("menu.search"), FontAwesome.SEARCH, null);
         tools.addItem(provider.getProperty("menu.sample.viewer"), FontAwesome.BOOK,
                 (MenuBar.Command) selectedItem -> uiEventBus.post(new NavigationEvent(SampleBrowserView.VIEW_NAME)));
 
