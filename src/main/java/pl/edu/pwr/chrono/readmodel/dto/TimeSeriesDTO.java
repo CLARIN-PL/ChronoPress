@@ -14,7 +14,7 @@ public class TimeSeriesDTO {
     private String regularExpression = "";
     private Boolean timeSeriesCalculation = false;
     private Boolean movingAverage = false;
-    private Integer movingAverageWindowSize = 0;
+    private Integer movingAverageWindowSize = 3;
 
     public Boolean canExecuteCalculation() {
         return (((lexeme != null) && (lexeme.size() > 0)) || !"".equals(regularExpression)) && timeSeriesCalculation;

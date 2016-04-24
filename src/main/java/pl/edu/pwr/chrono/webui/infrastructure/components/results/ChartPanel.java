@@ -157,6 +157,8 @@ public class ChartPanel extends VerticalLayout {
             chart = new Chart();
             chart.setLocale(new Locale("pl", "PL"));
             chart.setImmediate(true);
+            chart.getConfiguration().setExporting(true);
+
             Configuration conf = chart.getConfiguration();
             conf.setTitle(chartTitle);
             conf.getChart().setType(type);

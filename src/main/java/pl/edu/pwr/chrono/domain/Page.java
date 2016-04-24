@@ -25,4 +25,6 @@ public class Page implements Serializable {
     @ManyToOne
     @JoinColumn(name = "page_aggregator_id", referencedColumnName = "id")
     private PageAggregator pageAggregator;
+
+    private String category;
 }

@@ -44,6 +44,7 @@ public class EducationEditorPresenter extends Presenter<EducationEditorView> {
     }
 
     public void removePage(Page p) {
-        pageRepository.delete(p);
+        p.setPageAggregator(null);
+        pageRepository.delete(p.getId());
     }
 }

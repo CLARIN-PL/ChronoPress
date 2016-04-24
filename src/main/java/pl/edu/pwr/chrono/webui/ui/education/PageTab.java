@@ -43,14 +43,15 @@ public class PageTab extends HorizontalLayout {
         addComponent(pages);
         addComponent(panel);
 
-        setExpandRatio(pages, 1);
+        setExpandRatio(pages, 1.5f);
         setExpandRatio(panel, 4);
     }
 
     private void initPageTable(PageAggregator aggregator) {
         pages = new MTable<>(Page.class)
                 .withProperties("title")
-                .withFullWidth();
+                .withFullWidth()
+                .withFullHeight();
 
         pages.addStyleName(ValoTheme.TABLE_COMPACT);
         pages.addStyleName(ValoTheme.TABLE_SMALL);
@@ -76,6 +77,10 @@ public class PageTab extends HorizontalLayout {
         pages.addRowClickListener(event -> {
             content.setValue(((Page) event.getEntity()).getContent());
         });
+
+        Object [] properties={"title"};
+        boolean [] ordering={true};
+        pages.sort(properties,ordering);
     }
 
 }

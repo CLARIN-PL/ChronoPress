@@ -50,6 +50,7 @@ public class LexemeProfileList implements CalculationResult {
     private void initChat(){
         chart.setLocale(new Locale("pl", "PL"));
         chart.setImmediate(true);
+        chart.getConfiguration().setExporting(true);
 
         PlotOptionsPie options = new PlotOptionsPie();
         options.setInnerSize("0");
@@ -86,10 +87,11 @@ public class LexemeProfileList implements CalculationResult {
         grid.setHeightByRows(15);
         grid.addStyleName(ChronoTheme.GRID);
         grid.setContainerDataSource(container);
-        grid.setColumnOrder("baseColocat", "match", "count");
+        grid.setColumnOrder("baseColocat", "match", "count", "percentage");
         grid.getColumn("baseColocat").setHeaderCaption(provider.getProperty("label.colocat"));
         grid.getColumn("match").setHeaderCaption(provider.getProperty("label.match.word"));
         grid.getColumn("count").setHeaderCaption(provider.getProperty("label.frequency.count"));
+        grid.getColumn("percentage").setHeaderCaption(provider.getProperty("label.profile.percentage"));
 
     }
 }

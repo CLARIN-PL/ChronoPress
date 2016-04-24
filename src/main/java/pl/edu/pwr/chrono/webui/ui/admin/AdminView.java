@@ -19,12 +19,15 @@ import pl.edu.pwr.chrono.webui.ui.admin.audience.AudienceView;
 import pl.edu.pwr.chrono.webui.ui.admin.caption.CaptionsView;
 import pl.edu.pwr.chrono.webui.ui.admin.data.DataManagementView;
 import pl.edu.pwr.chrono.webui.ui.admin.education.EducationEditorView;
+import pl.edu.pwr.chrono.webui.ui.admin.education.PageWindow;
 import pl.edu.pwr.chrono.webui.ui.admin.lexicalfield.LexicalFieldView;
 import pl.edu.pwr.chrono.webui.ui.admin.user.UserView;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
+
+import static com.vaadin.ui.UI.getCurrent;
 
 @SpringView(name = AdminView.VIEW_NAME, ui = MainUI.class)
 @UIScope
@@ -43,6 +46,9 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
         super(presenter);
     }
 
+    @Autowired
+    private PageWindow pageWindow;
+
     @PostConstruct
     void init() {
         setMargin(new MarginInfo(false, true, true, true));
@@ -51,11 +57,21 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
 
         layout.setWidth(70, Unit.PERCENTAGE);
         layout.setColumns(3);
-        layout.setRows(2);
+        layout.setRows(3);
         layout.setColumnExpandRatio(0, 1);
         layout.setColumnExpandRatio(1, 1);
         layout.setColumnExpandRatio(2, 1);
 
+        pageWindow.getCancel().addClickListener(event -> {
+            getCurrent().removeWindow(pageWindow);
+        });
+
+        pageWindow.getSave().addClickListener(event -> {
+            presenter.save(pageWindow.getItem());
+            getCurrent().removeWindow(pageWindow);
+        });
+
+        pageWindow.getDelete().setVisible(false);
 
         HorizontalLayout wrapper = new HorizontalLayout();
         wrapper.setWidth(100, Unit.PERCENTAGE);
@@ -86,6 +102,12 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
         Button dataManagement = addButton(properties.getProperty("view.admin.panel.data.button"), FontAwesome.DATABASE);
         dataManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(DataManagementView.VIEW_NAME));
 
+        Button homePage = addButton(properties.getProperty("view.admin.panel.home.page.button"), FontAwesome.HOME);
+        homePage.addClickListener(event -> {
+            pageWindow.setItem(presenter.getHomePage());
+            getCurrent().addWindow(pageWindow);
+        });
+
         layout.addComponent(lexicalFiledManagement, 0, 0);
         layout.addComponent(audienceManagement, 1, 0);
         layout.addComponent(educationManagement, 2, 0);
@@ -93,6 +115,7 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
         layout.addComponent(captionsManagement, 0, 1);
         layout.addComponent(userManagement, 1, 1);
         layout.addComponent(dataManagement, 2, 1);
+        layout.addComponent(homePage, 0, 2);
 
     }
 

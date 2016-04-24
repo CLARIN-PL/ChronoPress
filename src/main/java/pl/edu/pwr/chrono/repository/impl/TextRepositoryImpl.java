@@ -356,7 +356,7 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
 
             contextWords.forEach(cw -> {
 
-                String baseColocat = cw.getPosLemma();
+                String baseColocat = cw.getPosLemma().toLowerCase();
                 String match = w.getSeq() < cw.getSeq() ? cw.getTxt() + "_" + w.getTxt() : w.getTxt() + "_" + cw.getTxt();
                 results.add(new LexemeProfile(baseColocat, match));
 

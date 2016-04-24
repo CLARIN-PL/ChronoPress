@@ -155,9 +155,9 @@ public class QuantitativeAnalysisTab extends Tab {
         wordUnit.setItemCaption(pl.edu.pwr.chrono.infrastructure.Unit.LETTER,
                 provider.getProperty("label.letter"));
         wordUnit.select(pl.edu.pwr.chrono.infrastructure.Unit.LETTER);
-        wordUnit.addItem(pl.edu.pwr.chrono.infrastructure.Unit.SYLLABLE);
+/*        wordUnit.addItem(pl.edu.pwr.chrono.infrastructure.Unit.SYLLABLE);
         wordUnit.setItemCaption(pl.edu.pwr.chrono.infrastructure.Unit.SYLLABLE,
-                provider.getProperty("label.syllable"));
+                provider.getProperty("label.syllable"));*/
     }
 
 
