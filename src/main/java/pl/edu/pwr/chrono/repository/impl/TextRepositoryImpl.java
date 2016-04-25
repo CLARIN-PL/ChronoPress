@@ -230,7 +230,7 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
                                 return z1.compareTo(z2);
                             }
                         }});
-            sorted.put("Sum próbek", tmp);
+            sorted.put("Suma próbek", tmp);
 
         } else {
             sorted = queryResult.stream()
