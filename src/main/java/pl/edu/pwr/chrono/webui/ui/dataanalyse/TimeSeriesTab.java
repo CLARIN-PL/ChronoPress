@@ -88,6 +88,7 @@ public class TimeSeriesTab extends Tab {
         lexeme.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexeme.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
 
+        regularExpression.setImmediate(true);
         regularExpression.addValidator(regularExpressionValidator);
     }
 
@@ -153,7 +154,13 @@ public class TimeSeriesTab extends Tab {
             Set<String> names = item.getLexicalnames();
             if (names.size() > 0) {
                 binder.getItemDataSource().getBean().getLexeme().addAll(names);
+                binder.getItemDataSource().getBean().setAsSumOfResults(true);
             }
+        }
+        if(lexical.getValue() != null || (regularExpression.getValue() != null && !regularExpression.getValue().equals(""))){
+            binder.getItemDataSource().getBean().setAsSumOfResults(true);
+        } else {
+            binder.getItemDataSource().getBean().setAsSumOfResults(false);
         }
 
         return binder.getItemDataSource().getBean();

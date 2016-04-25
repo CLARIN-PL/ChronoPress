@@ -18,6 +18,7 @@ public class ChartPanel extends VerticalLayout {
     private final HorizontalLayout content;
     private final Chart chart;
     private final TabSheet sheet;
+
     private Queue<SolidColor> colors = initColorQueue();
 
     private ChartPanel(ChartPanelBuilder builder) {
@@ -28,6 +29,7 @@ public class ChartPanel extends VerticalLayout {
 
         chart = builder.chart;
         sheet = builder.sheet;
+
 
         if(sheet != null) content.addComponent(sheet);
         if (chart != null) content.addComponent(chart);

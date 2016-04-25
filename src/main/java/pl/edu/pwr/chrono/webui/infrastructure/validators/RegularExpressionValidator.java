@@ -14,7 +14,7 @@ public class RegularExpressionValidator implements Validator {
     @Override
     public void validate(Object value) throws InvalidValueException {
         if (value != null && !"".equals(value.toString())) {
-            boolean matches = value.toString().matches("[\\w%_ążłćźóę]+");
+            boolean matches = value.toString().matches("[\\w%_ążłćźóę ]+");
             if (!matches)
                 throw new InvalidValueException(provider.getProperty("validation.contains.invalid.characters"));
         }

@@ -21,6 +21,7 @@ import pl.edu.pwr.chrono.webui.ui.admin.data.DataManagementView;
 import pl.edu.pwr.chrono.webui.ui.admin.education.EducationEditorView;
 import pl.edu.pwr.chrono.webui.ui.admin.education.PageWindow;
 import pl.edu.pwr.chrono.webui.ui.admin.lexicalfield.LexicalFieldView;
+import pl.edu.pwr.chrono.webui.ui.admin.stoplist.StopListView;
 import pl.edu.pwr.chrono.webui.ui.admin.user.UserView;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
@@ -108,6 +109,9 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
             getCurrent().addWindow(pageWindow);
         });
 
+        Button stopListManagement = addButton(properties.getProperty("view.admin.stop.list.title"), FontAwesome.STOP);
+        stopListManagement.addClickListener(event -> UI.getCurrent().getNavigator().navigateTo(StopListView.VIEW_NAME));
+
         layout.addComponent(lexicalFiledManagement, 0, 0);
         layout.addComponent(audienceManagement, 1, 0);
         layout.addComponent(educationManagement, 2, 0);
@@ -116,6 +120,7 @@ public class AdminView extends DefaultView<AdminPresenter> implements View {
         layout.addComponent(userManagement, 1, 1);
         layout.addComponent(dataManagement, 2, 1);
         layout.addComponent(homePage, 0, 2);
+        layout.addComponent(stopListManagement, 1, 2);
 
     }
 

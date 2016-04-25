@@ -3,25 +3,26 @@ package pl.edu.pwr.chrono.webui.infrastructure.components.results;
 import com.google.common.collect.Maps;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.StringToDateConverter;
-import com.vaadin.server.Sizeable;
+import com.vaadin.server.*;
 import com.vaadin.shared.ui.grid.HeightMode;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.TreeTable;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import lombok.extern.slf4j.Slf4j;
 import pl.edu.pwr.chrono.readmodel.dto.ConcordanceDTO;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 public class ConcordanceList implements CalculationResult {
 
     private final HorizontalSplitPanel panel = new HorizontalSplitPanel();
@@ -32,13 +33,28 @@ public class ConcordanceList implements CalculationResult {
 
     private BeanItemContainer<ConcordanceDTO> container = new BeanItemContainer<>(ConcordanceDTO.class);
 
+    private  FileDownloader fileDownloader;
+    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+
     public ConcordanceList(DbPropertiesProvider provider) {
         this.provider = provider;
         initializeGrid();
         panel.setWidth(100, Sizeable.Unit.PERCENTAGE);
-        panel.setFirstComponent(grid);
+
+        VerticalLayout wrapper = new VerticalLayout();
+        wrapper.addComponent(grid);
+
+        HorizontalLayout btn = new HorizontalLayout();
+        btn.addComponent(downloadCSV);
+        btn.addStyleName(ChronoTheme.SMALL_MARGIN);
+        downloadCSV.addStyleName(ValoTheme.BUTTON_TINY);
+
+        wrapper.addComponent(btn);
+
+        panel.setFirstComponent(wrapper);
         panel.setSplitPosition(75, Sizeable.Unit.PERCENTAGE);
         panel.setCaption(provider.getProperty("label.lexeme.concordance.list"));
+
     }
 
     @Override
@@ -51,12 +67,37 @@ public class ConcordanceList implements CalculationResult {
         return panel;
     }
 
+    public Resource createExportContent(List<ConcordanceDTO> data) throws IOException {
+        final String date = LocalDate.now().toString();
+            java.io.File file  = java.io.File.createTempFile("konkordancje-"+date , ".csv");
+            file.deleteOnExit();
+            FileWriter writer = new FileWriter(file);
+            data.forEach(i -> {
+                try {
+                    writer.append(i.getLeft() + "\t" + i.getLemma() + "\t" + i.getRight() + "\t" + i.getPublicationDate() + "\t" + i.getJournalTitle()+"\t\n");
+                } catch (IOException e) {
+                    log.debug("Export to csv", e);
+                }
+            });
+            writer.flush();
+            writer.close();
+        return new FileResource(file);
+    }
+
     public void addData(List<ConcordanceDTO> data) {
         container.removeAllItems();
         container.addAll(data);
         TreeTable tt = buildStatTable(data);
         tt.setWidth(100, Sizeable.Unit.PERCENTAGE);
         panel.setSecondComponent(tt);
+
+        try {
+            fileDownloader = new FileDownloader(createExportContent(data));
+        } catch (IOException e) {
+            log.debug("Export to csv", e);
+        }
+        fileDownloader.extend(downloadCSV);
+        panel.setCaption(panel.getCaption() + " ("+ data.size() +")");
     }
 
     private TreeTable buildStatTable(List<ConcordanceDTO> data) {
@@ -69,11 +110,11 @@ public class ConcordanceList implements CalculationResult {
 
         ttable.addContainerProperty(provider.getProperty("label.category"), String.class, "");
         ttable.addContainerProperty(provider.getProperty("label.occurrence.count"), String.class, "");
-
         ttable.addItem(new Object[]{provider.getProperty("label.article.title"), ""}, 0);
         ttable.addItem(new Object[]{provider.getProperty("label.status"), ""}, 1);
         ttable.addItem(new Object[]{provider.getProperty("label.period"), ""}, 2);
         ttable.addItem(new Object[]{provider.getProperty("label.style"), ""}, 3);
+
         final int[] nextItem = {4};
         stats.get("article").forEach((s, aLong) -> {
             ttable.addItem(new Object[]{s, Long.toString(aLong)}, nextItem[0]);
@@ -123,6 +164,7 @@ public class ConcordanceList implements CalculationResult {
         grid.getColumn("style").setHidden(true);
         grid.getColumn("period").setHidden(true);
         grid.getColumn("articleTitle").setHidden(true);
+        grid.getColumn("textId").setHidden(true);
 
         grid.getColumn("publicationDate").setConverter(new StringToDateConverter() {
             @Override
@@ -141,6 +183,11 @@ public class ConcordanceList implements CalculationResult {
         grid.getColumn("left").setMaximumWidth(380);
         grid.getColumn("right").setMaximumWidth(380);
         grid.getColumn("publicationDate").setMaximumWidth(100);
+
+    }
+
+    public Grid getGrid(){
+        return  grid;
     }
 
     public Map<String, Map<String, Long>> calculateConcordanceStats(final List<ConcordanceDTO> list) {

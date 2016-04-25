@@ -61,4 +61,5 @@ public class ChronoTheme {
     public static final String PAGE_TAB = "ch-page-tab";
     public static final String PAGE_TABLE = "ch-page-table";
     public static final String TABLE = "ch-table";
+    public static final String SMALL_MARGIN = "ch-small-margin";
 }

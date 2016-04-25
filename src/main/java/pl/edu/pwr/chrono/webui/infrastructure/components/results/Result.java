@@ -2,7 +2,6 @@ package pl.edu.pwr.chrono.webui.infrastructure.components.results;
 
 import com.google.common.collect.Maps;
 import com.vaadin.server.FontAwesome;
-import com.vaadin.server.StreamResource;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.ViewScope;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
-import java.io.*;
 import java.util.Map;
 
 @SpringComponent
@@ -21,6 +19,7 @@ public class Result extends VerticalLayout {
 
     private final Map<String, CalculationResult> results = Maps.newHashMap();
     CalculationResult calculation;
+
     @Autowired
     private DbPropertiesProvider provider;
 

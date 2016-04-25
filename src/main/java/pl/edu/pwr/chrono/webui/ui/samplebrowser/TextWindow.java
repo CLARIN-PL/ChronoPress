@@ -60,6 +60,12 @@ public class TextWindow extends Window {
         text.setReadOnly(false);
     }
 
+    public void setItemWithMarkedkWord(Text txt, String word){
+        String t = txt.getTxt().replace(word, "<b>"+word+"</b>");
+        txt.setTxt(t);
+        setItem(txt);
+    }
+
     private Component buildForm() {
 
         VerticalLayout content = new VerticalLayout();

@@ -6,20 +6,25 @@ import com.vaadin.addon.charts.model.DataSeries;
 import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.addon.charts.model.PlotOptionsPie;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.server.Sizeable;
+import com.vaadin.server.*;
 import com.vaadin.shared.data.sort.SortDirection;
 import com.vaadin.shared.ui.grid.HeightMode;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.ValoTheme;
+import lombok.extern.slf4j.Slf4j;
 import pl.edu.pwr.chrono.readmodel.dto.LexemeProfile;
 import pl.edu.pwr.chrono.webui.infrastructure.components.ChronoTheme;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-
+@Slf4j
 public class LexemeProfileList implements CalculationResult {
 
     private final HorizontalLayout panel = new HorizontalLayout();
@@ -32,6 +37,9 @@ public class LexemeProfileList implements CalculationResult {
 
     private BeanItemContainer<LexemeProfile> container = new BeanItemContainer<>(LexemeProfile.class);
 
+    private  FileDownloader fileDownloader;
+    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+
     public LexemeProfileList(DbPropertiesProvider provider) {
         this.provider = provider;
         initializeGrid();
@@ -40,11 +48,21 @@ public class LexemeProfileList implements CalculationResult {
         panel.setWidth(100, Sizeable.Unit.PERCENTAGE);
         panel.setSpacing(true);
 
-        panel.addComponent(grid);
+        HorizontalLayout download = new HorizontalLayout();
+        download.addStyleName(ChronoTheme.SMALL_MARGIN);
+        downloadCSV.addStyleName(ValoTheme.BUTTON_TINY);
+        download.addComponent(downloadCSV);
+
+        VerticalLayout wrapper = new VerticalLayout();
+        wrapper.addComponent(grid);
+        wrapper.addComponent(download);
+
+        panel.addComponent(wrapper);
         panel.addComponent(chart);
-        panel.setExpandRatio(grid, 2);
+        panel.setExpandRatio(wrapper, 2);
         panel.setExpandRatio(chart, 1);
         panel.setCaption(provider.getProperty("label.lexeme.profile.list"));
+
     }
 
     private void initChat(){
@@ -69,8 +87,15 @@ public class LexemeProfileList implements CalculationResult {
     }
 
     private void addChartData(List<LexemeProfile> data){
+        Collections.reverse(data);
         DataSeries series = new DataSeries();
-        data.forEach(d -> series.add(new DataSeriesItem(d.getBaseColocat(), d.getPercentage())));
+        final int[] counter = {0};
+        data.forEach(d -> {
+            if(counter[0] < 10) {
+                series.add(new DataSeriesItem(d.getBaseColocat(), d.getPercentage()));
+                counter[0]++;
+            }
+        });
         chart.getConfiguration().addSeries(series);
     }
 
@@ -79,6 +104,12 @@ public class LexemeProfileList implements CalculationResult {
         container.addAll(data);
         addChartData(data);
         grid.sort("count", SortDirection.DESCENDING);
+        try {
+            fileDownloader = new FileDownloader(createExportContent(data));
+        } catch (IOException e) {
+            log.debug("Export to csv", e);
+        }
+        fileDownloader.extend(downloadCSV);
     }
 
     private void initializeGrid() {
@@ -93,5 +124,25 @@ public class LexemeProfileList implements CalculationResult {
         grid.getColumn("count").setHeaderCaption(provider.getProperty("label.frequency.count"));
         grid.getColumn("percentage").setHeaderCaption(provider.getProperty("label.profile.percentage"));
 
+    }
+
+
+    public Resource createExportContent(List<LexemeProfile> data) throws IOException {
+        final String date = LocalDate.now().toString();
+        java.io.File file  = java.io.File.createTempFile("profile-list-"+date , ".csv");
+        file.deleteOnExit();
+        FileWriter writer = new FileWriter(file);
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(3);
+        data.forEach(i -> {
+            try {
+                writer.append(i.getBaseColocat() + "\t" + i.getMatch() + "\t" + i.getCount() + "\t" + df.format(i.getPercentage()) + "\t\n");
+            } catch (IOException e) {
+                log.debug("Export to csv", e);
+            }
+        });
+        writer.flush();
+        writer.close();
+        return new FileResource(file);
     }
 }

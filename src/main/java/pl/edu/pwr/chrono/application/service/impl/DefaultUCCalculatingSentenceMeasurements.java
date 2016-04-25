@@ -106,18 +106,20 @@ public class DefaultUCCalculatingSentenceMeasurements implements UCCalculatingSe
             Collections.sort(elements);
             double median = 0;
             double centralElementsAverage = 0.0;
+            if(elements.size() > 0) {
+                if (elements.size() % 2 == 0) {
+                    centralElementsAverage = elements.get(elements.size() / 2) + elements.get((elements.size() / 2) - 1);
+                    median = centralElementsAverage / 2.0;
 
-            if (elements.size() % 2 == 0) {
-                centralElementsAverage = elements.get(elements.size() / 2) + elements.get((elements.size() / 2) - 1);
-                median = centralElementsAverage / 2.0;
-
-            } else {
-                median = elements.get(elements.size() / 2);
+                } else {
+                    median = elements.get(elements.size() / 2);
+                }
             }
             return median;
         }
 
         public double getSkewness() {
+            if(getStandardDeviation() == 0) return 0;
             return (3 * (getAverage() - getMedian())) / getStandardDeviation();
         }
 

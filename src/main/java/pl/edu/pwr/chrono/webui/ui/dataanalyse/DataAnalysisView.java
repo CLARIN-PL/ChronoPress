@@ -15,6 +15,7 @@ import pl.edu.pwr.chrono.webui.infrastructure.DefaultView;
 import pl.edu.pwr.chrono.webui.infrastructure.components.Title;
 import pl.edu.pwr.chrono.webui.infrastructure.components.results.*;
 import pl.edu.pwr.chrono.webui.ui.main.MainUI;
+import pl.edu.pwr.chrono.webui.ui.samplebrowser.TextWindow;
 import pl.edu.pwr.configuration.properties.DbPropertiesProvider;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +39,9 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 	private TimeSeriesTab timeSeriesTab;
 	@Autowired
 	private DataExplorationTab dataExplorationTab;
+
+	@Autowired
+	private TextWindow window;
 
 	@Autowired
 	private Result result;
@@ -185,6 +189,10 @@ public class DataAnalysisView extends DefaultView<DataAnalysisPresenter> impleme
 	public void showDataExplorationConcordanceResults(List<ConcordanceDTO> result) {
 		getUI().access(() -> {
 			ConcordanceList concord = new ConcordanceList(provider);
+			concord.getGrid().addItemClickListener( event -> {
+				window.setItemWithMarkedkWord(presenter.findText(((ConcordanceDTO) event.getItemId()).getTextId()), ((ConcordanceDTO) event.getItemId()).getWord());
+				MainUI.getCurrent().addWindow(window);
+			});
 			concord.addData(result);
 			this.result.setCalculation(concord);
 			this.result.show();

@@ -6,5 +6,4 @@ public interface CalculationResult {
 
     String getType();
     Component showResult();
-
 }

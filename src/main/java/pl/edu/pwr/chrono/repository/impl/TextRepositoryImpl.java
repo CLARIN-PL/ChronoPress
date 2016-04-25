@@ -200,9 +200,42 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         q.where(predicates.toArray(new Predicate[predicates.size()]));
 
         List<TimeProbe> queryResult = em.createQuery(q).getResultList();
+        Map<String, List<TimeProbe>> sorted = Maps.newHashMap();
+        if(dto.getAsSumOfResults()) {
+            Map<Integer, Map<Integer, List<TimeProbe>>> groupByDate =   queryResult.stream()
+                    .collect(groupingBy(p -> p.getYear(), groupingBy(p -> p.getMonth())));
 
-        Map<String, List<TimeProbe>> sorted = queryResult.stream()
-                .collect(groupingBy(TimeProbe::getLexeme, mapping(s -> s, toList())));
+            List<TimeProbe> tmp = Lists.newArrayList();
+            groupByDate.forEach((y, map ) ->{
+                map.forEach((m, t) -> {
+                    long cnt = t.stream().mapToLong(o->o.getCount()).sum();
+                    TimeProbe o = new TimeProbe("Suma próbek",y,m,cnt);
+                    tmp.add(o);
+                } );
+            });
+
+            Collections.sort(tmp, new Comparator() {
+
+                        public int compare(Object o1, Object o2) {
+
+                            Integer x1 = ((TimeProbe) o1).getYear();
+                            Integer x2 = ((TimeProbe) o2).getYear();
+                            Integer sComp = x1.compareTo(x2);
+
+                            if (sComp != 0) {
+                                return sComp;
+                            } else {
+                                Integer z1 = ((TimeProbe) o1).getMonth();
+                                Integer z2 = ((TimeProbe) o2).getMonth();
+                                return z1.compareTo(z2);
+                            }
+                        }});
+            sorted.put("Sum próbek", tmp);
+
+        } else {
+            sorted = queryResult.stream()
+                    .collect(groupingBy(TimeProbe::getLexeme, mapping(s -> s, toList())));
+        }
 
         TimeSeriesResult seriesResult = new TimeSeriesResult(dto.getUnit(), sorted);
         if (dto.getMovingAverage()) {
@@ -248,6 +281,7 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
         }
 
         q.select(cb.construct(ConcordanceDTO.class,
+                text.get("id"),
                 root.get("txt"),
                 root.get("posLemma"),
                 sentence.get("sentPlain"),
@@ -345,13 +379,16 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
 
         List<Word> words = em.createQuery(q).getResultList();
 
+        List<String> stopList = em.createQuery("SELECT s.name FROM StopList s").getResultList();
+
         words.forEach(w -> {
-            String findContextWords = "FROM Word w WHERE w.sentence.id = :sentenceId AND w.posAlias = :pos  AND w.seq BETWEEN :left AND :right";
+            String findContextWords = "FROM Word w WHERE w.sentence.id = :sentenceId AND w.posAlias = :pos  AND w.seq BETWEEN :left AND :right AND w.posLemma NOT IN :stopList";
             List<Word> contextWords =  em.createQuery(findContextWords)
                     .setParameter("sentenceId", w.getSentence().getId())
                     .setParameter("pos", pos.toString())
                     .setParameter("left", w.getSeq() - left)
                     .setParameter("right", w.getSeq() + right)
+                    .setParameter("stopList", stopList)
                     .getResultList();
 
             contextWords.forEach(cw -> {
@@ -379,7 +416,10 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
             if (map.containsKey(r.getBaseColocat())) {
                 if (!map.get(r.getBaseColocat()).getMatch().contains(r.getMatch())) {
                     String match = map.get(r.getBaseColocat()).getMatch() + " , " + r.getMatch();
+                    float proc =  map.get(r.getBaseColocat()).getPercentage()  + r.getPercentage();
                     map.get(r.getBaseColocat()).setMatch(match);
+                    map.get(r.getBaseColocat()).setPercentage(proc);
+
                 }
                 map.get(r.getBaseColocat()).setCount(map.get(r.getBaseColocat()).getCount() + r.getCount());
             } else {
@@ -389,6 +429,14 @@ public class TextRepositoryImpl implements pl.edu.pwr.chrono.repository.TextRepo
 
         List<LexemeProfile> list = Lists.newArrayList();
         map.forEach((k, v) -> list.add(v));
+        Collections.sort(list, new Comparator() {
+
+           public int compare(Object o1, Object o2) {
+                Long x1 = ((LexemeProfile) o1).getCount();
+                Long x2 = ((LexemeProfile) o2).getCount();
+                return x1.compareTo(x2);
+            }
+        });
 
         return list;
     }

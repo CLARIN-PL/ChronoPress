@@ -8,8 +8,10 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Notification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.edu.pwr.chrono.domain.Text;
 import pl.edu.pwr.chrono.readmodel.*;
 import pl.edu.pwr.chrono.readmodel.dto.*;
+import pl.edu.pwr.chrono.repository.TextRepository;
 import pl.edu.pwr.chrono.webui.infrastructure.Presenter;
 
 import java.util.Collection;
@@ -53,6 +55,9 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
     @Autowired
     private UCLoadGoogleLocations loadGoogleLocations;
+
+    @Autowired
+    private TextRepository repository;
 
     public void executeQuantitativeCalculations() {
         try {
@@ -263,6 +268,10 @@ public class DataAnalysisPresenter extends Presenter<DataAnalysisView> {
 
     public Collection<?> loadAudience() {
         return ucLoadingAudience.load();
+    }
+
+    public Text  findText(Integer id){
+        return repository.findOne(id);
     }
 
     public List<SimpleGeolocation> getGoogleMapLocations() {

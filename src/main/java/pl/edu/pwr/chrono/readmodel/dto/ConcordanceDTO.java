@@ -7,6 +7,7 @@ import java.util.Date;
 @Data
 public class ConcordanceDTO {
 
+    private Integer textId;
     private String word;
     private String lemma;
     private String left;
@@ -19,8 +20,9 @@ public class ConcordanceDTO {
     private String period;
     private String status;
 
-    public ConcordanceDTO(String word, String lemma, String sentence, Date publicationDate, String journalTitle,
+    public ConcordanceDTO(Integer textId,String word, String lemma, String sentence, Date publicationDate, String journalTitle,
                           String articleTitle, String style, String period, String status) {
+        this.textId = textId;
         this.word = word;
         this.lemma = lemma;
         this.sentence = sentence;
@@ -33,6 +35,7 @@ public class ConcordanceDTO {
     }
 
     public ConcordanceDTO(ConcordanceDTO c) {
+        this.textId = c.textId;
         this.word = c.getWord();
         this.lemma = c.getLemma();
         this.sentence = c.getSentence();

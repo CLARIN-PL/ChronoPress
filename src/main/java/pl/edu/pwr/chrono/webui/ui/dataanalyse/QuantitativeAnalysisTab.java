@@ -83,10 +83,13 @@ public class QuantitativeAnalysisTab extends Tab {
         initListeners();
 
         regexpHelp1.setIcon(FontAwesome.QUESTION_CIRCLE);
+        regexpHelp1.setDescription(provider.getProperty("help.regexp"));
         regexpHelp2.setIcon(FontAwesome.QUESTION_CIRCLE);
+        regexpHelp2.setDescription(provider.getProperty("help.regexp"));
 
         wordRegularExpression.addValidator(regularExpressionValidator);
         sentenceRegularExpression.addValidator(regularExpressionValidator);
+        namingUnit.setVisible(false);
     }
 
     private void initListeners() {

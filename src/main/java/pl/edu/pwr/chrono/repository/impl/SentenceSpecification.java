@@ -6,6 +6,6 @@ import pl.edu.pwr.chrono.domain.Sentence;
 public class SentenceSpecification {
 
     public static Specification<Sentence> byText(String expression) {
-        return (root, query, cb) -> cb.like(root.get("sent_plain"), expression);
+        return (root, query, cb) -> cb.like(root.get("sentPlain"), expression);
     }
 }
