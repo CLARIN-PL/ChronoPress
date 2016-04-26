@@ -89,7 +89,7 @@ public class DataExplorationTab extends Tab {
         contextPos.setItemCaption(PartOfSpeech.noun, provider.getProperty("label.noun"));
 
         contextPos.addItem(PartOfSpeech.verb);
-        contextPos.setItemCaption(PartOfSpeech.verb, provider.getProperty("label.noun"));
+        contextPos.setItemCaption(PartOfSpeech.verb, provider.getProperty("label.verb"));
 
         contextPos.addItem(PartOfSpeech.adverb);
         contextPos.setItemCaption(PartOfSpeech.adverb, provider.getProperty("label.adverb"));
