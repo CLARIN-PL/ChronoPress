@@ -70,7 +70,7 @@ public class WordZipfFrequencyHistogram implements CalculationResult {
             FileWriter writer = new FileWriter(file);
             data.getWordFrequencyHistogram().forEach((k, v) -> {
                 try {
-                    writer.append(Long.toString(k) + "\t" + Long.toString(v) + "\t\n");
+                    writer.append(Long.toString(k) + ";" + Long.toString(v) + ";\n");
                 } catch (IOException e) {
                     log.debug("Export to CSV" , e);
                 }

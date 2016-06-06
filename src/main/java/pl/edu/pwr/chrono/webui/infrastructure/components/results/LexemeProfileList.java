@@ -136,7 +136,7 @@ public class LexemeProfileList implements CalculationResult {
         df.setMaximumFractionDigits(3);
         data.forEach(i -> {
             try {
-                writer.append(i.getBaseColocat() + "\t" + i.getMatch() + "\t" + i.getCount() + "\t" + df.format(i.getPercentage()) + "\t\n");
+                writer.append(i.getBaseColocat() + ";" + i.getMatch() + ";" + i.getCount() + ";" + df.format(i.getPercentage()) + ";\n");
             } catch (IOException e) {
                 log.debug("Export to csv", e);
             }

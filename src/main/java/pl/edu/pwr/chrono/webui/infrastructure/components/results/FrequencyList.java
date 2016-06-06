@@ -15,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Slf4j
@@ -84,6 +86,17 @@ public class FrequencyList implements CalculationResult {
 
     public Resource createExportContent(List<WordFrequencyDTO> data) throws IOException {
         final String date = LocalDate.now().toString();
+
+        Collections.sort(data, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+
+                Long x1 = ((WordFrequencyDTO) o1).getCount();
+                Long x2 = ((WordFrequencyDTO) o2).getCount();
+               return  x1.compareTo(x2);
+            }});
+        Collections.reverse(data);
+
         java.io.File file  = java.io.File.createTempFile("frequency-list-"+date , ".csv");
         file.deleteOnExit();
         FileWriter writer = new FileWriter(file);
@@ -93,7 +106,7 @@ public class FrequencyList implements CalculationResult {
 
         data.forEach(i -> {
             try {
-                writer.append(i.getWord() + "\t" + i.getPartOfSpeech() + "\t" + Long.toString(i.getCount()) + "\t" + df.format(i.getPercentage()) + "\t\n");
+                writer.append(i.getWord() + ";" + Long.toString(i.getCount())+";\n");
             } catch (IOException e) {
                 log.debug("Export to csv", e);
             }

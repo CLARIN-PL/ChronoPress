@@ -22,7 +22,7 @@ public class DefaultUCDataExplorationTest {
         String sentence = "janusz miał dużo pracy i robił w polu cały dzień";
 
         List<ConcordanceDTO> list = Lists.newArrayList();
-        ConcordanceDTO dto = new ConcordanceDTO("pracy", "pracy", sentence, new Date(), "Trybuna", "", "", "", "");
+        ConcordanceDTO dto = new ConcordanceDTO(1,"pracy", "pracy", sentence, new Date(), "Trybuna", "", "", "", "");
         list.add(dto);
 
         List<ConcordanceDTO> after = service.splitSentenceOnWord(list);
@@ -36,7 +36,7 @@ public class DefaultUCDataExplorationTest {
         String sentence = "janusz miał dużo pracy i robił w pracy cały dzień, żeby zarobić";
 
         List<ConcordanceDTO> list = Lists.newArrayList();
-        ConcordanceDTO dto = new ConcordanceDTO("pracy", "pracy", sentence, new Date(), "Trybuna", "", "", "", "");
+        ConcordanceDTO dto = new ConcordanceDTO(1,"pracy", "pracy", sentence, new Date(), "Trybuna", "", "", "", "");
         list.add(dto);
 
         List<ConcordanceDTO> after = service.splitSentenceOnWord(list);

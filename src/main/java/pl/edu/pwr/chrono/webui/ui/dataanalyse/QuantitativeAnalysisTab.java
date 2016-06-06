@@ -89,7 +89,6 @@ public class QuantitativeAnalysisTab extends Tab {
 
         wordRegularExpression.addValidator(regularExpressionValidator);
         sentenceRegularExpression.addValidator(regularExpressionValidator);
-        namingUnit.setVisible(false);
     }
 
     private void initListeners() {

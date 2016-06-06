@@ -74,7 +74,7 @@ public class ConcordanceList implements CalculationResult {
             FileWriter writer = new FileWriter(file);
             data.forEach(i -> {
                 try {
-                    writer.append(i.getLeft() + "\t" + i.getLemma() + "\t" + i.getRight() + "\t" + i.getPublicationDate() + "\t" + i.getJournalTitle()+"\t\n");
+                    writer.append(i.getLeft() + ";" + i.getLemma() + ";" + i.getRight() + ";" + i.getPublicationDate() + ";" + i.getJournalTitle()+";\n");
                 } catch (IOException e) {
                     log.debug("Export to csv", e);
                 }

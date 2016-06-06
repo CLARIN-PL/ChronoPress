@@ -74,7 +74,7 @@ public class TimeSeriesChart implements CalculationResult {
                 writer.append("month\t"+"year\t"+"frequency\t\n");
                 v.forEach(tp -> {
                     try {
-                        writer.append(tp.getMonth() + "\t" + tp.getYear() +"\t"+ tp.getCount() + "\t\n");
+                        writer.append(tp.getMonth() + ";" + tp.getYear() +";"+ tp.getCount() + ";\n");
                     } catch (IOException e) {
                         log.debug("Export to CSV", e);
                     }

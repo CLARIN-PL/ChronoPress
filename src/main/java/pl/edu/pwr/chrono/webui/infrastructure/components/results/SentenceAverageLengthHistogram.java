@@ -92,7 +92,7 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
         FileWriter writer = new FileWriter(file);
            data.getSentence().getAverageLengthHistogram().forEach((k, v) -> {
               try {
-                    writer.append(Long.toString(k) + "\t" + Long.toString(v) + "\t\n");
+                    writer.append(Long.toString(k) + ";" + Long.toString(v) + ";\n");
                 } catch (IOException e) {
                     log.debug("Export to CSV", e);
                 }
