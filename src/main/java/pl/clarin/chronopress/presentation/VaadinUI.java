@@ -22,7 +22,7 @@ import pl.clarin.chronopress.presentation.shered.layout.MainLayout;
 
 @CDIUI("")
 @Title("ChronoPress")
-@Theme("chrono")
+@Theme("press")
 @Widgetset("pl.clarin.chronopress.Widgetset")
 @Push(transport = Transport.WEBSOCKET_XHR)
 public class VaadinUI extends UI {

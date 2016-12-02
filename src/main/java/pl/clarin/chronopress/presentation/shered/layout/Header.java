@@ -1,11 +1,11 @@
 package pl.clarin.chronopress.presentation.shered.layout;
 
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.HorizontalLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
-public class Header extends VerticalLayout {
+public class Header extends HorizontalLayout {
 
     @Inject
     MainMenu menu;
@@ -17,6 +17,6 @@ public class Header extends VerticalLayout {
     public void init() {
         setWidth(100, Unit.PERCENTAGE);
         addStyleName(ChronoTheme.HEADER);
-        addComponents(menu, branding);
+        addComponents(branding, menu);
     }
 }
