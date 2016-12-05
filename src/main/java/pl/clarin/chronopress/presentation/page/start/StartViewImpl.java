@@ -54,32 +54,32 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
             }
         });
 
-        Button test1 = new MButton("Test 1")
+        Button test1 = new MButton("Szeregi czasowe")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.BELL)
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test2 = new MButton("Test 2")
+        Button test2 = new MButton("Profile")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.GIT_SQUARE)
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test3 = new MButton("Test 3")
+        Button test3 = new MButton("Konkordancje")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.BOLT)
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test4 = new MButton("Test 4")
+        Button test4 = new MButton("Mapa nazw miejscowych")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.COMMENTING)
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test5 = new MButton("Test 5")
+        Button test5 = new MButton("Listy frekwencyjne")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.INBOX)
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test6 = new MButton("Test 6")
+        Button test6 = new MButton("Analiza ilościowa")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.SCRIBD)
                 .withStyleName(ValoTheme.BUTTON_LARGE);
@@ -100,19 +100,24 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         gridLayout.addComponent(test6, 2, 1);
 
         Panel searchPanel = new MPanel(searchContent)
+                .withStyleName(ValoTheme.PANEL_BORDERLESS)
                 .withFullWidth();
 
         Panel linksPanel = new MPanel(new MHorizontalLayout(gridLayout)
                 .withAlign(gridLayout, Alignment.MIDDLE_CENTER)
                 .withFullWidth()
-        ).withFullWidth();
+        ).withFullWidth()
+                .withStyleName(ValoTheme.PANEL_BORDERLESS);
 
         VerticalLayout content = new MVerticalLayout()
                 .with(searchPanel, linksPanel)
+                //.withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
+                .withFullHeight()
                 .withFullWidth();
 
         setCompositionRoot(content);
+        setSizeFull();
     }
 
     @Override

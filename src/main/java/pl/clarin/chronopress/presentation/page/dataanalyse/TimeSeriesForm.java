@@ -27,13 +27,12 @@ import pl.clarin.chronopress.presentation.shered.dto.Time;
 import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesDTO;
 import pl.clarin.chronopress.presentation.shered.layout.MComboBox;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
-import pl.clarin.chronopress.presentation.shered.validators.RegularExpressionValidator;
 
 public class TimeSeriesForm extends CustomComponent {
 
     @Inject
     DbPropertiesProvider provider;
-    
+
     @Inject
     LexicalFieldFacade lexicalFieldFacade;
 
@@ -42,31 +41,22 @@ public class TimeSeriesForm extends CustomComponent {
 
     private final MComboBox<LexicalField> lexical = new MComboBox("groupName", LexicalField.class);
 
-    @PropertyId("regularExpression")
-    private final TextField regularExpression = new TextField();
-
     @PropertyId("movingAverageWindowSize")
     private final TextField movingAverageWindowSize = new TextField();
 
     @PropertyId("unit")
     private final OptionGroup unit = new OptionGroup();
 
-    @PropertyId("timeSeriesCalculation")
-    private final CheckBox timeSeries = new CheckBox();
-
     @PropertyId("movingAverage")
     private final CheckBox movingAverage = new CheckBox();
 
     private final BeanFieldGroup<TimeSeriesDTO> binder = new BeanFieldGroup<>(TimeSeriesDTO.class);
 
-    @Inject
-    private RegularExpressionValidator regularExpressionValidator;
-
     @PostConstruct
     private void init() {
         binder.setItemDataSource(new TimeSeriesDTO());
         binder.bindMemberFields(this);
-        
+
         unit.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         unit.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
 
@@ -80,39 +70,29 @@ public class TimeSeriesForm extends CustomComponent {
         lexical.setCaption(provider.getProperty("label.lexical"));
         lexical.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexical.addBeans(lexicalFieldFacade.findAll());
-        
+
         lexeme.setCaption(provider.getProperty("label.lexeme"));
         lexeme.addStyleName(TokenField.STYLE_TOKENFIELD);
         lexeme.addStyleName(ChronoTheme.TOKENFIELD);
         lexeme.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexeme.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
 
-        regularExpression.setImmediate(true);
-        regularExpression.setCaption(provider.getProperty("label.regular.expression"));
-        regularExpression.addValidator(regularExpressionValidator);
-        regularExpression.addStyleName(ValoTheme.TEXTFIELD_TINY);
-
-        timeSeries.setCaption(provider.getProperty("label.tool.time.series"));
-
         movingAverage.setCaption(provider.getProperty("label.tool.moving.average"));
         movingAverageWindowSize.setCaption(provider.getProperty("label.tool.moving.average.window.size"));
         movingAverageWindowSize.setVisible(false);
         movingAverage.addValueChangeListener(event
                 -> movingAverageWindowSize.setVisible(!movingAverageWindowSize.isVisible()));
-        
+
         FormLayout form = new MFormLayout(
-                lexeme, lexical, regularExpression, 
-                unit, timeSeries, movingAverage, 
-                movingAverageWindowSize );
-        
+                lexeme, lexical, unit, movingAverage,
+                movingAverageWindowSize);
+
         setSizeUndefined();
         setCompositionRoot(form);
     }
 
     public void reset() {
         lexeme.clear();
-        regularExpression.setValue("");
-        timeSeries.setValue(false);
         lexical.setValue(null);
     }
 
@@ -126,7 +106,7 @@ public class TimeSeriesForm extends CustomComponent {
                 binder.getItemDataSource().getBean().setAsSumOfResults(true);
             }
         }
-        if (lexical.getValue() != null || (regularExpression.getValue() != null && !regularExpression.getValue().equals(""))) {
+        if (lexical.getValue() != null) {
             binder.getItemDataSource().getBean().setAsSumOfResults(true);
         } else {
             binder.getItemDataSource().getBean().setAsSumOfResults(false);

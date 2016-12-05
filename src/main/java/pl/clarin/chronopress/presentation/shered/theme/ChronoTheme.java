@@ -8,7 +8,9 @@ public class ChronoTheme {
     public static final String HEADER = "press-header";
     public static final String BRANDING = "press-branding";
 
-    public static final String MENU_BAR = "";
+    public static final String MENU_BAR = "press-menu-bar";
+    public static final String START_PANEL = "press-start-panel";
+
     public static final String MENU_BAR_WRAPPER = "";
     public static final String LEAD_PANEL = "";
     public static final String SUB_PANEL = "";

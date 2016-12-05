@@ -4,6 +4,7 @@ import com.vaadin.server.Responsive;
 import com.vaadin.ui.VerticalLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
 public class MainLayout extends VerticalLayout {
 
@@ -18,9 +19,11 @@ public class MainLayout extends VerticalLayout {
     @PostConstruct
     public void init() {
         Responsive.makeResponsive(this);
+        addStyleName(ChronoTheme.START_PANEL);
         addComponent(header);
         addComponent(content);
         addComponent(footer);
+        content.setSizeFull();
     }
 
     public VerticalLayout getContent() {

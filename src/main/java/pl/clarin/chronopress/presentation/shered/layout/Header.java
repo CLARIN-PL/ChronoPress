@@ -1,5 +1,6 @@
 package pl.clarin.chronopress.presentation.shered.layout;
 
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.HorizontalLayout;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -18,5 +19,7 @@ public class Header extends HorizontalLayout {
         setWidth(100, Unit.PERCENTAGE);
         addStyleName(ChronoTheme.HEADER);
         addComponents(branding, menu);
+        setMargin(new MarginInfo(false, true));
+        setExpandRatio(menu, 1);
     }
 }

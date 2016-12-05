@@ -33,8 +33,9 @@ public class TimeSeriesTab extends CustomComponent {
                 .withFullWidth()
                 .with(timeSeriesForm)
                 .withAlign(timeSeriesForm, Alignment.TOP_CENTER);
-         setCompositionRoot(layout);
+        setCompositionRoot(layout);
     }
+
     public TimeSeriesDTO getTimeSeriesDTO() {
         try {
             return timeSeriesForm.getTimeSeriesDTO();
@@ -43,7 +44,8 @@ public class TimeSeriesTab extends CustomComponent {
         }
         return null;
     }
-    public void reset(){
-       timeSeriesForm.reset();
+
+    public void reset() {
+        timeSeriesForm.reset();
     }
 }
