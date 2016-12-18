@@ -22,6 +22,9 @@ import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MPanel;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.page.profile.ProfilesView;
+import pl.clarin.chronopress.presentation.page.timeseries.TimeSeriesView;
+import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 
 @CDIView(StartView.ID)
@@ -30,6 +33,9 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
     @Inject
     private Instance<StartViewPresenter> presenter;
 
+    @Inject
+    javax.enterprise.event.Event<NavigationEvent> navigation;
+    
     @Inject
     DbPropertiesProvider provider;
 
@@ -57,11 +63,17 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         Button test1 = new MButton("Szeregi czasowe")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.BELL)
+                .withListener(l ->{
+                    navigation.fire(new NavigationEvent(TimeSeriesView.ID));
+                })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
         Button test2 = new MButton("Profile")
                 .withSize(MSize.FULL_SIZE)
                 .withIcon(FontAwesome.GIT_SQUARE)
+                .withListener(l ->{
+                    navigation.fire(new NavigationEvent(ProfilesView.ID));
+                })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
         Button test3 = new MButton("Konkordancje")

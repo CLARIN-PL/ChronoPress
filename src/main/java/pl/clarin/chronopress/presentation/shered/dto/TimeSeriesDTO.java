@@ -10,7 +10,7 @@ public class TimeSeriesDTO {
     private Time unit;
     private Set<String> lexeme = new HashSet<>();
     private String regularExpression = "";
-    private Boolean timeSeriesCalculation = false;
+    private Boolean timeSeriesCalculation = true;
     private Boolean movingAverage = false;
     private Integer movingAverageWindowSize = 3;
     private Boolean asSumOfResults = false;

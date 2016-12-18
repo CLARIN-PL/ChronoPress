@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.timeseries;
+package pl.clarin.chronopress.presentation.page.profile;
 
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
 import pl.clarin.chronopress.presentation.shered.mvp.ApplicationView;
@@ -7,9 +7,9 @@ import pl.clarin.chronopress.presentation.shered.mvp.ApplicationView;
  *
  * @author tnaskret
  */
-public interface TimeSeriesView extends ApplicationView<TimeSeriesViewPresenter> {
+public interface ProfilesView extends ApplicationView<ProfilesViewPresenter> {
 
-    public static final String ID = "szeregi-czasowe";
+    public static final String ID = "profile";
 
     public void addResultPanel(CalculationResult result);
 }

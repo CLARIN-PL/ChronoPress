@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.timeseries;
+package pl.clarin.chronopress.presentation.page.profile;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -27,19 +27,21 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
-import pl.clarin.chronopress.presentation.page.dataanalyse.TimeSeriesForm;
+import pl.clarin.chronopress.presentation.page.dataanalyse.WordQuantitativeAnalysisTab;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
-import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesDTO;
+import pl.clarin.chronopress.presentation.shered.dto.DataExplorationDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
-@CDIView(TimeSeriesView.ID)
-public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> implements TimeSeriesView {
+@CDIView(ProfilesView.ID)
+public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implements ProfilesView {
 
     @Inject
-    private Instance<TimeSeriesViewPresenter> presenter;
+    private Instance<ProfilesViewPresenter> presenter;
 
     @Inject
     DbPropertiesProvider provider;
@@ -48,7 +50,7 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
     DataSelectionForm selectionForm;
 
     @Inject
-    TimeSeriesForm timeSeriesForm;
+    DataExplorationForm dataExplorationForm;
     
     @Inject
     javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
@@ -65,24 +67,25 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
     private VerticalLayout layout;
 
-    public TimeSeriesDTO getTimeSeriesDTO() {
+    
+     public DataExplorationDTO getDataExplorationDTO() {
         try {
-            return timeSeriesForm.getTimeSeriesDTO();
+            return dataExplorationForm.getDataExplorationDTO();
         } catch (FieldGroup.CommitException ex) {
-            Logger.getLogger(TimeSeriesViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(WordQuantitativeAnalysisTab.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
     public void reset() {
-        timeSeriesForm.reset();
+       dataExplorationForm.reset();
     }
 
     @PostConstruct
     public void init() {
         selectionForm.setVisible(false);
 
-        Label desc = new Label("Szeregi czasowe .....");
+        Label desc = new Label("Profile .....");
         Button filter = new MButton("Ustawienia filtra")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
@@ -90,16 +93,14 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Wyszukaj szeregów")
+        Button execute = new MButton("Wyszukaj profili")
                 .withListener(l -> {
-
-                    calculateTimeSeries.fire(new CalculateTimeSerieEvent(selectionForm.getData(), getTimeSeriesDTO()));
-
+                    presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(desc, filter, selectionForm, timeSeriesForm, execute)
+                .with(desc, filter, selectionForm, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
                 .withFullHeight()
@@ -155,7 +156,7 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
     }
 
     @Override
-    protected TimeSeriesViewPresenter generatePresenter() {
+    protected ProfilesViewPresenter generatePresenter() {
         return presenter.get();
     }
 

@@ -28,7 +28,6 @@ import pl.clarin.chronopress.presentation.page.dataanalyse.result.WordAverageLen
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.WordZipfFrequencyHistogram;
 import pl.clarin.chronopress.presentation.page.start.SearchAndShowConcordanceEvent;
 import pl.clarin.chronopress.presentation.shered.dto.ConcordanceDTO;
-import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesResult;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
 
 @Slf4j
@@ -111,19 +110,6 @@ public class DataAnalyseViewPresenter extends AbstractPresenter<DataAnalyseView>
                 r.addData(result);
                 getView().addResultPanel(r);
             }
-        });
-    }
-
-    public void onCalculateTimeSeries(@Observes(notifyObserver = Reception.IF_EXISTS) CalculateTimeSerieEvent event) {
-        getView().showLoading();
-        CompletableFuture<TimeSeriesResult> future = CompletableFuture.supplyAsync(() -> service.calculateTimeSeries(event), executor);
-
-        future.thenAccept((TimeSeriesResult result) -> {
-
-            TimeSeriesChart r = timeSeriesCharts.get();
-            r.addData(result);
-            getView().addResultPanel(r);
-
         });
     }
 

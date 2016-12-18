@@ -10,7 +10,6 @@ public class Branding extends HorizontalLayout {
     public Branding() {
         setSpacing(false);
         addStyleName(ChronoTheme.BRANDING);
-
         //layout.addComponents(addImage("img/logo_uw.png", 45), addImage("img/logo-clarin.png", 45));
         addComponents(addImage("img/logo.png", 45));
 

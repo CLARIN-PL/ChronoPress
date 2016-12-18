@@ -15,6 +15,7 @@ public class StartViewPresenter extends AbstractPresenter<StartView> {
     @Inject
     javax.enterprise.event.Event<NavigationEvent> navigation;
 
+   
     @Override
     protected void onViewEnter() {
     }
@@ -23,4 +24,5 @@ public class StartViewPresenter extends AbstractPresenter<StartView> {
         navigation.fire(new NavigationEvent(DataAnalyseView.ID));
         sasEvent.fire(new SearchAndShowConcordanceEvent(lemma));
     }
+    
 }
