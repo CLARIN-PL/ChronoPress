@@ -9,6 +9,7 @@ import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
+import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.TimeSeriesChart;
 import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesResult;
@@ -27,12 +28,16 @@ public class TimeSeriesViewPresenter extends AbstractPresenter<TimeSeriesView> {
 
     @Inject
     CalculationsFacade service;
-    
+
     @Inject
     Instance<TimeSeriesChart> timeSeriesCharts;
 
+    @Inject
+    SampleFacade sampleFacade;
+
     @Override
     protected void onViewEnter() {
+        getView().setInitDataSelection(sampleFacade.getInitDataSelection());
     }
 
     public void onCalculateTimeSeries(@Observes(notifyObserver = Reception.IF_EXISTS) CalculateTimeSerieEvent event) {

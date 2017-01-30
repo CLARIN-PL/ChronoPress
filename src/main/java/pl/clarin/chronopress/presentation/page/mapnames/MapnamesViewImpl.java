@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.profile;
+package pl.clarin.chronopress.presentation.page.mapnames;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -39,11 +39,11 @@ import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
-@CDIView(ProfilesView.ID)
-public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implements ProfilesView {
+@CDIView(MapnamesView.ID)
+public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implements MapnamesView {
 
     @Inject
-    private Instance<ProfilesViewPresenter> presenter;
+    private Instance<MapnamesViewPresenter> presenter;
 
     @Inject
     DbPropertiesProvider provider;
@@ -85,28 +85,29 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
     @PostConstruct
     public void init() {
         selectionForm.setVisible(false);
-        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PROFILE);
+        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PLACE_NAME_MAP);
 
-        Label desc = new Label("Profile wyrazów");
+        final Label txt1 = new Label();
 
-        Label txt = new Label("<p>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów)."
-                + "Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem."
-                + "</p>\n");
+        String t = "<p>System generuje rozkład punktów, odpowiadających nazwom miejscowości w tekstach.</p>"
+                + "<p>Kolor punktu odpowiada częstości nazwy w tekstach:</p>"
+                + "<ul>"
+                + " <li>żółty 1&ndash;10 </li>"
+                + " <li>zielony 11&ndash;100 </li>"
+                + " <li>niebieski 101&ndash;1000 </li>"
+                + " <li>czerwony &mdash; powyżej 1000</li>"
+                + "</ul>"
+                + "<p>Kliknięcie w  wyróżniony punkt uruchamia okno konkordacji nazwy miejscowości.</p>";
 
-        dataExplorationForm.setLemmaHelp("<p>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków."
-                + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</p>"
-                + "<p><span>\"bylibyśmy\"<span> wygeneruje profil leksykalny dokładnie tej formy czasownika być</p>"
-                + "<p>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></p>"
-        );
+        txt1.setValue(t);
+        txt1.setContentMode(ContentMode.HTML);
 
-        txt.setContentMode(ContentMode.HTML);
-        VerticalLayout popupContent = new VerticalLayout();
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
 
-        popupContent.addComponent(txt);
+        final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        // The component itself
-        PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+        Label desc = new Label("Mapa nazw miejscowych");
 
         Button filter = new MButton("Ustawienia filtra")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
@@ -115,16 +116,14 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Generuj profil")
+        Button execute = new MButton("Pokaż mapę")
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(new MHorizontalLayout(desc, help)
-                        .withSpacing(true),
-                        filter, selectionForm, dataExplorationForm, execute)
+                .with(new HorizontalLayout(desc, help), filter, selectionForm, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
                 .withFullHeight()
@@ -175,6 +174,11 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         }
     }
 
+    @Override
+    protected MapnamesViewPresenter generatePresenter() {
+        return presenter.get();
+    }
+
     public void setInitDataSelection(InitDataSelectionDTO data) {
         selectionForm.setAuthors(data.getAuthors());
         selectionForm.setYears(data.getYears());
@@ -182,11 +186,6 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         selectionForm.setPeriods(data.getPeriods());
         selectionForm.setTiles(data.getJournalTitles());
         selectionForm.setAudience(data.getAudience());
-    }
-
-    @Override
-    protected ProfilesViewPresenter generatePresenter() {
-        return presenter.get();
     }
 
     private Component createContentWrapper(final Component content, String type) {

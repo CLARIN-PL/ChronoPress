@@ -8,7 +8,7 @@ $view-padding: round($v-unit-size / 1.5) !default;
 @mixin chrono {
 
     @include valo;
-    
+
     .ch-header{
         background: #fff url("img/bg.jpg") no-repeat 50% 0%;
         border-bottom: 1px solid #DADADA;;

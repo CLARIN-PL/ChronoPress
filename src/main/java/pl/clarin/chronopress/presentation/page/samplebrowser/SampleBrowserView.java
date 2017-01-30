@@ -13,9 +13,9 @@ import pl.clarin.chronopress.presentation.shered.mvp.ApplicationView;
  * @author tnaskret
  */
 public interface SampleBrowserView extends ApplicationView<SampleBrowserViewPresenter> {
-    
+
     public static final String ID = "sample-browser";
-    
-     public void showSampleWindow(Sample s);
+
+    public void showSampleWindow(Sample s);
 
 }

@@ -1,7 +1,6 @@
-package pl.clarin.chronopress.presentation.page.profile;
+package pl.clarin.chronopress.presentation.page.quantity;
 
 import com.vaadin.cdi.CDIView;
-import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
@@ -13,12 +12,11 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -28,22 +26,20 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
-import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
-import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
+import pl.clarin.chronopress.presentation.page.dataanalyse.SentenceQuantitativeAnalysisTab;
 import pl.clarin.chronopress.presentation.page.dataanalyse.WordQuantitativeAnalysisTab;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
-import pl.clarin.chronopress.presentation.shered.dto.DataExplorationDTO;
 import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
-@CDIView(ProfilesView.ID)
-public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implements ProfilesView {
+@CDIView(QuantityView.ID)
+public class QuantityViewImpl extends AbstractView<QuantityViewPresenter> implements QuantityView {
 
     @Inject
-    private Instance<ProfilesViewPresenter> presenter;
+    private Instance<QuantityViewPresenter> presenter;
 
     @Inject
     DbPropertiesProvider provider;
@@ -52,7 +48,10 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
     DataSelectionForm selectionForm;
 
     @Inject
-    DataExplorationForm dataExplorationForm;
+    WordQuantitativeAnalysisTab wordQuantitativeAnalysisTab;
+
+    @Inject
+    SentenceQuantitativeAnalysisTab sentenceQuantitativeAnalysisTab;
 
     @Inject
     javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
@@ -69,44 +68,50 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
 
     private VerticalLayout layout;
 
-    public DataExplorationDTO getDataExplorationDTO() {
-        try {
-            return dataExplorationForm.getDataExplorationDTO();
-        } catch (FieldGroup.CommitException ex) {
-            Logger.getLogger(WordQuantitativeAnalysisTab.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public void reset() {
-        dataExplorationForm.reset();
-    }
+    private TabSheet sheet;
 
     @PostConstruct
     public void init() {
         selectionForm.setVisible(false);
-        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PROFILE);
 
-        Label desc = new Label("Profile wyrazów");
+        sheet = new TabSheet(
+                wordQuantitativeAnalysisTab,
+                sentenceQuantitativeAnalysisTab);
 
-        Label txt = new Label("<p>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów)."
-                + "Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem."
-                + "</p>\n");
+        final Label txt1 = new Label();
 
-        dataExplorationForm.setLemmaHelp("<p>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków."
-                + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</p>"
-                + "<p><span>\"bylibyśmy\"<span> wygeneruje profil leksykalny dokładnie tej formy czasownika być</p>"
-                + "<p>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></p>"
-        );
+        String t = "<p>Moduł ten pozwala na automatyczne obliczenia podstawowych statystyk skupienia i rozrzutu cech dla tekstów.</p>";
 
-        txt.setContentMode(ContentMode.HTML);
-        VerticalLayout popupContent = new VerticalLayout();
+        txt1.setValue(t);
+        txt1.setContentMode(ContentMode.HTML);
 
-        popupContent.addComponent(txt);
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
 
-        // The component itself
-        PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+        final Label txt2 = new Label();
+        String t1 = "<p>System rozpoznaje wyrazy tekstowe, definiowane jako ciagi znaków między spacjami.</p></br>"
+                + "<p>Jednostką pomiaru jest litera. System nie rozpoznaje jednostek wielowyrazowych typu \"na co dzień \" lub \"wilk morski\"</p>";
+
+        txt2.setValue(t1);
+        txt2.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent2 = new VerticalLayout();
+        popupContent2.addComponent(txt2);
+
+        final Label txt3 = new Label();
+        String t2 = "<p>System rozpoznaje zdania zgodnie z interpunkcją w tekście. Jednostką pomiaru są litery lub pojedyncze wyrazy.</p>";
+
+        txt3.setValue(t2);
+        txt3.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent3 = new VerticalLayout();
+        popupContent3.addComponent(txt3);
+
+        final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+        final PopupView help1 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
+        final PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent3);
+
+        Label desc = new Label("Analiza ilościowa");
 
         Button filter = new MButton("Ustawienia filtra")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
@@ -115,16 +120,14 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Generuj profil")
+        Button execute = new MButton("Wykonaj")
                 .withListener(l -> {
-                    presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
+
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(new MHorizontalLayout(desc, help)
-                        .withSpacing(true),
-                        filter, selectionForm, dataExplorationForm, execute)
+                .with(new HorizontalLayout(desc, help), filter, selectionForm, help1, help2, sheet, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
                 .withFullHeight()
@@ -175,6 +178,11 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         }
     }
 
+    @Override
+    protected QuantityViewPresenter generatePresenter() {
+        return presenter.get();
+    }
+
     public void setInitDataSelection(InitDataSelectionDTO data) {
         selectionForm.setAuthors(data.getAuthors());
         selectionForm.setYears(data.getYears());
@@ -182,11 +190,6 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         selectionForm.setPeriods(data.getPeriods());
         selectionForm.setTiles(data.getJournalTitles());
         selectionForm.setAudience(data.getAudience());
-    }
-
-    @Override
-    protected ProfilesViewPresenter generatePresenter() {
-        return presenter.get();
     }
 
     private Component createContentWrapper(final Component content, String type) {

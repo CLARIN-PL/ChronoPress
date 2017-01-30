@@ -2,8 +2,8 @@ package pl.clarin.chronopress.presentation.page.timeseries;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.FieldGroup;
-import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Component;
@@ -11,6 +11,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -31,6 +32,7 @@ import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEve
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.TimeSeriesForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
+import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
@@ -49,7 +51,7 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
     @Inject
     TimeSeriesForm timeSeriesForm;
-    
+
     @Inject
     javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
 
@@ -82,15 +84,28 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
     public void init() {
         selectionForm.setVisible(false);
 
+        final Label txt1 = new Label();
+
+        String t = "<p>System pozwal na wskazanie lat, tytułów periodyków, autora, grupy odbiorczej i typu periodyku (dziennik, tygodnik itp.)</p"
+                + "</br><p>Kategoria ekspozycji (strona tytułowa, środek, ostatnia strona) nie obejmuje wszystkich tekstów.</p>";
+
+        txt1.setValue(t);
+        txt1.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
+
+        final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+
         Label desc = new Label("Szeregi czasowe .....");
-        Button filter = new MButton("Ustawienia filtra")
+        Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Wyszukaj szeregów")
+        Button execute = new MButton("Wykonaj")
                 .withListener(l -> {
 
                     calculateTimeSeries.fire(new CalculateTimeSerieEvent(selectionForm.getData(), getTimeSeriesDTO()));
@@ -99,7 +114,7 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(desc, filter, selectionForm, timeSeriesForm, execute)
+                .with(desc, new MHorizontalLayout(filter, help).withSpacing(true), selectionForm, timeSeriesForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
                 .withFullHeight()
@@ -138,6 +153,15 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
         });
     }
 
+    public void setInitDataSelection(InitDataSelectionDTO data) {
+        selectionForm.setAuthors(data.getAuthors());
+        selectionForm.setYears(data.getYears());
+        selectionForm.setExposition(data.getExpositions());
+        selectionForm.setPeriods(data.getPeriods());
+        selectionForm.setTiles(data.getJournalTitles());
+        selectionForm.setAudience(data.getAudience());
+    }
+
     public void show() {
         Component panel = createContentWrapper(calculation.showResult(), calculation.getType());
         layout.addComponent(panel);
@@ -148,10 +172,6 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
         if (!results.containsKey(calculation.getType())) {
             results.put(calculation.getType(), calculation);
         }
-    }
-
-    @Override
-    public void enter(ViewChangeEvent event) {
     }
 
     @Override

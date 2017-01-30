@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.presentation.shered.dto.ConcordanceDTO;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
@@ -27,9 +28,10 @@ import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 @Slf4j
 public class ConcordanceList implements CalculationResult {
 
-    private final HorizontalSplitPanel panel = new HorizontalSplitPanel();
-
+    private TabSheet sheet = new TabSheet();
     private final Grid grid = new Grid();
+
+    private VerticalLayout tree = new MVerticalLayout().withFullWidth();
 
     @Inject
     private DbPropertiesProvider provider;
@@ -46,10 +48,14 @@ public class ConcordanceList implements CalculationResult {
     public void init() {
 
         initializeGrid();
-        panel.setWidth(100, Sizeable.Unit.PERCENTAGE);
+
+        sheet.setWidth(100, Sizeable.Unit.PERCENTAGE);
 
         VerticalLayout wrapper = new VerticalLayout();
+        wrapper.setCaption("Konkordancje");
         wrapper.addComponent(grid);
+
+        tree.setCaption("Statystyki");
 
         HorizontalLayout btn = new HorizontalLayout();
         btn.addComponent(downloadCSV);
@@ -58,9 +64,8 @@ public class ConcordanceList implements CalculationResult {
 
         wrapper.addComponent(btn);
 
-        panel.setFirstComponent(wrapper);
-        panel.setSplitPosition(75, Sizeable.Unit.PERCENTAGE);
-        panel.setCaption(provider.getProperty("label.lexeme.concordance.list"));
+        sheet.addComponents(wrapper, tree);
+        sheet.setCaption(provider.getProperty("label.lexeme.concordance.list"));
 
     }
 
@@ -71,7 +76,7 @@ public class ConcordanceList implements CalculationResult {
 
     @Override
     public Component showResult() {
-        return panel;
+        return sheet;
     }
 
     public Resource createExportContent(List<ConcordanceDTO> data) throws IOException {
@@ -96,7 +101,8 @@ public class ConcordanceList implements CalculationResult {
         container.addAll(data);
         TreeTable tt = buildStatTable(data);
         tt.setWidth(100, Sizeable.Unit.PERCENTAGE);
-        panel.setSecondComponent(tt);
+        tree.removeAllComponents();
+        tree.addComponent(tt);
 
         try {
             fileDownloader = new FileDownloader(createExportContent(data));
@@ -104,7 +110,7 @@ public class ConcordanceList implements CalculationResult {
             log.debug("Export to csv", e);
         }
         fileDownloader.extend(downloadCSV);
-        panel.setCaption(panel.getCaption() + " (" + data.size() + ")");
+        sheet.setCaption(sheet.getCaption() + " (" + data.size() + ")");
     }
 
     private TreeTable buildStatTable(List<ConcordanceDTO> data) {

@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.timeseries;
+package pl.clarin.chronopress.presentation.page.mapnames;
 
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
 import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
@@ -8,9 +8,9 @@ import pl.clarin.chronopress.presentation.shered.mvp.ApplicationView;
  *
  * @author tnaskret
  */
-public interface TimeSeriesView extends ApplicationView<TimeSeriesViewPresenter> {
+public interface MapnamesView extends ApplicationView<MapnamesViewPresenter> {
 
-    public static final String ID = "szeregi-czasowe";
+    public static final String ID = "nazwy-miejscowe";
 
     public void addResultPanel(CalculationResult result);
 

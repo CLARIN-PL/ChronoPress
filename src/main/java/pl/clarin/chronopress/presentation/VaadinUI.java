@@ -16,7 +16,7 @@ import javax.inject.Inject;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 import pl.clarin.chronopress.presentation.page.error.ErrorView;
 import pl.clarin.chronopress.presentation.page.login.AutenthicationPresenter;
-import pl.clarin.chronopress.presentation.page.samplebrowser.SampleBrowserView;
+import pl.clarin.chronopress.presentation.page.start.StartView;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.layout.MainLayout;
 
@@ -53,7 +53,7 @@ public class VaadinUI extends UI {
         navigator.addProvider(viewProvider);
         navigator.setErrorView(errorView);
         navigator.addViewChangeListener(tracker);
-        navigator.navigateTo(SampleBrowserView.ID);
+        navigator.navigateTo(StartView.ID);
 
     }
 

@@ -3,12 +3,16 @@ package pl.clarin.chronopress.presentation.page.dataanalyse;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -50,8 +54,11 @@ public class DataExplorationForm extends CustomComponent {
     private HorizontalLayout profileSubPanel;
     private FormLayout lemmaPanel;
 
+    Label txt = new Label();
+
     @PostConstruct
     public void init() {
+
         binder.setItemDataSource(new DataExplorationDTO());
         binder.bindMemberFields(this);
 
@@ -61,6 +68,7 @@ public class DataExplorationForm extends CustomComponent {
         lemmaPanel = initLemma();
         lemmaPanel.setVisible(false);
 
+        operationType.setVisible(false);
         initializeOperations();
 
         VerticalLayout layout = new MVerticalLayout()
@@ -71,19 +79,38 @@ public class DataExplorationForm extends CustomComponent {
         setCompositionRoot(layout);
     }
 
+    public void setLemmaHelp(String tekst) {
+        txt.setValue(tekst);
+    }
+
     private FormLayout initLemma() {
-        lemma.setCaption(provider.getProperty("label.lemma"));
+
         lemma.addStyleName(ValoTheme.TEXTFIELD_SMALL);
         caseSensitive.addStyleName(ValoTheme.CHECKBOX_SMALL);
-        return new MFormLayout(lemma, caseSensitive)
+
+        txt.setContentMode(ContentMode.HTML);
+        VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt);
+        PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+
+        HorizontalLayout wrapper = new MHorizontalLayout()
+                .withCaption("Wpisz wyraz")
+                .with(help, lemma);
+
+        return new MFormLayout(wrapper, caseSensitive)
                 .withMargin(false);
+
     }
 
     private HorizontalLayout initProfile() {
 
-        contextPos.setCaption(provider.getProperty("view.tab.data.exploration.profile.pos"));
+        contextPos.setCaption("Wyrazy kotekstowe");
         contextPos.setNullSelectionAllowed(false);
         contextPos.addStyleName(ValoTheme.COMBOBOX_SMALL);
+
+        contextPos.addItem(PartOfSpeech.all);
+        contextPos.setItemCaption(PartOfSpeech.all, "wszystkie");
+
         contextPos.addItem(PartOfSpeech.adj);
         contextPos.setItemCaption(PartOfSpeech.adj, provider.getProperty("label.adjective"));
 
@@ -101,15 +128,35 @@ public class DataExplorationForm extends CustomComponent {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
         leftContextGap.addStyleName(ValoTheme.COMBOBOX_SMALL);
-        leftContextGap.setCaption(provider.getProperty("view.tab.data.exploration.profile.left.context.gap"));
+        leftContextGap.setCaption("Lewy kontekst");
         leftContextGap.addItems(numbers);
 
         rightContextGap.addStyleName(ValoTheme.COMBOBOX_SMALL);
-        rightContextGap.setCaption(provider.getProperty("view.tab.data.exploration.profile.right.context.gap"));
+        rightContextGap.setCaption("Prawy kontekst");
         rightContextGap.addItems(numbers);
 
+        final Label txt1 = new Label();
+
+        txt1.setValue("Wyrazy kotekstowe (kolokaty) można ograniczyć do wskazanych części mowy.");
+        txt1.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
+
+        final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+
+        final Label txt2 = new Label();
+
+        txt2.setValue("Szerokość kontekstu określona jest liczbą wyrazów tekstowych.");
+        txt2.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent2 = new VerticalLayout();
+        popupContent2.addComponent(txt2);
+
+        final PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
+
         return new MHorizontalLayout()
-                .with(contextPos, leftContextGap, rightContextGap);
+                .with(new HorizontalLayout(contextPos, help), new HorizontalLayout(leftContextGap, rightContextGap, help2));
     }
 
     private void initializeOperations() {
@@ -151,6 +198,10 @@ public class DataExplorationForm extends CustomComponent {
 
     }
 
+    public void selectOptionType(DataExplorationType type) {
+        operationType.select(type);
+    }
+
     public void setLemma(String txt) {
         lemma.setValue(txt);
     }
@@ -174,6 +225,6 @@ public class DataExplorationForm extends CustomComponent {
     }
 
     public enum PartOfSpeech {
-        verb, noun, adj, adverb
+        all, verb, noun, adj, adverb
     }
 }

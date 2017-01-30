@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.profile;
+package pl.clarin.chronopress.presentation.page.concordance;
 
 import com.airhacks.porcupine.execution.boundary.Dedicated;
 import com.vaadin.cdi.UIScoped;
@@ -10,12 +10,12 @@ import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
 import pl.clarin.chronopress.business.calculations.boundary.DataExplorationResult;
 import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
-import pl.clarin.chronopress.presentation.page.dataanalyse.result.LexemeProfileList;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.ConcordanceList;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
 
 @UIScoped
-public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
+public class ConcordanceViewPresenter extends AbstractPresenter<ConcordanceView> {
 
     @Inject
     javax.enterprise.event.Event<NavigationEvent> navigation;
@@ -28,7 +28,7 @@ public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
     CalculationsFacade service;
 
     @Inject
-    Instance<LexemeProfileList> lexemeProfileList;
+    Instance<ConcordanceList> concordanceLists;
 
     @Inject
     SampleFacade sampleFacade;
@@ -44,8 +44,8 @@ public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
 
         future.thenAccept((DataExplorationResult result) -> {
             if (result.getProfile() != null) {
-                LexemeProfileList r = lexemeProfileList.get();
-                r.addData(result.getProfile());
+                ConcordanceList r = concordanceLists.get();
+                r.addData(result.getConcordance());
                 getView().addResultPanel(r);
             }
         });

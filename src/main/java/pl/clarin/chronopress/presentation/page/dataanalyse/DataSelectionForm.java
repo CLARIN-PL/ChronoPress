@@ -14,7 +14,6 @@ import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.presentation.shered.dto.DataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.layout.SearchableTablePanel;
-import pl.clarin.chronopress.presentation.shered.layout.Title;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
 public class DataSelectionForm extends CustomComponent {
@@ -54,7 +53,7 @@ public class DataSelectionForm extends CustomComponent {
         VerticalLayout layout = new MVerticalLayout()
                 .withMargin(false)
                 .withSpacing(false)
-                .with(new Title(provider.getProperty("view.data.selection.title")), buildSelectionPanel());
+                .with(buildSelectionPanel());
 
         setSizeUndefined();
         setCompositionRoot(layout);
@@ -97,10 +96,11 @@ public class DataSelectionForm extends CustomComponent {
         dto.setAuthors(searchAuthorsPanel.getSelectedItems());
         return dto;
     }
-    
-    public void setAudience(List<String> list){
+
+    public void setAudience(List<String> list) {
         audience.addItems(list);
     }
+
     public void setAuthors(List<String> list) {
         searchAuthorsPanel.populateContainer(list);
     }

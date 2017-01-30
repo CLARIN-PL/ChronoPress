@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.profile;
+package pl.clarin.chronopress.presentation.page.concordance;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -39,11 +39,11 @@ import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
-@CDIView(ProfilesView.ID)
-public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implements ProfilesView {
+@CDIView(ConcordanceView.ID)
+public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> implements ConcordanceView {
 
     @Inject
-    private Instance<ProfilesViewPresenter> presenter;
+    private Instance<ConcordanceViewPresenter> presenter;
 
     @Inject
     DbPropertiesProvider provider;
@@ -85,18 +85,17 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
     @PostConstruct
     public void init() {
         selectionForm.setVisible(false);
-        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PROFILE);
+        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.LEXEME_CONCORDANCE);
 
-        Label desc = new Label("Profile wyrazów");
+        Label desc = new Label("Konkordancja");
 
-        Label txt = new Label("<p>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów)."
-                + "Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem."
-                + "</p>\n");
+        Label txt = new Label("<p>Konkordancja to zbiór wszystkich wystąpień wyrazu (leksemu) wraz z kontekstem."
+                + "Tutaj granice kontekstu wyznaczone są przez początek i koniec zdania, w którym występuje wyraz wyszukiwany (tzw. ośrodek konkordancji).</p>\n");
 
         dataExplorationForm.setLemmaHelp("<p>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków."
                 + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</p>"
-                + "<p><span>\"bylibyśmy\"<span> wygeneruje profil leksykalny dokładnie tej formy czasownika być</p>"
+                + "<p><span>partia</span> wygeneruje konkordancję leksemu <i>partia</i>, czyli wyrazów <i>partia, partią, partiami</i> itd.</p>"
+                + "<p><span>\"bylibyśmy\"<span> wygeneruje konkordancję dokładnie tej formy czasownika <i>być</i></p>"
                 + "<p>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></p>"
         );
 
@@ -115,16 +114,14 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Generuj profil")
+        Button execute = new MButton("Wyszukaj konkordancję")
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(new MHorizontalLayout(desc, help)
-                        .withSpacing(true),
-                        filter, selectionForm, dataExplorationForm, execute)
+                .with(new HorizontalLayout(desc, help), filter, selectionForm, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
                 .withFullHeight()
@@ -168,13 +165,7 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         layout.addComponent(panel);
     }
 
-    public void setCalculation(CalculationResult calculation) {
-        this.calculation = calculation;
-        if (!results.containsKey(calculation.getType())) {
-            results.put(calculation.getType(), calculation);
-        }
-    }
-
+    @Override
     public void setInitDataSelection(InitDataSelectionDTO data) {
         selectionForm.setAuthors(data.getAuthors());
         selectionForm.setYears(data.getYears());
@@ -184,8 +175,15 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         selectionForm.setAudience(data.getAudience());
     }
 
+    public void setCalculation(CalculationResult calculation) {
+        this.calculation = calculation;
+        if (!results.containsKey(calculation.getType())) {
+            results.put(calculation.getType(), calculation);
+        }
+    }
+
     @Override
-    protected ProfilesViewPresenter generatePresenter() {
+    protected ConcordanceViewPresenter generatePresenter() {
         return presenter.get();
     }
 

@@ -27,7 +27,7 @@ public class WordQuantitativeAnalysisTab extends CustomComponent {
 
     @PostConstruct
     public void init() {
-        setCaption(provider.getProperty("view.tab.word.quantitative.analysis.title"));
+        setCaption("Analizuj wyrazy");
 
         HorizontalLayout layout = new MHorizontalLayout()
                 .withFullWidth()
@@ -45,8 +45,8 @@ public class WordQuantitativeAnalysisTab extends CustomComponent {
         }
         return null;
     }
-    
-    public void reset(){
+
+    public void reset() {
         wordAnalysisFrom.reset();
     }
 }

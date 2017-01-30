@@ -1,17 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.clarin.chronopress.presentation.page.dataanalyse;
 
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -20,6 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import org.vaadin.tokenfield.TokenField;
 import org.vaadin.viritin.layouts.MFormLayout;
+import org.vaadin.viritin.layouts.MHorizontalLayout;
 import pl.clarin.chronopress.business.lexicalfield.boundary.LexicalFieldFacade;
 import pl.clarin.chronopress.business.lexicalfield.entity.LexicalField;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
@@ -39,6 +40,8 @@ public class TimeSeriesForm extends CustomComponent {
     @PropertyId("lexeme")
     private final TokenField lexeme = new TokenField(new VerticalLayout());
 
+    private final TokenField userLexicalField = new TokenField(new VerticalLayout());
+
     private final MComboBox<LexicalField> lexical = new MComboBox("groupName", LexicalField.class);
 
     @PropertyId("movingAverageWindowSize")
@@ -57,6 +60,35 @@ public class TimeSeriesForm extends CustomComponent {
         binder.setItemDataSource(new TimeSeriesDTO());
         binder.bindMemberFields(this);
 
+        Label txt1 = new Label("<p>Wpisz wyraz lub frazę i wygeneruj histogram (szereg czasowy) częstości wystąpień. "
+                + "Wyraz (frazę) nalezy zatwierdzić klawiszem <Enter>. Na jednym wykresie można wyświetlić histogramy wielu wyrazów (fraz).<p>"
+                + "<p>Na przykład:</p>"
+                + "<p><span>partia</span> wygeneruj histogram częstości sumy wyrazów <i>partia, partią, partiami</i> itd.</p>"
+                + "<p><span>\"ziemie polskie\"<span> wygeneruje histogram częstości dokładnie tego ciągu wyrazów</p>");
+
+        txt1.setContentMode(ContentMode.HTML);
+
+        Label txt2 = new Label("Wybierz z listy pole leksykalne (zbiór tematycznie związanych wyrazów) i wygeneruj histogram ich sumaryczne częstości (szereg czasowy)");
+        txt2.setContentMode(ContentMode.HTML);
+
+        Label txt3 = new Label("Wpisz wyrazy, zatwierdzając każdy klawiszem <Enter>.System wyszuka wszystkie formy fleksyjne podanych wyrazów."
+                + "Następnie wygeneruj szereg czasowy ich sumarycznej częstości.  ");
+        txt2.setContentMode(ContentMode.HTML);
+
+        VerticalLayout popupContent1 = new VerticalLayout();
+        popupContent1.addComponent(txt1);
+
+        VerticalLayout popupContent2 = new VerticalLayout();
+        popupContent2.addComponent(txt2);
+
+        VerticalLayout popupContent3 = new VerticalLayout();
+        popupContent3.addComponent(txt3);
+
+        // The component itself
+        PopupView help1 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent1);
+        PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
+        PopupView help3 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent3);
+
         unit.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         unit.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
 
@@ -67,24 +99,35 @@ public class TimeSeriesForm extends CustomComponent {
         unit.addItem(Time.YEAR);
         unit.setItemCaption(Time.YEAR, provider.getProperty("label.year"));
 
-        lexical.setCaption(provider.getProperty("label.lexical"));
+        HorizontalLayout lexFiledTxt = new MHorizontalLayout(help2, lexical);
+        lexFiledTxt.setCaption(provider.getProperty("label.lexical"));
         lexical.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexical.addBeans(lexicalFieldFacade.findAll());
 
-        lexeme.setCaption(provider.getProperty("label.lexeme"));
+        HorizontalLayout lexTxt = new MHorizontalLayout(help1, lexeme);
+        lexTxt.setCaption("Wyraz");
+
         lexeme.addStyleName(TokenField.STYLE_TOKENFIELD);
         lexeme.addStyleName(ChronoTheme.TOKENFIELD);
         lexeme.addStyleName(ValoTheme.COMBOBOX_TINY);
         lexeme.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
 
+        HorizontalLayout usrlexTxt = new MHorizontalLayout(help3, userLexicalField);
+        usrlexTxt.setCaption("Własne pole leksykalne");
+
+        userLexicalField.addStyleName(TokenField.STYLE_TOKENFIELD);
+        userLexicalField.addStyleName(ChronoTheme.TOKENFIELD);
+        userLexicalField.addStyleName(ValoTheme.COMBOBOX_TINY);
+        userLexicalField.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
+
         movingAverage.setCaption(provider.getProperty("label.tool.moving.average"));
-        movingAverageWindowSize.setCaption(provider.getProperty("label.tool.moving.average.window.size"));
+        movingAverageWindowSize.setCaption("Dodaj średnią ruchomą");
         movingAverageWindowSize.setVisible(false);
         movingAverage.addValueChangeListener(event
                 -> movingAverageWindowSize.setVisible(!movingAverageWindowSize.isVisible()));
 
         FormLayout form = new MFormLayout(
-                lexeme, lexical, unit, movingAverage,
+                lexTxt, lexFiledTxt, usrlexTxt, unit, movingAverage,
                 movingAverageWindowSize);
 
         setSizeUndefined();

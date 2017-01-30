@@ -489,6 +489,7 @@ public class SampleFacade {
         return result;
     }
 
+    // wyszukanie po tekście po całej frazie może byc wielo wyr
     public List<ConcordanceDTO> findConcordance(DataSelectionDTO selection, String lemma, Boolean caseSensitive) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();

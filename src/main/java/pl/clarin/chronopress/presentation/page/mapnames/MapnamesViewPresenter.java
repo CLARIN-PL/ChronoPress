@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.profile;
+package pl.clarin.chronopress.presentation.page.mapnames;
 
 import com.airhacks.porcupine.execution.boundary.Dedicated;
 import com.vaadin.cdi.UIScoped;
@@ -10,12 +10,12 @@ import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
 import pl.clarin.chronopress.business.calculations.boundary.DataExplorationResult;
 import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
-import pl.clarin.chronopress.presentation.page.dataanalyse.result.LexemeProfileList;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.NamesOnGoogleMap;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
 
 @UIScoped
-public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
+public class MapnamesViewPresenter extends AbstractPresenter<MapnamesView> {
 
     @Inject
     javax.enterprise.event.Event<NavigationEvent> navigation;
@@ -28,7 +28,7 @@ public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
     CalculationsFacade service;
 
     @Inject
-    Instance<LexemeProfileList> lexemeProfileList;
+    Instance<NamesOnGoogleMap> namesOnGoogleMaps;
 
     @Inject
     SampleFacade sampleFacade;
@@ -43,11 +43,9 @@ public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
         CompletableFuture<DataExplorationResult> future = CompletableFuture.supplyAsync(() -> service.calculateDataExploration(event), executor);
 
         future.thenAccept((DataExplorationResult result) -> {
-            if (result.getProfile() != null) {
-                LexemeProfileList r = lexemeProfileList.get();
-                r.addData(result.getProfile());
-                getView().addResultPanel(r);
-            }
+            NamesOnGoogleMap r = namesOnGoogleMaps.get();
+            r.addData(result.getGeolocations());
+            getView().addResultPanel(r);
         });
     }
 

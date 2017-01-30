@@ -27,7 +27,7 @@ public class SentenceQuantitativeAnalysisTab extends CustomComponent {
 
     @PostConstruct
     public void init() {
-        setCaption(provider.getProperty("view.tab.sentence.quantitative.analysis.title"));
+        setCaption("Analizuj zdania");
 
         HorizontalLayout layout = new MHorizontalLayout()
                 .withFullWidth()
@@ -35,7 +35,7 @@ public class SentenceQuantitativeAnalysisTab extends CustomComponent {
                 .withAlign(sentenceAnalysisForm, Alignment.TOP_CENTER);
         setCompositionRoot(layout);
     }
-    
+
     public SentenceAnalysisDTO getSentenceAnalysisDTO() {
         try {
             return sentenceAnalysisForm.getSentenceAnalysisDTO();
@@ -44,7 +44,8 @@ public class SentenceQuantitativeAnalysisTab extends CustomComponent {
         }
         return null;
     }
-    public void reset(){
+
+    public void reset() {
         sentenceAnalysisForm.reset();
     }
 }

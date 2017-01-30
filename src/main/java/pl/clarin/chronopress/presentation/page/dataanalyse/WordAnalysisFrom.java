@@ -8,12 +8,15 @@ package pl.clarin.chronopress.presentation.page.dataanalyse;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.PropertyId;
+import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
+import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
@@ -75,6 +78,54 @@ public class WordAnalysisFrom extends CustomComponent {
         binder.bindMemberFields(this);
         initializeComponents();
 
+        final Label txt1 = new Label();
+
+        String t = "<p>System pozwala na obliczenia parametrów statystycznych dla wskazanych części mowy lub jednostek nazewniczych.</p>";
+
+        txt1.setValue(t);
+        txt1.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
+
+        PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+
+        final Label txt2 = new Label();
+
+        String t1 = "<p>System rozpoznaje nazwy wielowyrazowe typu: \"Adam Mickiewicz\" lub \"Niemcy Zachodnie\" </p>";
+
+        txt2.setValue(t1);
+        txt2.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent2 = new VerticalLayout();
+        popupContent2.addComponent(txt2);
+
+        PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
+
+        final Label txt3 = new Label();
+
+        String t2 = "<p>Histogram Zipfa przedstawia zależność częstości wystąpień wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są różne wyrazy) i liczby różnych wyrazów mających daną częstość</p></br>";
+
+        txt3.setValue(t2);
+        txt3.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent3 = new VerticalLayout();
+        popupContent3.addComponent(txt3);
+
+        PopupView help3 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent3);
+
+        final Label txt4 = new Label();
+
+        String t3 = "<p>System generuje wykres częstości wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są różne wyrazy) o różnych długościach</p></br>";
+
+        txt4.setValue(t3);
+        txt4.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent4 = new VerticalLayout();
+        popupContent4.addComponent(txt4);
+
+        PopupView help4 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent4);
+
         VerticalLayout left = new MVerticalLayout()
                 .withSpacing(false)
                 .withMargin(false)
@@ -92,14 +143,15 @@ public class WordAnalysisFrom extends CustomComponent {
 
         FormLayout frm = new MFormLayout(wordRegularExpression)
                 .withStyleName(ChronoTheme.COMPACT_FORM);
-        
+
         wordUnitLayout.addComponents(new Label(provider.getProperty("label.unit")), wordUnit);
         wordUnitLayout.setSpacing(true);
         wordUnitLayout.setVisible(false);
 
         VerticalLayout layout = new MVerticalLayout()
-                .with(allPartsOfSpeech, pos, namingUnit, frm, wordZipfHistogram,
-                        wordAveragesLengthHistogram, wordUnitLayout);
+                .with(new HorizontalLayout(allPartsOfSpeech, help), pos, new HorizontalLayout(namingUnit, help2), frm,
+                        new HorizontalLayout(wordZipfHistogram, help3),
+                        new HorizontalLayout(wordAveragesLengthHistogram, help4), wordUnitLayout);
 
         setWidthUndefined();
         setCompositionRoot(layout);

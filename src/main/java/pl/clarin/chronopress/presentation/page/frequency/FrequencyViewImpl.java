@@ -1,4 +1,4 @@
-package pl.clarin.chronopress.presentation.page.profile;
+package pl.clarin.chronopress.presentation.page.frequency;
 
 import com.vaadin.cdi.CDIView;
 import com.vaadin.data.fieldgroup.FieldGroup;
@@ -11,6 +11,7 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressBar;
 import com.vaadin.ui.VerticalLayout;
@@ -39,17 +40,19 @@ import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
-@CDIView(ProfilesView.ID)
-public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implements ProfilesView {
+@CDIView(FrequencyView.ID)
+public class FrequencyViewImpl extends AbstractView<FrequencyViewPresenter> implements FrequencyView {
 
     @Inject
-    private Instance<ProfilesViewPresenter> presenter;
+    private Instance<FrequencyViewPresenter> presenter;
 
     @Inject
     DbPropertiesProvider provider;
 
     @Inject
     DataSelectionForm selectionForm;
+
+    private final OptionGroup operationType = new OptionGroup();
 
     @Inject
     DataExplorationForm dataExplorationForm;
@@ -85,46 +88,47 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
     @PostConstruct
     public void init() {
         selectionForm.setVisible(false);
-        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PROFILE);
+        dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST);
 
-        Label desc = new Label("Profile wyrazów");
+        operationType.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
+        operationType.addItem(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST);
+        operationType.setItemCaption(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST, "Lista frekwencyjna leksemów (form hasłowych)");
+        operationType.select(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST);
 
-        Label txt = new Label("<p>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów)."
-                + "Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem."
-                + "</p>\n");
+        operationType.addItem(DataExplorationForm.DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST);
+        operationType.setItemCaption(DataExplorationForm.DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST,
+                "Lista frekwencyjna wyrazów tekstowych (nieodmienianych)");
 
-        dataExplorationForm.setLemmaHelp("<p>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków."
-                + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</p>"
-                + "<p><span>\"bylibyśmy\"<span> wygeneruje profil leksykalny dokładnie tej formy czasownika być</p>"
-                + "<p>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></p>"
-        );
+        final Label txt1 = new Label();
 
-        txt.setContentMode(ContentMode.HTML);
-        VerticalLayout popupContent = new VerticalLayout();
+        String t = "<p>Lista frekwencyjna jest lista wyrazów (w formie hasłowej lub dokładnie takiej, jak w tekście) wraz z częstością występowania.</p></br>"
+                + "<p>System pozwala na eksport listy frekwencyjnej w formacie .CSV i jej przetwarzanie arkuszem kalkulacyjnym.</p>"
+                + "<p>Tekst jest kodowany w formacie UTF-8.</p>";
 
-        popupContent.addComponent(txt);
+        txt1.setValue(t);
+        txt1.setContentMode(ContentMode.HTML);
 
-        // The component itself
-        PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
 
-        Button filter = new MButton("Ustawienia filtra")
+        final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+
+        Label desc = new Label("Lista frekwencyjna");
+        Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Generuj profil")
+        Button execute = new MButton("Utwórz listę frekwencyjną")
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(new MHorizontalLayout(desc, help)
-                        .withSpacing(true),
-                        filter, selectionForm, dataExplorationForm, execute)
+                .with(new MHorizontalLayout(desc, help).withSpacing(true), filter, selectionForm, operationType, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
                 .withFullHeight()
@@ -138,6 +142,15 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
 
         setCompositionRoot(layout);
         setSizeFull();
+    }
+
+    public void setInitDataSelection(InitDataSelectionDTO data) {
+        selectionForm.setAuthors(data.getAuthors());
+        selectionForm.setYears(data.getYears());
+        selectionForm.setExposition(data.getExpositions());
+        selectionForm.setPeriods(data.getPeriods());
+        selectionForm.setTiles(data.getJournalTitles());
+        selectionForm.setAudience(data.getAudience());
     }
 
     private VerticalLayout initializeLoading() {
@@ -175,17 +188,8 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         }
     }
 
-    public void setInitDataSelection(InitDataSelectionDTO data) {
-        selectionForm.setAuthors(data.getAuthors());
-        selectionForm.setYears(data.getYears());
-        selectionForm.setExposition(data.getExpositions());
-        selectionForm.setPeriods(data.getPeriods());
-        selectionForm.setTiles(data.getJournalTitles());
-        selectionForm.setAudience(data.getAudience());
-    }
-
     @Override
-    protected ProfilesViewPresenter generatePresenter() {
+    protected FrequencyViewPresenter generatePresenter() {
         return presenter.get();
     }
 
