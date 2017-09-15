@@ -15,7 +15,7 @@ import javax.enterprise.event.Reception;
 import javax.inject.Inject;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
 import pl.clarin.chronopress.presentation.page.error.ErrorView;
-import pl.clarin.chronopress.presentation.page.login.AutenthicationPresenter;
+import pl.clarin.chronopress.presentation.page.login.LoginViewPresenter;
 import pl.clarin.chronopress.presentation.page.start.StartView;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.layout.MainLayout;
@@ -24,7 +24,7 @@ import pl.clarin.chronopress.presentation.shered.layout.MainLayout;
 @Title("ChronoPress")
 @Theme("press")
 @Widgetset("pl.clarin.chronopress.Widgetset")
-@Push(transport = Transport.WEBSOCKET_XHR)
+@Push(transport = Transport.LONG_POLLING)
 public class VaadinUI extends UI {
 
     @Inject
@@ -40,7 +40,7 @@ public class VaadinUI extends UI {
     javax.enterprise.event.Event<NavigationEvent> navigation;
 
     @Inject
-    AutenthicationPresenter auth;
+    LoginViewPresenter auth;
 
     @Override
     protected void init(VaadinRequest request) {
@@ -65,4 +65,7 @@ public class VaadinUI extends UI {
         }
     }
 
+    public static String infoMessage(String content) {
+        return "<div style=\"margin: 4px;font-size: 13px;\">" + content + "</div>";
+    }
 }

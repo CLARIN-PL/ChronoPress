@@ -9,12 +9,11 @@ import lombok.Getter;
 import pl.clarin.chronopress.presentation.shered.dto.DataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesDTO;
 
-
 public class CalculateTimeSerieEvent {
-    
-     @Getter
+
+    @Getter
     private DataSelectionDTO dataSelectionDTO;
-    
+
     @Getter
     private TimeSeriesDTO timeSeriesDTO;
 

@@ -17,10 +17,12 @@ import pl.clarin.chronopress.business.user.boundary.UserFacade;
 import pl.clarin.chronopress.presentation.page.admin.AdminView;
 import pl.clarin.chronopress.presentation.page.admin.users.ChangePasswordEvent;
 import pl.clarin.chronopress.presentation.page.admin.users.ChangePasswordWindow;
+import pl.clarin.chronopress.presentation.page.start.StartView;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
+import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
 
 @UIScoped
-public class AutenthicationPresenter {
+public class LoginViewPresenter extends AbstractPresenter<LoginView> {
 
     @Inject
     javax.enterprise.event.Event<UserLoggedInEvent> logged;
@@ -39,6 +41,9 @@ public class AutenthicationPresenter {
 
     @PostConstruct
     public void init() {
+        loginWindow.addCloseListener(l -> {
+            navigation.fire(new NavigationEvent(StartView.ID));
+        });
     }
 
     public void onAuthenticateEvent(@Observes(notifyObserver = Reception.IF_EXISTS) UserAuthenticationEvent event) {
@@ -82,5 +87,11 @@ public class AutenthicationPresenter {
         } else {
             Notification.show("Zmiana hasła nie powiodła się", Notification.Type.TRAY_NOTIFICATION);
         }
+    }
+
+    @Override
+    protected void onViewEnter() {
+        System.out.println("In login View");
+        UI.getCurrent().addWindow(loginWindow);
     }
 }

@@ -24,6 +24,7 @@ import org.vaadin.viritin.layouts.MHorizontalLayout;
 import pl.clarin.chronopress.business.lexicalfield.boundary.LexicalFieldFacade;
 import pl.clarin.chronopress.business.lexicalfield.entity.LexicalField;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.shered.dto.Time;
 import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesDTO;
 import pl.clarin.chronopress.presentation.shered.layout.MComboBox;
@@ -60,20 +61,23 @@ public class TimeSeriesForm extends CustomComponent {
         binder.setItemDataSource(new TimeSeriesDTO());
         binder.bindMemberFields(this);
 
-        Label txt1 = new Label("<p>Wpisz wyraz lub frazę i wygeneruj histogram (szereg czasowy) częstości wystąpień. "
-                + "Wyraz (frazę) nalezy zatwierdzić klawiszem <Enter>. Na jednym wykresie można wyświetlić histogramy wielu wyrazów (fraz).<p>"
-                + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruj histogram częstości sumy wyrazów <i>partia, partią, partiami</i> itd.</p>"
-                + "<p><span>\"ziemie polskie\"<span> wygeneruje histogram częstości dokładnie tego ciągu wyrazów</p>");
+        Label txt1 = new Label(VaadinUI.infoMessage("<span>Wpisz wyraz lub frazę i wygeneruj histogram (szereg czasowy) częstości wystąpień.</span>"
+                + "<span>Wyraz (frazę) należy zatwierdzić klawiszem <b><Enter</b>.</span></br>"
+                + "<span>Na jednym wykresie można wyświetlić histogramy wielu wyrazów (fraz).</span></br>"
+                + "<span>Na przykład:</span></br>"
+                + "<span style=\"font-family: Courier;\">partia</span> wygeneruje histogram częstości sumy wyrazów <i>partia, partią, partiami</i> itd.</br>"
+                + "<span style=\"font-family: Courier;\">\"partią\"</span> wygeneruje histogram częstości dokładnie tego ciągu wyrazów."));
 
         txt1.setContentMode(ContentMode.HTML);
 
-        Label txt2 = new Label("Wybierz z listy pole leksykalne (zbiór tematycznie związanych wyrazów) i wygeneruj histogram ich sumaryczne częstości (szereg czasowy)");
+        Label txt2 = new Label(VaadinUI.infoMessage("Wybierz z listy pole leksykalne (zbiór wyrazów związanych tematycznie) i wygeneruj histogram ich sumaryczne częstości (szereg czasowy)"));
         txt2.setContentMode(ContentMode.HTML);
 
-        Label txt3 = new Label("Wpisz wyrazy, zatwierdzając każdy klawiszem <Enter>.System wyszuka wszystkie formy fleksyjne podanych wyrazów."
-                + "Następnie wygeneruj szereg czasowy ich sumarycznej częstości.  ");
-        txt2.setContentMode(ContentMode.HTML);
+        Label txt3 = new Label(VaadinUI.infoMessage(
+                "<span>Wpisz wyrazy, zatwierdzając każdy klawiszem <b>Enter</b>.</span></br>"
+                + "<span>System wyszuka wszystkie formy fleksyjne podanych wyrazów.</span></br>"
+                + "<span>Następnie wygeneruj szereg czasowy ich sumarycznej częstości.</span>"));
+        txt3.setContentMode(ContentMode.HTML);
 
         VerticalLayout popupContent1 = new VerticalLayout();
         popupContent1.addComponent(txt1);

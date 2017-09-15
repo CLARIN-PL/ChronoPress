@@ -14,6 +14,7 @@ import lombok.Data;
             @Index(name = "prop_name_user_correction", columnList = "user_correction")
         })
 @Data
+@Cacheable(true)
 public class ProperName {
 
     @Id
@@ -43,7 +44,10 @@ public class ProperName {
 
     private boolean processed;
 
-    public ProperName(){};
+    public ProperName() {
+    }
+
+    ;
 
     public ProperName(String orth, String base, String type) {
         this.orth = orth;

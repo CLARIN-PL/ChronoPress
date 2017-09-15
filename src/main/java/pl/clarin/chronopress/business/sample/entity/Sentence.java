@@ -16,6 +16,7 @@ import lombok.Data;
             @Index(name = "wc_idx", columnList = "wc")
         })
 @Data
+@Cacheable(true)
 public class Sentence implements Serializable {
 
     @Id
@@ -42,5 +43,5 @@ public class Sentence implements Serializable {
         this.setSeq(0);
         this.setWordCount(0);
     }
-    
+
 }

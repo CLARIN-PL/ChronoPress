@@ -1,10 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.clarin.chronopress.business.calculations.boundary;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +73,7 @@ public class CalculationsFacade {
                     event.getDataExplorationDTO().getRightContextGap(),
                     event.getDataExplorationDTO().getCaseSensitive()
             ));
+            result.setLemma(event.getDataExplorationDTO().getLemma());
         }
         if (type.equals(DataExplorationType.PLACE_NAME_MAP)) {
             result.setGeolocations(findGeolocations(event.getDataSelectionDTO()));
@@ -103,6 +100,10 @@ public class CalculationsFacade {
             tmp.add(geo);
         });
         return tmp;
+    }
+
+    public List<ConcordanceDTO> concordance(String base, LocalDate date) {
+        return dataExploration.calculateConcordance(base, date);
     }
 
 }

@@ -39,12 +39,12 @@ public class LexemeProfileList implements CalculationResult {
 
     private BeanItemContainer<LexemeProfile> container = new BeanItemContainer<>(LexemeProfile.class);
 
-    private  FileDownloader fileDownloader;
+    private FileDownloader fileDownloader;
     private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
 
     @PostConstruct
     public void init() {
-       
+
         initializeGrid();
         initChat();
 
@@ -68,7 +68,7 @@ public class LexemeProfileList implements CalculationResult {
 
     }
 
-    private void initChat(){
+    private void initChat() {
         chart.setLocale(new Locale("pl", "PL"));
         chart.setImmediate(true);
         chart.getConfiguration().setExporting(true);
@@ -76,7 +76,9 @@ public class LexemeProfileList implements CalculationResult {
         PlotOptionsPie options = new PlotOptionsPie();
         options.setInnerSize("0");
         chart.getConfiguration().setPlotOptions(options);
-        chart.getConfiguration().setTitle(provider.getProperty("view.data.exploration.profile.chart.title"));
+
+        chart.getConfiguration().setTitle("Profil semantyczny");//provider.getProperty("view.data.exploration.profile.chart.title"));
+
     }
 
     @Override
@@ -89,12 +91,12 @@ public class LexemeProfileList implements CalculationResult {
         return panel;
     }
 
-    private void addChartData(List<LexemeProfile> data){
+    private void addChartData(List<LexemeProfile> data) {
         Collections.reverse(data);
         DataSeries series = new DataSeries();
         final int[] counter = {0};
         data.forEach(d -> {
-            if(counter[0] < 10) {
+            if (counter[0] < 10) {
                 series.add(new DataSeriesItem(d.getBaseColocat(), d.getPercentage()));
                 counter[0]++;
             }
@@ -102,11 +104,12 @@ public class LexemeProfileList implements CalculationResult {
         chart.getConfiguration().addSeries(series);
     }
 
-    public void addData(List<LexemeProfile> data) {
+    public void addData(List<LexemeProfile> data, String lemma) {
         container.removeAllItems();
         container.addAll(data);
         addChartData(data);
         grid.sort("count", SortDirection.DESCENDING);
+        chart.getConfiguration().setSubTitle("leksem '[" + lemma + "]'");
         try {
             fileDownloader = new FileDownloader(createExportContent(data));
         } catch (IOException e) {
@@ -122,17 +125,16 @@ public class LexemeProfileList implements CalculationResult {
         grid.addStyleName(ChronoTheme.GRID);
         grid.setContainerDataSource(container);
         grid.setColumnOrder("baseColocat", "match", "count", "percentage");
-        grid.getColumn("baseColocat").setHeaderCaption(provider.getProperty("label.colocat"));
-        grid.getColumn("match").setHeaderCaption(provider.getProperty("label.match.word"));
-        grid.getColumn("count").setHeaderCaption(provider.getProperty("label.frequency.count"));
+        grid.getColumn("baseColocat").setHeaderCaption("Kolokat");
+        grid.getColumn("match").setHeaderCaption("Współwystąpienia");
+        grid.getColumn("count").setHeaderCaption("Częstość");
         grid.getColumn("percentage").setHeaderCaption(provider.getProperty("label.profile.percentage"));
 
     }
 
-
     public Resource createExportContent(List<LexemeProfile> data) throws IOException {
         final String date = LocalDate.now().toString();
-        java.io.File file  = java.io.File.createTempFile("profile-list-"+date , ".csv");
+        java.io.File file = java.io.File.createTempFile("profile-list-" + date, ".csv");
         file.deleteOnExit();
         try (FileWriter writer = new FileWriter(file)) {
             DecimalFormat df = new DecimalFormat();

@@ -70,11 +70,11 @@ public class WordSpecification {
     }
 
     public static Specification<Word> byLexemes(Set<String> lexeme) {
-        return (root, query, cb) -> root.get("lemma").in(lexeme);
+        return (root, query, cb) -> cb.lower(root.get("lemma")).in(lexeme);
     }
 
     public static Specification<Word> byLexeme(String lexeme) {
-        return (root, query, cb) -> cb.equal(root.get("lemma"), lexeme);
+        return (root, query, cb) -> cb.equal(cb.lower(root.get("lemma")), lexeme);
     }
 
     public static Specification<Word> lexemeByRegExp(String expr) {
@@ -83,6 +83,10 @@ public class WordSpecification {
 
     public static Specification<Word> byText(String expression) {
         return (root, query, cb) -> cb.equal(root.get("word"), expression);
+    }
+
+    public static Specification<Word> byTexts(Set<String> words) {
+        return (root, query, cb) -> root.get("word").in(words);
     }
 
     public static Specification<Word> byTextIgnoreCaseSensitive(String expression) {

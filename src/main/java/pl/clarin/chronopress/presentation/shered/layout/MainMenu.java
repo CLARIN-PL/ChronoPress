@@ -12,7 +12,6 @@ import org.vaadin.viritin.layouts.MHorizontalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.presentation.page.about.AboutView;
 import pl.clarin.chronopress.presentation.page.admin.users.ChangePasswordEvent;
-import pl.clarin.chronopress.presentation.page.education.EducationView;
 import pl.clarin.chronopress.presentation.page.login.UserLoggedOutEvent;
 import pl.clarin.chronopress.presentation.page.login.UserSignInEvent;
 import pl.clarin.chronopress.presentation.page.samplebrowser.SampleBrowserView;
@@ -40,16 +39,16 @@ public class MainMenu extends HorizontalLayout {
 
     private final MenuBar menuBar = new MenuBar();
 
-    private final MenuBar.MenuItem start = menuBar.addItem("START", null, (MenuBar.Command) i -> navigation.fire(new NavigationEvent((StartView.ID))));
+    private final MenuBar.MenuItem start = menuBar.addItem("STRONA GŁÓWNA", null, (MenuBar.Command) i -> navigation.fire(new NavigationEvent((StartView.ID))));
 
     private final MenuBar.MenuItem samples = menuBar.addItem("PRZEGLĄD PRÓBEK", null,
             (MenuBar.Command) i -> navigation.fire(new NavigationEvent((SampleBrowserView.ID))));
 
     private final MenuBar.MenuItem about = menuBar.addItem("O KORPUSIE", null,
             (MenuBar.Command) i -> navigation.fire(new NavigationEvent(AboutView.ID)));
-
-    private final MenuBar.MenuItem education = menuBar.addItem("EDUKACJA", null,
-            (MenuBar.Command) i -> navigation.fire(new NavigationEvent(EducationView.ID)));
+//
+//    private final MenuBar.MenuItem education = menuBar.addItem("EDUKACJA", null,
+//            (MenuBar.Command) i -> navigation.fire(new NavigationEvent(EducationView.ID)));
 
     @PostConstruct
     public void init() {

@@ -1,5 +1,7 @@
 package pl.clarin.chronopress.presentation.page.dataanalyse;
 
+import com.vaadin.server.FontAwesome;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.List;
@@ -41,13 +43,15 @@ public class DataSelectionForm extends CustomComponent {
 
         years.setCaption(provider.getProperty("label.years"));
         years.addStyleName(ValoTheme.COMBOBOX_TINY);
+
         titles.setCaption(provider.getProperty("label.journal.title"));
         titles.addStyleName(ValoTheme.COMBOBOX_TINY);
-        audience.setCaption(provider.getProperty("label.audience"));
+
         audience.addStyleName(ValoTheme.COMBOBOX_TINY);
+
         periods.setCaption(provider.getProperty("label.period"));
         periods.addStyleName(ValoTheme.COMBOBOX_TINY);
-        expositions.setCaption(provider.getProperty("label.exposition"));
+
         expositions.addStyleName(ValoTheme.COMBOBOX_TINY);
 
         VerticalLayout layout = new MVerticalLayout()
@@ -67,7 +71,33 @@ public class DataSelectionForm extends CustomComponent {
 
         FormLayout left = new MFormLayout(years, titles, wrapper)
                 .withStyleName(ChronoTheme.COMPACT_FORM);
-        FormLayout right = new MFormLayout(audience, periods, expositions)
+
+        final Label txt1 = new Label();
+
+        txt1.setValue("Opcja ta pozwala wybrać kolekcje różnych periodyków, skierowane do konkretnych grup odbiorczych.</br>"
+                + "Wybór grupy odboirczej automatycznie anuluje wskazanie tytułów w polu \"Tytuł periodyku\"");
+        txt1.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent = new VerticalLayout();
+        popupContent.addComponent(txt1);
+
+        final Label txt2 = new Label();
+
+        txt2.setValue("Ekspozycja tekstu jest jego miejscem w strukturze periodyku, odpowiadającym ważności.</br> "
+                + "Przyjęto strukturę trzypoziomową (strona tytułowa, środek, ostatnia strona)");
+        txt2.setContentMode(ContentMode.HTML);
+
+        final VerticalLayout popupContent2 = new VerticalLayout();
+        popupContent2.addComponent(txt2);
+
+        final PopupView help1 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
+
+        final PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
+
+        FormLayout right = new MFormLayout(
+                new MHorizontalLayout(audience, help1).withCaption(provider.getProperty("label.audience")),
+                periods,
+                new MHorizontalLayout(expositions, help2).withCaption(provider.getProperty("label.exposition")))
                 .withStyleName(ChronoTheme.COMPACT_FORM);
 
         return new MHorizontalLayout()

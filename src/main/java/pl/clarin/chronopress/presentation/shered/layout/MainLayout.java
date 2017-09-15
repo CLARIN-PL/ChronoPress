@@ -24,6 +24,7 @@ public class MainLayout extends VerticalLayout {
         addComponent(content);
         addComponent(footer);
         content.setSizeFull();
+        setExpandRatio(content, 1);
     }
 
     public VerticalLayout getContent() {

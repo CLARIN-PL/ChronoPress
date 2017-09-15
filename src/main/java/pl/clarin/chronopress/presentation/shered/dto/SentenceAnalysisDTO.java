@@ -4,9 +4,9 @@ import lombok.Data;
 
 @Data
 public class SentenceAnalysisDTO {
-    
+
     private Unit sentenceUnit;
     private String sentenceRegularExpression = "";
-    private Boolean sentenceAverageLengthHistogram = false;
+    private Boolean sentenceAverageLengthHistogram = true;
 
 }

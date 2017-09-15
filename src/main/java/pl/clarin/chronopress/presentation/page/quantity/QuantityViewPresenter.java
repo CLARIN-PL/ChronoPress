@@ -7,10 +7,17 @@ import java.util.concurrent.ExecutorService;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
-import pl.clarin.chronopress.business.calculations.boundary.DataExplorationResult;
 import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
-import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
-import pl.clarin.chronopress.presentation.page.dataanalyse.result.NamesOnGoogleMap;
+import pl.clarin.chronopress.business.shered.SentenceQuantitativeAnalysisResult;
+import pl.clarin.chronopress.business.shered.WordQuantitativeAnalysisResult;
+import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateSentenceQuantitiveAnalysisEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateWordQuantitiveAnalysisEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.SentenceAverageLengthHistogram;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.WordAverageLengthHistogram;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.WordZipfFrequencyHistogram;
+import pl.clarin.chronopress.presentation.shered.dto.DataSelectionDTO;
+import pl.clarin.chronopress.presentation.shered.dto.SentenceAnalysisDTO;
+import pl.clarin.chronopress.presentation.shered.dto.WordAnalysisDTO;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
 
@@ -28,7 +35,13 @@ public class QuantityViewPresenter extends AbstractPresenter<QuantityView> {
     CalculationsFacade service;
 
     @Inject
-    Instance<NamesOnGoogleMap> namesOnGoogleMaps;
+    Instance<WordAverageLengthHistogram> averageLengthHistogram;
+
+    @Inject
+    Instance<WordZipfFrequencyHistogram> wordZipfFrequencyHistograms;
+
+    @Inject
+    Instance<SentenceAverageLengthHistogram> sentenceAverageLengthHistograms;
 
     @Inject
     SampleFacade sampleFacade;
@@ -38,14 +51,36 @@ public class QuantityViewPresenter extends AbstractPresenter<QuantityView> {
         getView().setInitDataSelection(sampleFacade.getInitDataSelection());
     }
 
-    public void onCalculateDataExploration(CalculateDataExplorationEvent event) {
+    public void onCalculateWordQuantitive(DataSelectionDTO dataSelectionDTO, WordAnalysisDTO wordDTO) {
+        CalculateWordQuantitiveAnalysisEvent event = new CalculateWordQuantitiveAnalysisEvent(dataSelectionDTO, wordDTO);
+        CompletableFuture<WordQuantitativeAnalysisResult> future = CompletableFuture
+                .supplyAsync(() -> service.wordQuantitiveAnalysis(event), executor).exceptionally(t -> {
+            return null;
+        });
+        future.thenAccept((WordQuantitativeAnalysisResult result) -> {
+            if (result.isWordAverageCalculations()) {
+                WordAverageLengthHistogram r = averageLengthHistogram.get();
+                r.addData(result);
+                getView().addResultPanel(r);
+            }
+            if (result.isWordFrequencyCalculations()) {
+                WordZipfFrequencyHistogram r = wordZipfFrequencyHistograms.get();
+                r.addData(result);
+                getView().addResultPanel(r);
+            }
+        });
+    }
 
-        CompletableFuture<DataExplorationResult> future = CompletableFuture.supplyAsync(() -> service.calculateDataExploration(event), executor);
+    public void onCalculateSentenceQuantitive(DataSelectionDTO dataSelectionDTO, SentenceAnalysisDTO sentenceDTO) {
+        CalculateSentenceQuantitiveAnalysisEvent event = new CalculateSentenceQuantitiveAnalysisEvent(dataSelectionDTO, sentenceDTO);
+        CompletableFuture<SentenceQuantitativeAnalysisResult> future = CompletableFuture.supplyAsync(() -> service.sentenceQuantitiveAnalysis(event), executor);
 
-        future.thenAccept((DataExplorationResult result) -> {
-            NamesOnGoogleMap r = namesOnGoogleMaps.get();
-            r.addData(result.getGeolocations());
-            getView().addResultPanel(r);
+        future.thenAccept((SentenceQuantitativeAnalysisResult result) -> {
+            if (result.isSentenceAverageCalculations()) {
+                SentenceAverageLengthHistogram r = sentenceAverageLengthHistograms.get();
+                r.addData(result);
+                getView().addResultPanel(r);
+            }
         });
     }
 

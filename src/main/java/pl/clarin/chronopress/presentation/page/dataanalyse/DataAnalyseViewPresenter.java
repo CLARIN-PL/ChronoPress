@@ -129,7 +129,7 @@ public class DataAnalyseViewPresenter extends AbstractPresenter<DataAnalyseView>
             }
             if (result.getProfile() != null) {
                 LexemeProfileList r = lexemeProfileList.get();
-                r.addData(result.getProfile());
+                r.addData(result.getProfile(), result.getLemma());
                 getView().addResultPanel(r);
             }
             if (result.getWordFrequencyByLexeme() != null) {

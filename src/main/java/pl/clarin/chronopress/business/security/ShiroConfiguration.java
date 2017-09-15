@@ -7,9 +7,6 @@ import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.authc.credential.PasswordMatcher;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
-import org.apache.shiro.codec.Hex;
-import org.apache.shiro.crypto.AesCipherService;
-import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.web.filter.authc.AnonymousFilter;
 import org.apache.shiro.web.filter.authc.UserFilter;
@@ -17,7 +14,6 @@ import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
 import org.apache.shiro.web.filter.mgt.FilterChainManager;
 import org.apache.shiro.web.filter.mgt.FilterChainResolver;
 import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
-import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.mgt.WebSecurityManager;
 
@@ -39,13 +35,6 @@ public class ShiroConfiguration {
             ((EhCacheManager) cacheManager).setCacheManagerConfigFile("classpath:ehcache.xml");
             securityManager.setCacheManager(cacheManager);
 
-            byte[] cypherKey = String.format("0x%s",
-                    Hex.encodeToString(new AesCipherService().generateNewKey().getEncoded()))
-                    .getBytes();
-
-            RememberMeManager rememberMeManager = new CookieRememberMeManager();
-            ((CookieRememberMeManager) rememberMeManager).setCipherKey(cypherKey);
-            securityManager.setRememberMeManager(rememberMeManager);
         }
         return securityManager;
     }

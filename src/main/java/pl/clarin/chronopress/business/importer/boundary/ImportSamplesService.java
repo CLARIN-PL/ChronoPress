@@ -151,7 +151,7 @@ public class ImportSamplesService {
             s.getAuthors().getAuthors().forEach(a -> {
                 sb.append(a.getValue().trim()).append(", ");
             });
-            if (!sb.equals("'', ")) {
+            if (!sb.toString().equals("'', ")) {
                 sample.setAuthors(sb.substring(0, sb.length() - 2));
             }
         }

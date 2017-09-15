@@ -1,6 +1,7 @@
 package pl.clarin.chronopress.business.sample.entity;
 
 import java.io.Serializable;
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import pl.clarin.chronopress.business.propername.entity.ProperName;
 @Entity
 @Table(name = "Sentence_ProperName")
 @Data
+@Cacheable(true)
 public class SentenceProperName implements Serializable {
 
     @Id

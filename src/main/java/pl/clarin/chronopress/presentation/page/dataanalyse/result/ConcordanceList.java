@@ -22,6 +22,9 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
+import pl.clarin.chronopress.business.sample.entity.Sample;
+import pl.clarin.chronopress.presentation.page.samplebrowser.SampleWindow;
 import pl.clarin.chronopress.presentation.shered.dto.ConcordanceDTO;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
@@ -35,6 +38,12 @@ public class ConcordanceList implements CalculationResult {
 
     @Inject
     private DbPropertiesProvider provider;
+
+    @Inject
+    SampleFacade facade;
+
+    @Inject
+    SampleWindow window;
 
     @Inject
     Event<ShowSampleByIdEvent> showSample;
@@ -96,6 +105,11 @@ public class ConcordanceList implements CalculationResult {
         return new FileResource(file);
     }
 
+    public void showSampleWindow(Sample s) {
+        window.setItem(s);
+        UI.getCurrent().addWindow(window);
+    }
+
     public void addData(List<ConcordanceDTO> data) {
         container.removeAllItems();
         container.addAll(data);
@@ -125,8 +139,8 @@ public class ConcordanceList implements CalculationResult {
         ttable.addContainerProperty(provider.getProperty("label.occurrence.count"), String.class, "");
         ttable.addItem(new Object[]{provider.getProperty("label.article.title"), ""}, 0);
         ttable.addItem(new Object[]{provider.getProperty("label.status"), ""}, 1);
-        ttable.addItem(new Object[]{provider.getProperty("label.period"), ""}, 2);
-        ttable.addItem(new Object[]{provider.getProperty("label.style"), ""}, 3);
+        ttable.addItem(new Object[]{provider.getProperty("label.style"), ""}, 2);
+        ttable.addItem(new Object[]{provider.getProperty("label.period"), ""}, 3);
 
         final int[] nextItem = {4};
         stats.get("article").forEach((s, aLong) -> {
@@ -203,7 +217,10 @@ public class ConcordanceList implements CalculationResult {
         grid.getColumn("publicationDate").setMaximumWidth(100);
         grid.addItemClickListener(event -> {
             ConcordanceDTO dto = container.getItem(event.getItemId()).getBean();
-            showSample.fire(new ShowSampleByIdEvent(dto.getTextId(), dto.getLemma()));
+            //showSample.fire(new ShowSampleByIdEvent(dto.getTextId(), dto.getLemma()));
+            Sample s = facade.findById(dto.getTextId());
+            showSampleWindow(s);
+            System.out.println(s);
         });
     }
 

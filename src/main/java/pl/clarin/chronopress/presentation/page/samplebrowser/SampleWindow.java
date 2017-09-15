@@ -74,6 +74,7 @@ public class SampleWindow extends Window implements Property.ValueChangeListener
         setHeight(80, Unit.PERCENTAGE);
         addStyleName(ChronoTheme.WINDOW);
         binder.bindMemberFields(this);
+        publishedDate.setDateFormat("dd-MM-yyyy");
         setModal(true);
         center();
         setContent(buildForm());
@@ -82,11 +83,12 @@ public class SampleWindow extends Window implements Property.ValueChangeListener
     public void setItem(Sample t) {
         binder.setReadOnly(false);
         binder.setItemDataSource(t);
-        if (!SecurityUtils.getSubject().hasRole("moderator") || !SecurityUtils.getSubject().hasRole("edytor")) {
+        save.setEnabled(true);
+
+        boolean moderator = SecurityUtils.getSubject().hasRole("moderator");
+        boolean editor = SecurityUtils.getSubject().hasRole("edytor");
+        if (!moderator && !editor) {
             binder.setReadOnly(true);
-        }
-        if (save
-                != null) {
             save.setEnabled(false);
         }
     }

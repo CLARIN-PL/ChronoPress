@@ -12,7 +12,7 @@ public interface SampleRepository extends EntityRepository<Sample, Long> {
     @Query("SELECT DISTINCT s.journalTitle FROM Sample s")
     List<String> findJournalTitles();
 
-    @Query("FROM Sample s WHERE s.processingStatus =  pl.clarin.chronopress.backend.sample.entity.ProcessingStatus.TO_PROCESS")
+    @Query("FROM Sample s WHERE s.processingStatus =  pl.clarin.chronopress.business.sample.entity.ProcessingStatus.TO_PROCESS")
     List<Sample> findUnProcessedSamples();
 
     @Query("SELECT DISTINCT YEAR(t.date) FROM Sample t WHERE t.date is not null")

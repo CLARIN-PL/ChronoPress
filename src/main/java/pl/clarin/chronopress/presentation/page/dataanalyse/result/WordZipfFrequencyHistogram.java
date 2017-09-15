@@ -17,8 +17,6 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.business.shered.WordQuantitativeAnalysisResult;
-import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
-import pl.clarin.chronopress.presentation.page.dataanalyse.result.ChartPanel;
 import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 
 @Slf4j
@@ -35,10 +33,13 @@ public class WordZipfFrequencyHistogram implements CalculationResult {
     @PostConstruct
     public void init() {
 
+        ///provider.getProperty("label.frequency.word.qa.chart.title"),
+        //provider.getProperty("label.frequency.word.qa.chart.x.axis.title"),
+        //provider.getProperty("label.frequency.word.qa.chart.y.axis.title"),
         panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.frequency.word.qt.panel.title"))
-                .addChart(provider.getProperty("label.frequency.word.qa.chart.title"),
-                        provider.getProperty("label.frequency.word.qa.chart.x.axis.title"),
-                        provider.getProperty("label.frequency.word.qa.chart.y.axis.title"),
+                .addChart("Histogram Zipfa",
+                        "Frekwencja F",
+                        "Liczba wyrazów o frekwencji F",
                         ChartType.COLUMN)
                 .build();
 

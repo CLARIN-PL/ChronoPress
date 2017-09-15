@@ -29,6 +29,7 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm;
@@ -101,9 +102,9 @@ public class FrequencyViewImpl extends AbstractView<FrequencyViewPresenter> impl
 
         final Label txt1 = new Label();
 
-        String t = "<p>Lista frekwencyjna jest lista wyrazów (w formie hasłowej lub dokładnie takiej, jak w tekście) wraz z częstością występowania.</p></br>"
-                + "<p>System pozwala na eksport listy frekwencyjnej w formacie .CSV i jej przetwarzanie arkuszem kalkulacyjnym.</p>"
-                + "<p>Tekst jest kodowany w formacie UTF-8.</p>";
+        String t = VaadinUI.infoMessage("<span>Lista frekwencyjna jest lista wyrazów (w formie hasłowej lub dokładnie takiej, jak w tekście) wraz z częstością występowania.</span>"
+                + "<span>System pozwala na eksport listy frekwencyjnej w formacie .CSV i jej przetwarzanie arkuszem kalkulacyjnym.</span>"
+                + "<span>Tekst jest kodowany w formacie UTF-8.</span>");
 
         txt1.setValue(t);
         txt1.setContentMode(ContentMode.HTML);
@@ -114,6 +115,8 @@ public class FrequencyViewImpl extends AbstractView<FrequencyViewPresenter> impl
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
         Label desc = new Label("Lista frekwencyjna");
+        desc.addStyleName("press-text-large");
+
         Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
@@ -131,14 +134,15 @@ public class FrequencyViewImpl extends AbstractView<FrequencyViewPresenter> impl
                 .with(new MHorizontalLayout(desc, help).withSpacing(true), filter, selectionForm, operationType, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
-                .withFullHeight()
-                .withFullWidth();
+                .withWidth("-1px");
 
         layout = new MVerticalLayout()
                 .withSpacing(true)
-                .withMargin(false)
+                .withMargin(true)
                 .withFullWidth()
-                .with(content);
+                .with(content)
+                .withStyleName("press-margin-top")
+                .withAlign(content, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(layout);
         setSizeFull();

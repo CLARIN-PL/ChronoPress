@@ -13,6 +13,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.HashMap;
@@ -28,10 +29,13 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.ConcordanceWindow;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.TimeSeriesForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.ConcordanceList;
 import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
@@ -51,6 +55,9 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
     @Inject
     TimeSeriesForm timeSeriesForm;
+
+    @Inject
+    ConcordanceWindow concordanceWindow;
 
     @Inject
     javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
@@ -86,8 +93,8 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
         final Label txt1 = new Label();
 
-        String t = "<p>System pozwal na wskazanie lat, tytułów periodyków, autora, grupy odbiorczej i typu periodyku (dziennik, tygodnik itp.)</p"
-                + "</br><p>Kategoria ekspozycji (strona tytułowa, środek, ostatnia strona) nie obejmuje wszystkich tekstów.</p>";
+        String t = VaadinUI.infoMessage("<span>System pozwala na wskazanie lat, tytułów periodyków, autora, grupy odbiorczej i typu periodyku (dziennik, tygodnik itp.)</span>"
+                + "</br><span>Kategoria ekspozycji (strona tytułowa, środek, ostatnia strona) nie obejmuje wszystkich próbek.</span>");
 
         txt1.setValue(t);
         txt1.setContentMode(ContentMode.HTML);
@@ -97,7 +104,9 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Label desc = new Label("Szeregi czasowe .....");
+        Label desc = new Label("Szeregi czasowe");
+        desc.addStyleName("press-text-large");
+
         Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
@@ -117,14 +126,15 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
                 .with(desc, new MHorizontalLayout(filter, help).withSpacing(true), selectionForm, timeSeriesForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
-                .withFullHeight()
-                .withFullWidth();
+                .withWidth("-1px");
 
         layout = new MVerticalLayout()
                 .withSpacing(true)
-                .withMargin(false)
+                .withMargin(true)
                 .withFullWidth()
-                .with(content);
+                .with(content)
+                .withStyleName("press-margin-top")
+                .withAlign(content, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(layout);
         setSizeFull();
@@ -211,5 +221,12 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
             layout.removeComponent(slot);
         });
         return slot;
+    }
+
+    @Override
+    public void showConcordanceWindow(ConcordanceList list) {
+        UI.getCurrent().removeWindow(concordanceWindow);
+        concordanceWindow.setConcordance(list);
+        UI.getCurrent().addWindow(concordanceWindow);
     }
 }

@@ -12,22 +12,18 @@ import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.PopupView;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import org.vaadin.viritin.layouts.MFormLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.presentation.shered.dto.WordAnalysisDTO;
-import pl.clarin.chronopress.presentation.shered.theme.ChronoTheme;
 import pl.clarin.chronopress.presentation.shered.validators.RegularExpressionValidator;
 
 public class WordAnalysisFrom extends CustomComponent {
@@ -56,9 +52,8 @@ public class WordAnalysisFrom extends CustomComponent {
     @PropertyId("namingUnit")
     private final CheckBox namingUnit = new CheckBox();
 
-    @PropertyId("wordRegularExpression")
-    private final TextField wordRegularExpression = new TextField();
-
+    //@PropertyId("wordRegularExpression")
+    //private final TextField wordRegularExpression = new TextField();
     @PropertyId("wordUnit")
     private final OptionGroup wordUnit = new OptionGroup();
 
@@ -80,7 +75,7 @@ public class WordAnalysisFrom extends CustomComponent {
 
         final Label txt1 = new Label();
 
-        String t = "<p>System pozwala na obliczenia parametrów statystycznych dla wskazanych części mowy lub jednostek nazewniczych.</p>";
+        String t = "<p>System pozwala na obliczanie parametrów statystycznych dla wskazanych części mowy lub jednostek nazewniczych.</p>";
 
         txt1.setValue(t);
         txt1.setContentMode(ContentMode.HTML);
@@ -92,7 +87,7 @@ public class WordAnalysisFrom extends CustomComponent {
 
         final Label txt2 = new Label();
 
-        String t1 = "<p>System rozpoznaje nazwy wielowyrazowe typu: \"Adam Mickiewicz\" lub \"Niemcy Zachodnie\" </p>";
+        String t1 = "<span>System rozpoznaje nazwy wielowyrazowe typu: \"Adam Mickiewicz\" lub \"Niemcy Zachodnie\" </span>";
 
         txt2.setValue(t1);
         txt2.setContentMode(ContentMode.HTML);
@@ -104,7 +99,7 @@ public class WordAnalysisFrom extends CustomComponent {
 
         final Label txt3 = new Label();
 
-        String t2 = "<p>Histogram Zipfa przedstawia zależność częstości wystąpień wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są różne wyrazy) i liczby różnych wyrazów mających daną częstość</p></br>";
+        String t2 = "<span>Histogram Zipfa przedstawia zależność częstości wystąpień wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są jako różne wyrazy) i liczby różnych wyrazów mających daną częstość</span></br>";
 
         txt3.setValue(t2);
         txt3.setContentMode(ContentMode.HTML);
@@ -116,7 +111,7 @@ public class WordAnalysisFrom extends CustomComponent {
 
         final Label txt4 = new Label();
 
-        String t3 = "<p>System generuje wykres częstości wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są różne wyrazy) o różnych długościach</p></br>";
+        String t3 = "<span>System generuje wykres częstości wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są jako różne wyrazy) o różnych długościach</span></br>";
 
         txt4.setValue(t3);
         txt4.setContentMode(ContentMode.HTML);
@@ -141,17 +136,19 @@ public class WordAnalysisFrom extends CustomComponent {
                 .withMargin(false)
                 .with(left, right);
 
-        FormLayout frm = new MFormLayout(wordRegularExpression)
-                .withStyleName(ChronoTheme.COMPACT_FORM);
-
+        // FormLayout frm = new MFormLayout(wordRegularExpression)
+        //         .withStyleName(ChronoTheme.COMPACT_FORM);
         wordUnitLayout.addComponents(new Label(provider.getProperty("label.unit")), wordUnit);
         wordUnitLayout.setSpacing(true);
-        wordUnitLayout.setVisible(false);
+        wordUnitLayout.setVisible(true);
 
         VerticalLayout layout = new MVerticalLayout()
-                .with(new HorizontalLayout(allPartsOfSpeech, help), pos, new HorizontalLayout(namingUnit, help2), frm,
-                        new HorizontalLayout(wordZipfHistogram, help3),
-                        new HorizontalLayout(wordAveragesLengthHistogram, help4), wordUnitLayout);
+                .with(new MHorizontalLayout(allPartsOfSpeech, help).withSpacing(true),
+                        pos,
+                        new MHorizontalLayout(namingUnit, help2).withSpacing(true),
+                        new MHorizontalLayout(wordZipfHistogram, help3).withSpacing(true),
+                        new MHorizontalLayout(wordAveragesLengthHistogram, help4).withSpacing(true),
+                        wordUnitLayout);
 
         setWidthUndefined();
         setCompositionRoot(layout);
@@ -164,7 +161,6 @@ public class WordAnalysisFrom extends CustomComponent {
         adverb.setValue(false);
         noun.setValue(false);
         namingUnit.setValue(false);
-        wordRegularExpression.setValue("");
         wordAveragesLengthHistogram.setValue(false);
         wordZipfHistogram.setValue(false);
     }
@@ -179,11 +175,6 @@ public class WordAnalysisFrom extends CustomComponent {
         namingUnit.setCaption(provider.getProperty("label.namingUnit"));
         wordZipfHistogram.setCaption(provider.getProperty("label.word.zipfa.histogram"));
         wordAveragesLengthHistogram.setCaption(provider.getProperty("label.word.average.length.histogram"));
-        wordRegularExpression.setCaption(provider.getProperty("label.regular.expression"));
-        wordRegularExpression.addValidator(regExpValidator);
-        wordRegularExpression.addStyleName(ValoTheme.TEXTFIELD_TINY);
-
-        wordAveragesLengthHistogram.addValueChangeListener(event -> wordUnitLayout.setVisible(!wordUnitLayout.isVisible()));
 
         wordUnit.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         wordUnit.addStyleName(ValoTheme.OPTIONGROUP_SMALL);

@@ -2,15 +2,21 @@ package pl.clarin.chronopress.presentation.page.mapnames;
 
 import com.airhacks.porcupine.execution.boundary.Dedicated;
 import com.vaadin.cdi.UIScoped;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
 import pl.clarin.chronopress.business.calculations.boundary.DataExplorationResult;
 import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.ConcordanceList;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.NamesOnGoogleMap;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.ShowConcordanceWindowEvent;
+import pl.clarin.chronopress.presentation.shered.dto.ConcordanceDTO;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
 
@@ -31,6 +37,9 @@ public class MapnamesViewPresenter extends AbstractPresenter<MapnamesView> {
     Instance<NamesOnGoogleMap> namesOnGoogleMaps;
 
     @Inject
+    Instance<ConcordanceList> concordanceLists;
+
+    @Inject
     SampleFacade sampleFacade;
 
     @Override
@@ -38,7 +47,7 @@ public class MapnamesViewPresenter extends AbstractPresenter<MapnamesView> {
         getView().setInitDataSelection(sampleFacade.getInitDataSelection());
     }
 
-    public void onCalculateDataExploration(CalculateDataExplorationEvent event) {
+    public void onCalculateDataExploration(@Observes(notifyObserver = Reception.IF_EXISTS) CalculateDataExplorationEvent event) {
 
         CompletableFuture<DataExplorationResult> future = CompletableFuture.supplyAsync(() -> service.calculateDataExploration(event), executor);
 
@@ -49,4 +58,10 @@ public class MapnamesViewPresenter extends AbstractPresenter<MapnamesView> {
         });
     }
 
+    public void onShowConcordanceWindow(@Observes(notifyObserver = Reception.IF_EXISTS) ShowConcordanceWindowEvent event) {
+        List<ConcordanceDTO> list = service.concordance(event.getBase(), event.getDate());
+        ConcordanceList r = concordanceLists.get();
+        r.addData(list);
+        getView().showConcordanceWindow(r);
+    }
 }

@@ -35,12 +35,15 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
 
     @PostConstruct
     public void init() {
-        
+
+        //provider.getProperty("label.result.sentence.qa.chart.title"),
+        // provider.getProperty("label.result.sentence.qa.chart.x.axis.title"),
+        ///    provider.getProperty("label.result.sentence.qa.chart.y.axis.title"),
         panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.average.sentence.qt.panel.title"))
                 .addTabSheet()
-                .addChart(provider.getProperty("label.result.sentence.qa.chart.title"),
-                        provider.getProperty("label.result.sentence.qa.chart.x.axis.title"),
-                        provider.getProperty("label.result.sentence.qa.chart.y.axis.title"),
+                .addChart("Rozkład średniej długości",
+                        "Długość zdania",
+                        "Frekwencja",
                         ChartType.COLUMN)
                 .build();
 
@@ -61,7 +64,6 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
         return panel;
     }
 
-
     public void addData(SentenceQuantitativeAnalysisResult data) {
         String unitValue;
 
@@ -73,12 +75,12 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
         panel.gridWithTab(
                 provider.getProperty("label.sample"),
                 new ChartPanel.FormBuilder()
-                        .addStringField(provider.getProperty("label.unit"), unitValue)
-                        .addDoubleField(provider.getProperty("label.average.length"), data.getSentence().getAveragesLength())
-                        .addDoubleField(provider.getProperty("label.standard.deviation"), data.getSentence().getStandardDeviation())
-                        .addDoubleField(provider.getProperty("label.coefficient"), data.getSentence().getCoefficientOfVariation())
-                        .addDoubleField(provider.getProperty("label.skewness"), data.getSentence().getSkewness())
-                        .build(),
+                .addStringField(provider.getProperty("label.unit"), unitValue)
+                .addDoubleField(provider.getProperty("label.average.length"), data.getSentence().getAveragesLength())
+                .addDoubleField(provider.getProperty("label.standard.deviation"), data.getSentence().getStandardDeviation())
+                .addDoubleField(provider.getProperty("label.coefficient"), data.getSentence().getCoefficientOfVariation())
+                .addDoubleField(provider.getProperty("label.skewness"), data.getSentence().getSkewness())
+                .build(),
                 data.getSentence().getAverageLengthHistogram());
 
         try {
@@ -91,7 +93,7 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
 
     public Resource createExportContent(SentenceQuantitativeAnalysisResult data) throws IOException {
         final String date = LocalDate.now().toString();
-        java.io.File file = java.io.File.createTempFile("sentenceAvrLength-"+date , ".csv");
+        java.io.File file = java.io.File.createTempFile("sentenceAvrLength-" + date, ".csv");
         file.deleteOnExit();
         try (FileWriter writer = new FileWriter(file)) {
             data.getSentence().getAverageLengthHistogram().forEach((k, v) -> {

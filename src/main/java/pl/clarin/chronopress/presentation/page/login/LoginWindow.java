@@ -22,7 +22,7 @@ public class LoginWindow extends Window {
 
     @Inject
     DbPropertiesProvider provider;
-    
+
     @Inject
     javax.enterprise.event.Event<UserAuthenticationEvent> auth;
 
@@ -38,31 +38,31 @@ public class LoginWindow extends Window {
     }
 
     private VerticalLayout buildContent() {
-        
+
         final MTextField username = new MTextField(provider.getProperty("label.username"))
                 .withIcon(FontAwesome.USER)
                 .withStyleName(ValoTheme.TEXTFIELD_INLINE_ICON)
                 .withFullWidth();
-                username.focus();
+        username.focus();
 
         final MPasswordField password = new MPasswordField(provider.getProperty("label.password"))
                 .withIcon(FontAwesome.KEY)
                 .withStyleName(ValoTheme.TEXTFIELD_INLINE_ICON)
-                .withFullWidth();    
-        
+                .withFullWidth();
+
         MVerticalLayout fieldsWraper = new MVerticalLayout()
                 .withSpacing(true)
                 .withMargin(true)
                 .withWidth("90%")
                 .with(username, password);
-        
+
         final MButton signIn = new MButton(provider.getProperty("button.sign.in"))
                 .withIcon(FontAwesome.SIGN_IN)
                 .withStyleName(ValoTheme.BUTTON_PRIMARY);
         signIn.setClickShortcut(ShortcutAction.KeyCode.ENTER);
-        signIn.addClickListener(e -> { 
-            auth.fire(new UserAuthenticationEvent(username.getValue(), password.getValue()))
-        ;});
+        signIn.addClickListener(e -> {
+            auth.fire(new UserAuthenticationEvent(username.getValue(), password.getValue()));
+        });
 
         MHorizontalLayout buttonwrapper = new MHorizontalLayout()
                 .withFullWidth()

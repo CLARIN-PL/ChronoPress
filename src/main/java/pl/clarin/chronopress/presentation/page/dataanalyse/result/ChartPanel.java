@@ -5,6 +5,7 @@ import com.vaadin.addon.charts.model.*;
 import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.*;
@@ -13,6 +14,8 @@ import pl.clarin.chronopress.presentation.shered.dto.TimeSeriesResult;
 
 public class ChartPanel extends VerticalLayout {
 
+    javax.enterprise.event.Event<ShowConcordanceWindowEvent> concordnace;
+
     private final HorizontalLayout content;
     private final Chart chart;
     private final TabSheet sheet;
@@ -20,6 +23,7 @@ public class ChartPanel extends VerticalLayout {
     private Queue<SolidColor> colors = initColorQueue();
 
     private ChartPanel(ChartPanelBuilder builder) {
+        this.concordnace = concordnace;
         setCaption(builder.title);
         content = new MHorizontalLayout()
                 .withFullWidth()
@@ -27,6 +31,14 @@ public class ChartPanel extends VerticalLayout {
 
         chart = builder.chart;
         sheet = builder.sheet;
+
+        chart.addPointClickListener(l -> {
+            DataSeries s = (DataSeries) chart.getConfiguration().getSeries().get(0);
+            DataSeriesItem i = s.get(l.getPointIndex());
+            LocalDate date = Instant.ofEpochMilli(i.getX().longValue()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+            concordnace.fire(new ShowConcordanceWindowEvent(s.getName(), date));
+        });
 
         if (sheet != null) {
             content.addComponent(sheet);
@@ -36,6 +48,10 @@ public class ChartPanel extends VerticalLayout {
         }
 
         addComponent(content);
+    }
+
+    public void setConcordnace(javax.enterprise.event.Event<ShowConcordanceWindowEvent> concordnace) {
+        this.concordnace = concordnace;
     }
 
     public void addDataWithDates(TimeSeriesResult result) {
@@ -83,7 +99,7 @@ public class ChartPanel extends VerticalLayout {
     public void onlyGrid(String name, Map<Long, Long> map) {
         addDataSeries(chart, loadData(map, name));
     }
-    
+
     public void gridWithTab(String name, FormBuilder form, Map<Long, Long> map) {
         String title = addTab(name, form);
         addDataSeries(chart, loadData(map, title));
@@ -144,7 +160,7 @@ public class ChartPanel extends VerticalLayout {
         adjustXAxisMax((long) (series.size() + 10));
         return data;
     }
- 
+
     public static class ChartPanelBuilder {
 
         private final String title;

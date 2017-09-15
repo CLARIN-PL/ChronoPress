@@ -13,6 +13,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.HashMap;
@@ -28,12 +29,15 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.ConcordanceWindow;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.WordQuantitativeAnalysisTab;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.ConcordanceList;
 import pl.clarin.chronopress.presentation.shered.dto.DataExplorationDTO;
 import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
@@ -53,6 +57,9 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
 
     @Inject
     DataExplorationForm dataExplorationForm;
+
+    @Inject
+    ConcordanceWindow concordanceWindow;
 
     @Inject
     javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
@@ -89,15 +96,15 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
 
         final Label txt1 = new Label();
 
-        String t = "<p>System generuje rozkład punktów, odpowiadających nazwom miejscowości w tekstach.</p>"
-                + "<p>Kolor punktu odpowiada częstości nazwy w tekstach:</p>"
+        String t = VaadinUI.infoMessage("<span>System generuje rozkład punktów, odpowiadających nazwom miejscowości w tekstach.</span>"
+                + "<span>Kolor punktu odpowiada częstości nazwy w tekstach:</span>"
                 + "<ul>"
                 + " <li>żółty 1&ndash;10 </li>"
                 + " <li>zielony 11&ndash;100 </li>"
                 + " <li>niebieski 101&ndash;1000 </li>"
                 + " <li>czerwony &mdash; powyżej 1000</li>"
                 + "</ul>"
-                + "<p>Kliknięcie w  wyróżniony punkt uruchamia okno konkordacji nazwy miejscowości.</p>";
+                + "<span>Kliknięcie w  wyróżniony punkt uruchamia okno konkordacji nazwy miejscowości.</span>");
 
         txt1.setValue(t);
         txt1.setContentMode(ContentMode.HTML);
@@ -108,8 +115,9 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
         Label desc = new Label("Mapa nazw miejscowych");
+        desc.addStyleName("press-text-large");
 
-        Button filter = new MButton("Ustawienia filtra")
+        Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
@@ -123,17 +131,20 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(new HorizontalLayout(desc, help), filter, selectionForm, dataExplorationForm, execute)
+                .with(new MHorizontalLayout(desc, help)
+                        .withSpacing(true),
+                        filter, selectionForm, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
-                .withFullHeight()
-                .withFullWidth();
+                .withWidth("-1px");
 
         layout = new MVerticalLayout()
                 .withSpacing(true)
-                .withMargin(false)
+                .withMargin(true)
                 .withFullWidth()
-                .with(content);
+                .with(content)
+                .withStyleName("press-margin-top")
+                .withAlign(content, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(layout);
         setSizeFull();
@@ -220,5 +231,12 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
             layout.removeComponent(slot);
         });
         return slot;
+    }
+
+    @Override
+    public void showConcordanceWindow(ConcordanceList list) {
+        UI.getCurrent().removeWindow(concordanceWindow);
+        concordanceWindow.setConcordance(list);
+        UI.getCurrent().addWindow(concordanceWindow);
     }
 }

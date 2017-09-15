@@ -25,6 +25,9 @@ public class TimeSeriesChart implements CalculationResult {
     private ChartPanel panel;
 
     @Inject
+    javax.enterprise.event.Event<ShowConcordanceWindowEvent> concordnace;
+
+    @Inject
     private DbPropertiesProvider provider;
 
     private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
@@ -32,13 +35,16 @@ public class TimeSeriesChart implements CalculationResult {
 
     @PostConstruct
     public void init() {
-        
-        panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.time.series.panel.title"))
-                .addChart(provider.getProperty("label.time.series.chart.title"),
-                        provider.getProperty("label.time.series.x.axis.title"),
-                        provider.getProperty("label.time.series.y.axis.title"),
-                        ChartType.LINE)
+
+        // w przypadku l > 1 -> Szereg czasowy leksemów
+        //label.time.series.chart.title"),
+        //label.time.series.x.axis.title"),
+        //label.time.series.y.axis.title")
+        panel = new ChartPanel.ChartPanelBuilder("Szereg czasowy leksemu") //provider.getProperty("label.time.series.panel.title"))
+                .addChart("Szereg czasowy leksemu", "Data publikacji", "Częstość", ChartType.LINE)
                 .build();
+
+        panel.setConcordnace(concordnace);
 
         HorizontalLayout download = new HorizontalLayout();
         download.addStyleName(ChronoTheme.SMALL_MARGIN);
@@ -69,16 +75,16 @@ public class TimeSeriesChart implements CalculationResult {
 
     public Resource createExportContent(TimeSeriesResult data) throws IOException {
         final String date = LocalDate.now().toString();
-        java.io.File file =  java.io.File.createTempFile("timeSeries-"+date , ".csv");
+        java.io.File file = java.io.File.createTempFile("timeSeries-" + date, ".csv");
         file.deleteOnExit();
         try (FileWriter writer = new FileWriter(file)) {
             data.getTimeSeries().forEach((k, v) -> {
                 try {
-                    writer.append(k +"\n");
-                    writer.append("month\t"+"year\t"+"frequency\t\n");
+                    writer.append(k + "\n");
+                    writer.append("month\t" + "year\t" + "frequency\t\n");
                     v.forEach(tp -> {
                         try {
-                            writer.append(tp.getMonth() + ";" + tp.getYear() +";"+ tp.getCount() + ";\n");
+                            writer.append(tp.getMonth() + ";" + tp.getYear() + ";" + tp.getCount() + ";\n");
                         } catch (IOException e) {
                             log.debug("Export to CSV", e);
                         }

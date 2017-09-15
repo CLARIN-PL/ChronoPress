@@ -2,10 +2,6 @@ package pl.clarin.chronopress.presentation.page.dataanalyse.result;
 
 import lombok.Getter;
 
-/**
- *
- * @author tnaskret
- */
 public class ShowSampleByIdEvent {
 
     @Getter

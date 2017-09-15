@@ -28,8 +28,8 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
-import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.WordQuantitativeAnalysisTab;
@@ -53,9 +53,6 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
 
     @Inject
     DataExplorationForm dataExplorationForm;
-
-    @Inject
-    javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
 
     private VerticalLayout loading;
 
@@ -88,17 +85,17 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PROFILE);
 
         Label desc = new Label("Profile wyrazów");
+        desc.addStyleName("press-text-large");
 
-        Label txt = new Label("<p>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów)."
-                + "Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem."
-                + "</p>\n");
+        Label txt = new Label(VaadinUI.infoMessage("<span>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów).</span></br>"
+                + "<span>Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem.</span>"));
 
-        dataExplorationForm.setLemmaHelp("<p>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków."
-                + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</p>"
-                + "<p><span>\"bylibyśmy\"<span> wygeneruje profil leksykalny dokładnie tej formy czasownika być</p>"
-                + "<p>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></p>"
-        );
+        dataExplorationForm.setLemmaHelp(VaadinUI.infoMessage("<span>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków.</span></br>"
+                + "<span>Na przykład:</span></br>"
+                + "<span style=\"font-family: Courier;\">partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</br>"
+                + "<span style=\"font-family: Courier;\">\"partią\"</span> wygeneruje profil leksykalny dokładnie tej formy czasownika partia</br>"
+                + "<span>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></span>"
+        ));
 
         txt.setContentMode(ContentMode.HTML);
         VerticalLayout popupContent = new VerticalLayout();
@@ -108,7 +105,7 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         // The component itself
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Button filter = new MButton("Ustawienia filtra")
+        Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
@@ -127,14 +124,15 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
                         filter, selectionForm, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
-                .withFullHeight()
-                .withFullWidth();
+                .withWidth("-1px");
 
         layout = new MVerticalLayout()
                 .withSpacing(true)
-                .withMargin(false)
+                .withMargin(true)
                 .withFullWidth()
-                .with(content);
+                .with(content)
+                .withStyleName("press-margin-top")
+                .withAlign(content, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(layout);
         setSizeFull();

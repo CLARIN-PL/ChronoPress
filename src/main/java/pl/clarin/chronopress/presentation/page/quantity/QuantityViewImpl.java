@@ -26,6 +26,7 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.SentenceQuantitativeAnalysisTab;
@@ -68,40 +69,40 @@ public class QuantityViewImpl extends AbstractView<QuantityViewPresenter> implem
 
     private VerticalLayout layout;
 
-    private TabSheet sheet;
+    private TabSheet sheetLeft;
+    private TabSheet sheetRight;
 
     @PostConstruct
     public void init() {
         selectionForm.setVisible(false);
 
-        sheet = new TabSheet(
-                wordQuantitativeAnalysisTab,
-                sentenceQuantitativeAnalysisTab);
+        sheetLeft = new TabSheet(wordQuantitativeAnalysisTab);
+        sheetRight = new TabSheet(sentenceQuantitativeAnalysisTab);
 
         final Label txt1 = new Label();
 
-        String t = "<p>Moduł ten pozwala na automatyczne obliczenia podstawowych statystyk skupienia i rozrzutu cech dla tekstów.</p>";
+        String t = "<span>Moduł ten pozwala na automatyczne obliczanie podstawowych statystyk skupienia i rozrzutu cech dla tekstów.</span>";
 
-        txt1.setValue(t);
+        txt1.setValue(VaadinUI.infoMessage(t));
         txt1.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
         popupContent.addComponent(txt1);
 
         final Label txt2 = new Label();
-        String t1 = "<p>System rozpoznaje wyrazy tekstowe, definiowane jako ciagi znaków między spacjami.</p></br>"
-                + "<p>Jednostką pomiaru jest litera. System nie rozpoznaje jednostek wielowyrazowych typu \"na co dzień \" lub \"wilk morski\"</p>";
+        String t1 = "<span>System rozpoznaje wyrazy tekstowe, definiowane jako ciagi znaków między spacjami.</span></br>"
+                + "<span>Jednostką pomiaru jest litera. System nie rozpoznaje jednostek wielowyrazowych typu \"na co dzień \" lub \"wilk morski\"</span>";
 
-        txt2.setValue(t1);
+        txt2.setValue(VaadinUI.infoMessage(t1));
         txt2.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent2 = new VerticalLayout();
         popupContent2.addComponent(txt2);
 
         final Label txt3 = new Label();
-        String t2 = "<p>System rozpoznaje zdania zgodnie z interpunkcją w tekście. Jednostką pomiaru są litery lub pojedyncze wyrazy.</p>";
+        String t2 = "<span>System rozpoznaje zdania zgodnie z interpunkcją w tekście.</br> Jednostką pomiaru są litery lub pojedyncze wyrazy.</span>";
 
-        txt3.setValue(t2);
+        txt3.setValue(VaadinUI.infoMessage(t2));
         txt3.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent3 = new VerticalLayout();
@@ -112,32 +113,44 @@ public class QuantityViewImpl extends AbstractView<QuantityViewPresenter> implem
         final PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent3);
 
         Label desc = new Label("Analiza ilościowa");
+        desc.addStyleName("press-text-large");
 
-        Button filter = new MButton("Ustawienia filtra")
+        Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Wykonaj")
+        Button executeWord = new MButton("Generuj statystyki wyrazów")
                 .withListener(l -> {
-
+                    getPresenter().onCalculateWordQuantitive(selectionForm.getData(), wordQuantitativeAnalysisTab.getWordAnalysisDTO());
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
+        Button executeSentence = new MButton("Generuj statystyki zdań")
+                .withListener(l -> {
+                    getPresenter().onCalculateSentenceQuantitive(selectionForm.getData(), sentenceQuantitativeAnalysisTab.getSentenceAnalysisDTO());
+                })
+                .withStyleName(ValoTheme.BUTTON_SMALL);
+
+        HorizontalLayout sheet = new MHorizontalLayout(sheetLeft, sheetRight);
+
         VerticalLayout content = new MVerticalLayout()
-                .with(new HorizontalLayout(desc, help), filter, selectionForm, help1, help2, sheet, execute)
+                .with(new MHorizontalLayout(desc, help).withSpacing(true), filter, selectionForm, sheet,
+                        new MHorizontalLayout(executeWord, executeSentence)
+                        .withSpacing(true))
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
-                .withFullHeight()
-                .withFullWidth();
+                .withWidth("-1px");
 
         layout = new MVerticalLayout()
                 .withSpacing(true)
-                .withMargin(false)
+                .withMargin(true)
                 .withFullWidth()
-                .with(content);
+                .with(content)
+                .withStyleName("press-margin-top")
+                .withAlign(content, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(layout);
         setSizeFull();

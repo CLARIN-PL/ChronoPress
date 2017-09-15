@@ -20,7 +20,6 @@ import org.vaadin.viritin.layouts.MMarginInfo;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.business.sample.entity.Sample;
-import pl.clarin.chronopress.presentation.shered.layout.Title;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
 
 @CDIView(SampleBrowserView.ID)
@@ -78,10 +77,9 @@ public class SampleBrowserViewImpl extends AbstractView<SampleBrowserViewPresent
 
         MVerticalLayout layout = new MVerticalLayout()
                 .withSize(MSize.FULL_SIZE)
-                .withMargin(new MMarginInfo(false, true))
+                .withMargin(new MMarginInfo(true, true))
                 .withSpacing(true)
-                .with(new Title(FontAwesome.BOOK, provider.getProperty("view.sample.browser.title")),
-                        bar, table);
+                .with(bar, table);
         search.click();
         setCompositionRoot(layout);
     }

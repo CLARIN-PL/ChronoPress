@@ -13,6 +13,7 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.HashMap;
@@ -28,12 +29,17 @@ import org.vaadin.viritin.layouts.MCssLayout;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.business.sample.entity.Sample;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateTimeSerieEvent;
+import pl.clarin.chronopress.presentation.page.dataanalyse.ConcordanceWindow;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataSelectionForm;
 import pl.clarin.chronopress.presentation.page.dataanalyse.WordQuantitativeAnalysisTab;
 import pl.clarin.chronopress.presentation.page.dataanalyse.result.CalculationResult;
+import pl.clarin.chronopress.presentation.page.dataanalyse.result.ConcordanceList;
+import pl.clarin.chronopress.presentation.page.samplebrowser.SampleWindow;
 import pl.clarin.chronopress.presentation.shered.dto.DataExplorationDTO;
 import pl.clarin.chronopress.presentation.shered.dto.InitDataSelectionDTO;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractView;
@@ -53,6 +59,12 @@ public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> 
 
     @Inject
     DataExplorationForm dataExplorationForm;
+
+    @Inject
+    ConcordanceWindow concordanceWindow;
+
+    @Inject
+    SampleWindow sampleWindow;
 
     @Inject
     javax.enterprise.event.Event<CalculateTimeSerieEvent> calculateTimeSeries;
@@ -88,16 +100,16 @@ public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> 
         dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.LEXEME_CONCORDANCE);
 
         Label desc = new Label("Konkordancja");
+        desc.addStyleName("press-text-large");
 
-        Label txt = new Label("<p>Konkordancja to zbiór wszystkich wystąpień wyrazu (leksemu) wraz z kontekstem."
-                + "Tutaj granice kontekstu wyznaczone są przez początek i koniec zdania, w którym występuje wyraz wyszukiwany (tzw. ośrodek konkordancji).</p>\n");
+        Label txt = new Label(VaadinUI.infoMessage("<span>Konkordancja to zbiór wszystkich wystąpień wyrazu (leksemu) wraz z kontekstem.</span></br>"
+                + "<span>Tutaj granice kontekstu wyznaczone są przez początek i koniec zdania, w którym występuje wyraz wyszukiwany (tzw. ośrodek konkordancji).</span>"));
 
-        dataExplorationForm.setLemmaHelp("<p>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków."
-                + "<p>Na przykład:</p>"
-                + "<p><span>partia</span> wygeneruje konkordancję leksemu <i>partia</i>, czyli wyrazów <i>partia, partią, partiami</i> itd.</p>"
-                + "<p><span>\"bylibyśmy\"<span> wygeneruje konkordancję dokładnie tej formy czasownika <i>być</i></p>"
-                + "<p>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></p>"
-        );
+        dataExplorationForm.setLemmaHelp(VaadinUI.infoMessage("<span>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków.</span></br>"
+                + "<span>Na przykład:</span></br>"
+                + "<span style=\"font-family: Courier;\">partia</span> wygeneruje konkordancję leksemu <i>partia</i>, czyli wyrazów <i>partia, partią, partiami</i> itd.</br>"
+                + "<span style=\"font-family: Courier;\">\"był\"</span> wygeneruje konkordancję dokładnie tej formy czasownika <i>być</i></br>"
+                + "<span>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></span>"));
 
         txt.setContentMode(ContentMode.HTML);
         VerticalLayout popupContent = new VerticalLayout();
@@ -107,7 +119,7 @@ public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> 
         // The component itself
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Button filter = new MButton("Ustawienia filtra")
+        Button filter = new MButton("Filtr danych")
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
@@ -121,17 +133,19 @@ public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> 
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
         VerticalLayout content = new MVerticalLayout()
-                .with(new HorizontalLayout(desc, help), filter, selectionForm, dataExplorationForm, execute)
+                .with(new MHorizontalLayout(desc, help)
+                        .withSpacing(true), filter, selectionForm, dataExplorationForm, execute)
                 .withStyleName(ChronoTheme.START_PANEL)
                 .withMargin(true)
-                .withFullHeight()
-                .withFullWidth();
+                .withWidth("-1px");
 
         layout = new MVerticalLayout()
                 .withSpacing(true)
-                .withMargin(false)
+                .withMargin(true)
                 .withFullWidth()
-                .with(content);
+                .with(content)
+                .withStyleName("press-margin-top")
+                .withAlign(content, Alignment.MIDDLE_CENTER);
 
         setCompositionRoot(layout);
         setSizeFull();
@@ -220,4 +234,17 @@ public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> 
         });
         return slot;
     }
+
+    @Override
+    public void showConcordanceWindow(ConcordanceList list) {
+        concordanceWindow.setConcordance(list);
+        UI.getCurrent().addWindow(concordanceWindow);
+    }
+
+    @Override
+    public void showSampleWindow(Sample sample, String lemma) {
+        sampleWindow.setItemWithMarkedkWord(sample, lemma);
+        UI.getCurrent().addWindow(sampleWindow);
+    }
+
 }

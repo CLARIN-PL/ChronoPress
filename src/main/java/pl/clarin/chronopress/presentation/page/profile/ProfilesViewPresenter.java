@@ -4,6 +4,8 @@ import com.airhacks.porcupine.execution.boundary.Dedicated;
 import com.vaadin.cdi.UIScoped;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.Reception;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
@@ -38,14 +40,14 @@ public class ProfilesViewPresenter extends AbstractPresenter<ProfilesView> {
         getView().setInitDataSelection(sampleFacade.getInitDataSelection());
     }
 
-    public void onCalculateDataExploration(CalculateDataExplorationEvent event) {
+    public void onCalculateDataExploration(@Observes(notifyObserver = Reception.IF_EXISTS) CalculateDataExplorationEvent event) {
 
         CompletableFuture<DataExplorationResult> future = CompletableFuture.supplyAsync(() -> service.calculateDataExploration(event), executor);
 
         future.thenAccept((DataExplorationResult result) -> {
             if (result.getProfile() != null) {
                 LexemeProfileList r = lexemeProfileList.get();
-                r.addData(result.getProfile());
+                r.addData(result.getProfile(), result.getLemma());
                 getView().addResultPanel(r);
             }
         });

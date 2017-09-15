@@ -86,6 +86,7 @@ public class DataExplorationForm extends CustomComponent {
     private FormLayout initLemma() {
 
         lemma.addStyleName(ValoTheme.TEXTFIELD_SMALL);
+        lemma.setWidth("250px");
         caseSensitive.addStyleName(ValoTheme.CHECKBOX_SMALL);
 
         txt.setContentMode(ContentMode.HTML);
@@ -95,7 +96,7 @@ public class DataExplorationForm extends CustomComponent {
 
         HorizontalLayout wrapper = new MHorizontalLayout()
                 .withCaption("Wpisz wyraz")
-                .with(help, lemma);
+                .with(lemma, help);
 
         return new MFormLayout(wrapper, caseSensitive)
                 .withMargin(false);
@@ -137,7 +138,7 @@ public class DataExplorationForm extends CustomComponent {
 
         final Label txt1 = new Label();
 
-        txt1.setValue("Wyrazy kotekstowe (kolokaty) można ograniczyć do wskazanych części mowy.");
+        txt1.setValue("Wyrazy kontekstowe (kolokaty) można ograniczyć do wskazanych części mowy.");
         txt1.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();

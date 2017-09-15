@@ -5,7 +5,7 @@
     <groupId>pl.clarin</groupId>
     <artifactId>chronopress</artifactId>
     <packaging>war</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>test</version>
     <name>ChronoPress - Protal Tekstów Prasowych</name>
 
     <properties>

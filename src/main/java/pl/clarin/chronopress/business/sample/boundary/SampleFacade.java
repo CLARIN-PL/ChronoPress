@@ -1,6 +1,7 @@
 package pl.clarin.chronopress.business.sample.boundary;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,6 +18,8 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
@@ -384,7 +387,17 @@ public class SampleFacade {
         predicates.add(cb.equal(sentence.get("sample").get("id"), text.get("id")));
 
         if (dto.getLexeme() != null && dto.getLexeme().size() > 0) {
-            predicates.add(WordSpecification.byLexemes(dto.getLexeme()).toPredicate(root, q, cb));
+            String first = (String) dto.getLexeme().toArray()[0];
+            if (first.contains("\"")) {
+                final Set<String> words = new HashSet<>();
+                dto.getLexeme().forEach(i -> {
+                    words.add(i.replace("\"", ""));
+                });
+                predicates.add(WordSpecification.byTexts(words).toPredicate(root, q, cb));
+            } else {
+                predicates.add(WordSpecification.byLexemes(dto.getLexeme()).toPredicate(root, q, cb));
+            }
+
         } else if (!"".equals(dto.getRegularExpression())) {
             predicates.add(WordSpecification.lexemeByRegExp(dto.getRegularExpression()).toPredicate(root, q, cb));
         }
@@ -415,11 +428,13 @@ public class SampleFacade {
         q.where(predicates.toArray(new Predicate[predicates.size()]));
 
         List<TimeProbe> queryResult = em.createQuery(q).getResultList();
-        Map<String, List<TimeProbe>> sorted = new HashMap<>();
-        if (dto.getAsSumOfResults()) {
-            Map<Integer, Map<Integer, List<TimeProbe>>> groupByDate = queryResult.stream()
-                    .collect(groupingBy(p -> p.getYear(), groupingBy(p -> p.getMonth())));
 
+        Map<String, List<TimeProbe>> sorted = new HashMap<>();
+
+        Map<Integer, Map<Integer, List<TimeProbe>>> groupByDate = queryResult.stream()
+                .collect(groupingBy(p -> p.getYear(), groupingBy(p -> p.getMonth())));
+
+        if (dto.getAsSumOfResults()) {
             List<TimeProbe> tmp = Lists.newArrayList();
             groupByDate.forEach((y, map) -> {
                 map.forEach((m, t) -> {
@@ -429,27 +444,53 @@ public class SampleFacade {
                 });
             });
 
-            Collections.sort(tmp, new Comparator() {
+            Collections.sort(tmp, (Object o1, Object o2) -> {
 
-                public int compare(Object o1, Object o2) {
+                Integer x1 = ((TimeProbe) o1).getYear();
+                Integer x2 = ((TimeProbe) o2).getYear();
+                Integer sComp = x1.compareTo(x2);
 
-                    Integer x1 = ((TimeProbe) o1).getYear();
-                    Integer x2 = ((TimeProbe) o2).getYear();
-                    Integer sComp = x1.compareTo(x2);
-
-                    if (sComp != 0) {
-                        return sComp;
-                    } else {
-                        Integer z1 = ((TimeProbe) o1).getMonth();
-                        Integer z2 = ((TimeProbe) o2).getMonth();
-                        return z1.compareTo(z2);
-                    }
+                if (sComp != 0) {
+                    return sComp;
+                } else {
+                    Integer z1 = ((TimeProbe) o1).getMonth();
+                    Integer z2 = ((TimeProbe) o2).getMonth();
+                    return z1.compareTo(z2);
                 }
             });
             sorted.put("Suma próbek", tmp);
 
         } else {
-            sorted = queryResult.stream()
+
+            List<TimeProbe> tmp = Lists.newArrayList();
+
+            groupByDate.forEach((y, map) -> {
+                map.forEach((m, t) -> {
+                    TimeProbe n = new TimeProbe("", y, m, 0l);
+                    t.forEach(i -> {
+                        n.setLexeme(i.getLexeme());
+                        n.setCount(n.getCount() + i.getCount());
+                    });
+                    tmp.add(n);
+                });
+            });
+
+            Collections.sort(tmp, (Object o1, Object o2) -> {
+
+                Integer x1 = ((TimeProbe) o1).getYear();
+                Integer x2 = ((TimeProbe) o2).getYear();
+                Integer sComp = x1.compareTo(x2);
+
+                if (sComp != 0) {
+                    return sComp;
+                } else {
+                    Integer z1 = ((TimeProbe) o1).getMonth();
+                    Integer z2 = ((TimeProbe) o2).getMonth();
+                    return z1.compareTo(z2);
+                }
+            });
+
+            sorted = tmp.stream()
                     .collect(groupingBy(TimeProbe::getLexeme, mapping(s -> s, toList())));
         }
 
@@ -460,6 +501,7 @@ public class SampleFacade {
                 });
             });
         }
+
         if (dto.getUnit() == Time.YEAR) {
             sorted.forEach((k, v) -> {
                 v.forEach(i -> {
@@ -505,12 +547,15 @@ public class SampleFacade {
         predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
 
         if (lemma.contains("\"")) {
-            Set<String> lexeme = new HashSet<>(Arrays.asList(lemma.replace("\"", "")));
-            predicates.add(WordSpecification.byLexemes(lexeme).toPredicate(root, q, cb));
-        } else if (caseSensitive) {
-            predicates.add(WordSpecification.byText(lemma).toPredicate(root, q, cb));
+            String l = lemma.replace("\"", "");
+            if (caseSensitive) {
+                predicates.add(WordSpecification.byTextIgnoreCaseSensitive(l).toPredicate(root, q, cb));
+            } else {
+                predicates.add(WordSpecification.byText(l).toPredicate(root, q, cb));
+            }
         } else {
-            predicates.add(WordSpecification.byTextIgnoreCaseSensitive(lemma).toPredicate(root, q, cb));
+            Set<String> lexeme = new HashSet<>(Arrays.asList(lemma.replace("\"", "").toLowerCase()));
+            predicates.add(WordSpecification.byLexemes(lexeme).toPredicate(root, q, cb));
         }
 
         q.select(cb.construct(ConcordanceDTO.class,
@@ -528,7 +573,8 @@ public class SampleFacade {
 
         q.where(predicates.toArray(new Predicate[predicates.size()]));
 
-        List<ConcordanceDTO> queryResult = em.createQuery(q).getResultList();
+        List<ConcordanceDTO> queryResult = em.createQuery(q)
+                .getResultList();
         return queryResult;
     }
 
@@ -592,6 +638,7 @@ public class SampleFacade {
         return em.createQuery(q).getResultList();
     }
 
+    @TransactionAttribute(TransactionAttributeType.NEVER)
     public List<LexemeProfile> findLexemeProfile(DataSelectionDTO data, String lemma, PartOfSpeech pos, Integer left, Integer right, Boolean caseSensitive) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -605,12 +652,14 @@ public class SampleFacade {
         predicates.add(cb.equal(sentence.get("sample").get("id"), text.get("id")));
         predicates.add(SampleSpecification.search(data).toPredicate(text, q, cb));
 
-        if (lemma.contains("\"")) {
-            predicates.add(cb.equal(cb.lower(root.get("lemma")), lemma.replace("\"", "").toLowerCase()));
-        } else if (caseSensitive) {
-            predicates.add(cb.equal(root.get("word"), lemma.toLowerCase()));
+        if (!lemma.contains("\"")) {
+            if (caseSensitive) {
+                predicates.add(cb.equal(cb.lower(root.get("lemma")), lemma.replace("\"", "")));
+            } else {
+                predicates.add(cb.equal(cb.lower(root.get("lemma")), lemma.replace("\"", "").toLowerCase()));
+            }
         } else {
-            predicates.add(cb.equal(cb.lower(root.get("word")), lemma.toLowerCase()));
+            predicates.add(cb.equal(cb.lower(root.get("word")), lemma.replace("\"", "")));
         }
         q.select(root);
         q.where(predicates.toArray(new Predicate[predicates.size()]));
@@ -621,13 +670,24 @@ public class SampleFacade {
 
         List<String> stopList = em.createQuery("SELECT s.name FROM StopList s").getResultList();
 
-        String findContextWords = "FROM Word w WHERE w.sentence.id = :sentenceId AND w.posAlias = :pos AND w.seq BETWEEN :left AND :right AND w.lemma NOT IN :stopList";
+        List<String> partOfSpeech = new ArrayList<>();
+
+        if (PartOfSpeech.all == pos.all) {
+            partOfSpeech.add(PartOfSpeech.adj.toString());
+            partOfSpeech.add(PartOfSpeech.adverb.toString());
+            partOfSpeech.add(PartOfSpeech.noun.toString());
+            partOfSpeech.add(PartOfSpeech.verb.toString());
+        } else {
+            partOfSpeech.add(pos.toString());
+        }
+
+        String findContextWords = "FROM Word w WHERE w.sentence.id = :sentenceId AND w.posAlias in :pos AND w.seq BETWEEN :left AND :right AND w.lemma NOT IN :stopList";
 
         words.forEach(w -> {
 
             List<Word> contextWords = em.createQuery(findContextWords)
                     .setParameter("sentenceId", w.getSentence().getId())
-                    .setParameter("pos", pos.toString())
+                    .setParameter("pos", partOfSpeech)
                     .setParameter("left", w.getSeq() - left)
                     .setParameter("right", w.getSeq() + right)
                     .setParameter("stopList", stopList)
@@ -636,8 +696,11 @@ public class SampleFacade {
             contextWords.forEach(cw -> {
 
                 String baseColocat = cw.getLemma().toLowerCase();
-                String match = w.getSeq() < cw.getSeq() ? cw.getWord() + "_" + w.getWord() : w.getWord() + "_" + cw.getWord();
-                results.add(new LexemeProfile(baseColocat, match));
+
+                if (!cw.getWord().equals(w.getWord())) {
+                    String match = w.getSeq() < cw.getSeq() ? cw.getWord() + "_" + w.getWord() : w.getWord() + "_" + cw.getWord();
+                    results.add(new LexemeProfile(baseColocat, match));
+                }
 
             });
         });
@@ -681,5 +744,42 @@ public class SampleFacade {
         });
 
         return list;
+    }
+
+    public List<ConcordanceDTO> findConcordanceByLemma(String base, LocalDate date) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ConcordanceDTO> q = cb.createQuery(ConcordanceDTO.class);
+
+        Root<Word> root = q.from(Word.class);
+        Join<Word, Sentence> sentence = root.join("sentence");
+        Root<Sample> text = q.from(Sample.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(sentence.get("sample").get("id"), text.get("id")));
+        predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
+        predicates.add(WordSpecification.byLexeme(base).toPredicate(root, q, cb));
+
+        if (date != null) {
+            predicates.add(cb.equal(cb.function("year", Integer.class, sentence.get("sample").get("date")), date.getYear()));
+            predicates.add(cb.equal(cb.function("month", Integer.class, sentence.get("sample").get("date")), date.getMonth().getValue()));
+        }
+
+        q.select(cb.construct(ConcordanceDTO.class,
+                text.get("id"),
+                root.get("word"),
+                root.get("lemma"),
+                sentence.get("sentence"),
+                text.get("date"),
+                text.get("journalTitle"),
+                text.get("articleTitle"),
+                text.get("style"),
+                text.get("period"),
+                text.get("status")
+        ));
+
+        q.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        List<ConcordanceDTO> queryResult = em.createQuery(q).getResultList();
+        return queryResult;
     }
 }

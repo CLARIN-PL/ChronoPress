@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.clarin.chronopress.presentation.page.dataanalyse.result;
 
 import com.vaadin.server.Sizeable;
@@ -51,12 +46,18 @@ public class NamesOnGoogleMap implements CalculationResult {
 
     public void addData(List<SimpleGeolocation> results) {
         results.forEach(c -> {
-            // String icon = "http://ws.clarin-pl.eu/public/icons/point-1-10.png";
-            // if(c.getFreq() >= 10 && c.getFreq() < 100) icon = "http://ws.clarin-pl.eu/public/icons/point-10-100.png";
-            // if(c.getFreq() >= 100 && c.getFreq() < 1000) icon = "http://ws.clarin-pl.eu/public/icons/point-100-1000.png";
-            // if(c.getFreq() >= 1000) icon = "http://ws.clarin-pl.eu/public/icons/point-1000.png";
+            String icon = "http://ws.clarin-pl.eu/public/icons/point-1-10.png";
+            if (c.getFreq() >= 10 && c.getFreq() < 100) {
+                icon = "http://ws.clarin-pl.eu/public/icons/point-10-100.png";
+            }
+            if (c.getFreq() >= 100 && c.getFreq() < 1000) {
+                icon = "http://ws.clarin-pl.eu/public/icons/point-100-1000.png";
+            }
+            if (c.getFreq() >= 1000) {
+                icon = "http://ws.clarin-pl.eu/public/icons/point-1000.png";
+            }
             String desc = c.getDisplay_name() + " [frekw:" + c.getFreq() + "][base:" + c.getBase() + "]";
-            googleMap.addMarker(desc, new LatLon(c.getLat(), c.getLon()), false, null);
+            googleMap.addMarker(desc, new LatLon(c.getLat(), c.getLon()), false, icon);
         });
     }
 

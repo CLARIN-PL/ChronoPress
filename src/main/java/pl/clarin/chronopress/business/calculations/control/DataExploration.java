@@ -1,6 +1,7 @@
 package pl.clarin.chronopress.business.calculations.control;
 
 import com.google.gwt.thirdparty.guava.common.collect.Lists;
+import java.time.LocalDate;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -56,5 +57,9 @@ public class DataExploration {
         });
 
         return split;
+    }
+
+    public List<ConcordanceDTO> calculateConcordance(String base, LocalDate date) {
+        return splitSentenceOnWord(facade.findConcordanceByLemma(base, date));
     }
 }

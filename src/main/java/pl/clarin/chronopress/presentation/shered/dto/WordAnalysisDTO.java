@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class WordAnalysisDTO {
 
-    private Boolean allPartsOfSpeech =  false;
+    private Boolean allPartsOfSpeech = false;
     private Boolean adjective = false;
     private Boolean verb = false;
     private Boolean adverb = false;
@@ -14,7 +14,7 @@ public class WordAnalysisDTO {
     private String wordRegularExpression = "";
 
     private Unit wordUnit;
-    private Boolean wordAveragesLengthHistogram = false;
+    private Boolean wordAveragesLengthHistogram = true;
     private Boolean wordZipfHistogram = false;
 
 }
