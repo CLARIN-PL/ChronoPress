@@ -8,8 +8,10 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.themes.ValoTheme;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.about.AboutView;
 import pl.clarin.chronopress.presentation.page.admin.users.ChangePasswordEvent;
 import pl.clarin.chronopress.presentation.page.login.UserLoggedOutEvent;
@@ -35,6 +37,9 @@ public class MainMenu extends HorizontalLayout {
     javax.enterprise.event.Event<ChangePasswordEvent> changePasswordEvent;
 
     @Inject
+    javax.enterprise.event.Event<ChangeLanguageEvent> changeLanguageEvent;
+
+    @Inject
     javax.enterprise.event.Event<NavigationEvent> navigation;
 
     private final MenuBar menuBar = new MenuBar();
@@ -46,12 +51,31 @@ public class MainMenu extends HorizontalLayout {
 
     private final MenuBar.MenuItem about = menuBar.addItem("O KORPUSIE", null,
             (MenuBar.Command) i -> navigation.fire(new NavigationEvent(AboutView.ID)));
-//
-//    private final MenuBar.MenuItem education = menuBar.addItem("EDUKACJA", null,
-//            (MenuBar.Command) i -> navigation.fire(new NavigationEvent(EducationView.ID)));
 
+//    private final MenuBar.MenuItem lang = menuBar.addItem("Polski",
+//            FontAwesome.FLAG, (MenuBar.MenuItem selectedItem) -> {
+//
+//                if (selectedItem.getText().equals("Polski")) {
+//                    selectedItem.setText("English");
+//                    changeLanguageEvent.fire(new ChangeLanguageEvent("EN"));
+//                } else {
+//                    selectedItem.setText("Polski");
+//                    changeLanguageEvent.fire(new ChangeLanguageEvent("PL"));
+//                }
+//                UI.getCurrent().getNavigator().navigateTo("");
+//            });
     @PostConstruct
     public void init() {
+        Cookie lang = VaadinUI.getCookieByName("chronopress");
+        if (lang != null) {
+
+            if (lang.getValue().equals("PL")) {
+                lang.setValue("Polski");
+            } else {
+                lang.setValue("English");
+            }
+        }
+
         setWidth(100, Unit.PERCENTAGE);
 
         menuBar.addStyleName(ValoTheme.MENUBAR_BORDERLESS);

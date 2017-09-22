@@ -8,12 +8,15 @@ import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.ui.Transport;
 import com.vaadin.ui.UI;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 import org.vaadin.googleanalytics.tracking.GoogleAnalyticsTracker;
+import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.presentation.page.error.ErrorView;
 import pl.clarin.chronopress.presentation.page.login.LoginViewPresenter;
 import pl.clarin.chronopress.presentation.page.start.StartView;
@@ -34,6 +37,9 @@ public class VaadinUI extends UI {
     MainLayout layout;
 
     @Inject
+    DbPropertiesProvider propertiesProvider;
+
+    @Inject
     ErrorView errorView;
 
     @Inject
@@ -44,6 +50,7 @@ public class VaadinUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
+        loadLanguage();
         setContent(layout);
 
         GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker("UA-61350840-4", "chronopress.clarin-pl.eu");
@@ -68,4 +75,51 @@ public class VaadinUI extends UI {
     public static String infoMessage(String content) {
         return "<div style=\"margin: 4px;font-size: 13px;\">" + content + "</div>";
     }
+
+    private void loadLanguage() {
+
+        Cookie lang = getCookieByName("chronopress");
+
+        if (lang != null) {
+
+            if (lang.getValue().equals("PL")) {
+                propertiesProvider.loadProperties("PL");
+            } else {
+                propertiesProvider.loadProperties("EN");
+            }
+
+        } else {
+            setLangCookie("PL");
+        }
+
+    }
+
+    public static void setLangCookie(String value) {
+        // Create a new cookie
+        Cookie myCookie = new Cookie("chronopress", value);
+
+        // Make cookie expire in 2 minutes
+        myCookie.setMaxAge(9999);
+
+        // Set the cookie path.
+        myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
+
+        // Save cookie
+        VaadinService.getCurrentResponse().addCookie(myCookie);
+    }
+
+    public static Cookie getCookieByName(String name) {
+        // Fetch all cookies from the request
+        Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+
+        // Iterate to find cookie by its name
+        for (Cookie cookie : cookies) {
+            if (name.equals(cookie.getName())) {
+                return cookie;
+            }
+        }
+
+        return null;
+    }
+
 }

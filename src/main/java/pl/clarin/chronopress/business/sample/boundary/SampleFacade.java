@@ -18,8 +18,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
@@ -638,7 +636,6 @@ public class SampleFacade {
         return em.createQuery(q).getResultList();
     }
 
-    @TransactionAttribute(TransactionAttributeType.NEVER)
     public List<LexemeProfile> findLexemeProfile(DataSelectionDTO data, String lemma, PartOfSpeech pos, Integer left, Integer right, Boolean caseSensitive) {
 
         CriteriaBuilder cb = em.getCriteriaBuilder();

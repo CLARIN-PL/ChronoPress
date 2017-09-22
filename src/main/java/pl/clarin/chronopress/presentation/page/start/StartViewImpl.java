@@ -188,7 +188,7 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         gridLayout.addComponent(test4, 0, 1);
         gridLayout.addComponent(test5, 1, 1);
         gridLayout.addComponent(test6, 2, 1);
-        gridLayout.addComponent(test7, 0, 2);
+        //gridLayout.addComponent(test7, 0, 2);
 
         Panel searchPanel = new MPanel(searchContent)
                 .withStyleName(ValoTheme.PANEL_BORDERLESS)

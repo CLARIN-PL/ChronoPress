@@ -10,16 +10,16 @@ public class DbPropertiesProvider {
 
     @Inject
     PropertyFacade facade;
-    
+
     private Map<String, String> settings;
 
     @PostConstruct
-    public void init(){
-        loadProperties();
+    public void init() {
+        loadProperties("PL");
     }
-    
-    public void loadProperties() {
-        settings = facade.getPropertiesByLang("PL");
+
+    public void loadProperties(String lang) {
+        settings = facade.getPropertiesByLang(lang);
     }
 
     public String getProperty(String key) {
