@@ -16,7 +16,7 @@ import lombok.Data;
             @Index(name = "word_sentence_idx", columnList = "sentence_id")
         })
 @Data
-@Cacheable(true)
+@Cacheable
 public class Word implements Serializable {
 
     @Id

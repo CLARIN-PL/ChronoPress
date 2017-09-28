@@ -21,6 +21,7 @@ import pl.clarin.chronopress.presentation.page.error.ErrorView;
 import pl.clarin.chronopress.presentation.page.login.LoginViewPresenter;
 import pl.clarin.chronopress.presentation.page.start.StartView;
 import pl.clarin.chronopress.presentation.shered.event.NavigationEvent;
+import pl.clarin.chronopress.presentation.shered.layout.ChangeLanguageEvent;
 import pl.clarin.chronopress.presentation.shered.layout.MainLayout;
 
 @CDIUI("")
@@ -76,6 +77,16 @@ public class VaadinUI extends UI {
         return "<div style=\"margin: 4px;font-size: 13px;\">" + content + "</div>";
     }
 
+    public void onChangeLanguage(@Observes(notifyObserver = Reception.IF_EXISTS) ChangeLanguageEvent evn) {
+
+        if ("PL".equals(evn.getLnag())) {
+            updateCookieValue("chronopress", "PL");
+        } else {
+            updateCookieValue("chronopress", "EN");
+        }
+        getNavigator().navigateTo(StartView.ID);
+    }
+
     private void loadLanguage() {
 
         Cookie lang = getCookieByName("chronopress");
@@ -89,7 +100,8 @@ public class VaadinUI extends UI {
             }
 
         } else {
-            setLangCookie("PL");
+            setLangCookie("EN");
+            propertiesProvider.loadProperties("EN");
         }
 
     }
@@ -99,7 +111,7 @@ public class VaadinUI extends UI {
         Cookie myCookie = new Cookie("chronopress", value);
 
         // Make cookie expire in 2 minutes
-        myCookie.setMaxAge(9999);
+        myCookie.setMaxAge(99999);
 
         // Set the cookie path.
         myCookie.setPath(VaadinService.getCurrentRequest().getContextPath());
@@ -108,18 +120,31 @@ public class VaadinUI extends UI {
         VaadinService.getCurrentResponse().addCookie(myCookie);
     }
 
+    public static Cookie updateCookieValue(final String name, final String value) {
+        // Create a new cookie
+        Cookie cookie = getCookieByName(name);
+
+        cookie.setValue(value);
+
+        // Save cookie
+        VaadinService.getCurrentResponse().addCookie(cookie);
+
+        return cookie;
+    }
+
     public static Cookie getCookieByName(String name) {
         // Fetch all cookies from the request
         Cookie[] cookies = VaadinService.getCurrentRequest().getCookies();
+        Cookie chronopressCookie = null;
 
         // Iterate to find cookie by its name
         for (Cookie cookie : cookies) {
             if (name.equals(cookie.getName())) {
-                return cookie;
+                chronopressCookie = cookie;
             }
         }
 
-        return null;
+        return chronopressCookie;
     }
 
 }

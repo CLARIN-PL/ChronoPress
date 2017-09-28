@@ -11,7 +11,6 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupView;
 import com.vaadin.ui.TextField;
@@ -70,6 +69,9 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
 
     private final Map<String, CalculationResult> results = new HashMap<>();
 
+    private Button timeSerriesBtn, profilesBtn, concordanceBtn, gmapBtn, freqBtn, quanAnalBtn;
+    private Label searchInCorpora, searchInfo, portalOptions;
+
     @PostConstruct
     public void init() {
         search.addStyleName(ValoTheme.TEXTFIELD_LARGE);
@@ -77,34 +79,28 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         search.setImmediate(true);
 
         selectionForm.setVisible(false);
-
-        String textInfo = "<span>Wpisz wyraz lub frazę i wyszukaj wystąpienia.</span></br>"
-                + "<span>Na przykład:</span></br>"
-                + "<span style=\"font-family: Courier;\">partia</span>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp wyszukuje wystąpienia form <i>partia, partią, partiami itd.</i></br>"
-                + "<span style=\"font-family: Courier;\">\"partią\"</span>&nbsp&nbsp&nbsp&nbsp wyszukuje wystąpienia dokładnie tego ciągu znaków.</br>"
-                + "<span>Uwaga: system nie ropoznaje jako haseł podstawowych form nieciągłych typu <i>śmiać się</i>.</span></br>"
-                + "<span>Wiecej opcji w oknie Konkordancje</span></br>";
-
-        Label txt = new Label(VaadinUI.infoMessage(textInfo));
-        Label opisTxt = new Label("Funkcjonalności portalu");
-        opisTxt.addStyleName("press-text-align");
+        searchInfo = new Label();
+        portalOptions = new Label();
+        portalOptions.addStyleName("press-text-align");
 
         HorizontalLayout opis = new MHorizontalLayout()
                 .withWidth("60%")
-                .with(opisTxt)
-                .withAlign(opisTxt, Alignment.MIDDLE_CENTER);
+                .with(portalOptions)
+                .withAlign(portalOptions, Alignment.MIDDLE_CENTER);
 
-        txt.setContentMode(ContentMode.HTML);
+        searchInfo.setContentMode(ContentMode.HTML);
 
         VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt);
+        popupContent.addComponent(searchInfo);
 
         // The component itself
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
         PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
+        searchInCorpora = new MLabel().withStyleName("press-text-large");
+
         HorizontalLayout desc = new MHorizontalLayout()
-                .with(new MHorizontalLayout(new MLabel("Wyszukaj w korpusie").withStyleName("press-text-large"), help2)
+                .with(new MHorizontalLayout(searchInCorpora, help2)
                         .withWidth("-1")
                         .withSpacing(true))
                 .withWidth("60%");
@@ -124,53 +120,45 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
             }
         });
 
-        Button test1 = new MButton("Szeregi czasowe")
+        timeSerriesBtn = new MButton()
                 .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(TimeSeriesView.ID));
                 })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test2 = new MButton("Profile wyrazów")
+        profilesBtn = new MButton()
                 .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(ProfilesView.ID));
                 })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test3 = new MButton("Konkordancje")
+        concordanceBtn = new MButton()
                 .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(ConcordanceView.ID));
                 })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test4 = new MButton("Mapa nazw miejscowych")
+        gmapBtn = new MButton()
                 .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(MapnamesView.ID));
                 })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test5 = new MButton("Listy frekwencyjne")
+        freqBtn = new MButton()
                 .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(FrequencyView.ID));
                 })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
-        Button test6 = new MButton("Analiza ilościowa")
+        quanAnalBtn = new MButton()
                 .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(QuantityView.ID));
-                })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
-
-        // frekwencja odmiany
-        Button test7 = new MButton("Fleksja i frekwencja")
-                .withSize(MSize.FULL_SIZE)
-                .withListener(l -> {
-                    Notification.show("Moduł w przygotowaniu", Notification.Type.HUMANIZED_MESSAGE);
                 })
                 .withStyleName(ValoTheme.BUTTON_LARGE);
 
@@ -182,13 +170,12 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         gridLayout.setColumnExpandRatio(0, 1);
         gridLayout.setColumnExpandRatio(1, 1);
         gridLayout.setColumnExpandRatio(2, 1);
-        gridLayout.addComponent(test1, 0, 0);
-        gridLayout.addComponent(test2, 1, 0);
-        gridLayout.addComponent(test3, 2, 0);
-        gridLayout.addComponent(test4, 0, 1);
-        gridLayout.addComponent(test5, 1, 1);
-        gridLayout.addComponent(test6, 2, 1);
-        //gridLayout.addComponent(test7, 0, 2);
+        gridLayout.addComponent(timeSerriesBtn, 0, 0);
+        gridLayout.addComponent(profilesBtn, 1, 0);
+        gridLayout.addComponent(concordanceBtn, 2, 0);
+        gridLayout.addComponent(gmapBtn, 0, 1);
+        gridLayout.addComponent(freqBtn, 1, 1);
+        gridLayout.addComponent(quanAnalBtn, 2, 1);
 
         Panel searchPanel = new MPanel(searchContent)
                 .withStyleName(ValoTheme.PANEL_BORDERLESS)
@@ -252,5 +239,20 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
     public void onViewEnter() {
         content.removeAllComponents();
         content.addComponent(linksPanel);
+        initLabels();
     }
+
+    private void initLabels() {
+        searchInfo.setValue(VaadinUI.infoMessage(provider.getProperty("start.view.search.info")));
+        portalOptions.setValue(provider.getProperty("start.view.portal.options"));
+        searchInCorpora.setValue(provider.getProperty("start.view.search.in.corpora"));
+        timeSerriesBtn.setCaption(provider.getProperty("start.view.tile.time.series"));
+        profilesBtn.setCaption(provider.getProperty("start.view.tile.profiles"));
+        concordanceBtn.setCaption(provider.getProperty("start.view.tile.concordance"));
+        gmapBtn.setCaption(provider.getProperty("start.view.tile.gmap"));
+        freqBtn.setCaption(provider.getProperty("start.view.tile.frequency"));
+        quanAnalBtn.setCaption(provider.getProperty("start.view.tile.quan.anal"));
+
+    }
+
 }

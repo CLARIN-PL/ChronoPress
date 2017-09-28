@@ -1,6 +1,7 @@
 package pl.clarin.chronopress.presentation.shered.layout;
 
 import com.vaadin.cdi.UIScoped;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
@@ -44,35 +45,34 @@ public class MainMenu extends HorizontalLayout {
 
     private final MenuBar menuBar = new MenuBar();
 
-    private final MenuBar.MenuItem start = menuBar.addItem("STRONA GŁÓWNA", null, (MenuBar.Command) i -> navigation.fire(new NavigationEvent((StartView.ID))));
+    private final MenuBar.MenuItem start = menuBar.addItem("", null, (MenuBar.Command) i -> navigation.fire(new NavigationEvent((StartView.ID))));
 
-    private final MenuBar.MenuItem samples = menuBar.addItem("PRZEGLĄD PRÓBEK", null,
+    private final MenuBar.MenuItem samples = menuBar.addItem("", null,
             (MenuBar.Command) i -> navigation.fire(new NavigationEvent((SampleBrowserView.ID))));
 
-    private final MenuBar.MenuItem about = menuBar.addItem("O KORPUSIE", null,
+    private final MenuBar.MenuItem about = menuBar.addItem("", null,
             (MenuBar.Command) i -> navigation.fire(new NavigationEvent(AboutView.ID)));
 
-//    private final MenuBar.MenuItem lang = menuBar.addItem("Polski",
-//            FontAwesome.FLAG, (MenuBar.MenuItem selectedItem) -> {
-//
-//                if (selectedItem.getText().equals("Polski")) {
-//                    selectedItem.setText("English");
-//                    changeLanguageEvent.fire(new ChangeLanguageEvent("EN"));
-//                } else {
-//                    selectedItem.setText("Polski");
-//                    changeLanguageEvent.fire(new ChangeLanguageEvent("PL"));
-//                }
-//                UI.getCurrent().getNavigator().navigateTo("");
-//            });
+    private final MenuBar.MenuItem lang = menuBar.addItem("Polski",
+            FontAwesome.FLAG, (MenuBar.MenuItem selectedItem) -> {
+
+                if (selectedItem.getText().equals("Polski")) {
+                    selectedItem.setText("English");
+                    changeLanguageEvent.fire(new ChangeLanguageEvent("EN"));
+                } else {
+                    selectedItem.setText("Polski");
+                    changeLanguageEvent.fire(new ChangeLanguageEvent("PL"));
+                }
+            });
+
     @PostConstruct
     public void init() {
-        Cookie lang = VaadinUI.getCookieByName("chronopress");
-        if (lang != null) {
-
-            if (lang.getValue().equals("PL")) {
-                lang.setValue("Polski");
+        Cookie c = VaadinUI.getCookieByName("chronopress");
+        if (c != null) {
+            if (c.getValue().equals("PL")) {
+                lang.setText("Polski");
             } else {
-                lang.setValue("English");
+                lang.setText("English");
             }
         }
 
@@ -93,6 +93,14 @@ public class MainMenu extends HorizontalLayout {
 
         addComponent(layout);
         setComponentAlignment(layout, Alignment.BOTTOM_RIGHT);
+
+        initLabels();
+    }
+
+    private void initLabels() {
+        start.setText(provider.getProperty("start.viev.menu.main"));
+        samples.setText(provider.getProperty("start.viev.menu.samples"));
+        about.setText(provider.getProperty("start.viev.menu.about"));
     }
 
 }

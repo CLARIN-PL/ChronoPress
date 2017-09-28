@@ -18,7 +18,7 @@ import pl.clarin.chronopress.business.shered.AbstractEntity;
             @Index(name = "period_idx", columnList = "period")
         })
 @Data
-@Cacheable(true)
+@Cacheable
 @EqualsAndHashCode(callSuper = true)
 public class Sample extends AbstractEntity {
 
