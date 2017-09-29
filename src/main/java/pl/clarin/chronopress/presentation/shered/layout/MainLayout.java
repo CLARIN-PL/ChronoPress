@@ -31,4 +31,7 @@ public class MainLayout extends VerticalLayout {
         return content;
     }
 
+    public void loadLabels() {
+        header.loadLabels();
+    }
 }

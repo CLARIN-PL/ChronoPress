@@ -7,11 +7,11 @@ import pl.clarin.chronopress.business.shered.AbstractEntity;
 @Entity
 @Table(name = "Pages")
 @DiscriminatorColumn(
-		name="dtype",
-		discriminatorType = DiscriminatorType.STRING)
+        name = "dtype",
+        discriminatorType = DiscriminatorType.STRING)
 @Data
-public class Page extends AbstractEntity{
+public class Page extends AbstractEntity {
 
     private String category;
-
+    private String lang;
 }

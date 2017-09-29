@@ -37,27 +37,30 @@ public class SampleBrowserViewImpl extends AbstractView<SampleBrowserViewPresent
     @Inject
     SampleWindow window;
 
+    private MTextField journal, article, author;
+    private MDateField date;
+    private MButton search;
+
     @PostConstruct
     public void init() {
 
-        MTextField journal = new MTextField(provider.getProperty("label.journal.title"))
+        journal = new MTextField()
                 .withStyleName(ValoTheme.TEXTFIELD_SMALL)
                 .withFullWidth();
 
-        MTextField article = new MTextField(provider.getProperty("label.article.title"))
+        article = new MTextField()
                 .withStyleName(ValoTheme.TEXTFIELD_SMALL)
                 .withFullWidth();
 
-        MTextField author = new MTextField(provider.getProperty("label.authors"))
+        author = new MTextField()
                 .withStyleName(ValoTheme.TEXTFIELD_SMALL)
                 .withFullWidth();
 
-        MDateField date = new MDateField(provider.getProperty("label.published.date"))
+        date = new MDateField()
                 .withStyleName(ValoTheme.DATEFIELD_SMALL)
                 .withFullWidth();
 
-        MButton search = new MButton(FontAwesome.SEARCH)
-                .withCaption(provider.getProperty("label.search"))
+        search = new MButton(FontAwesome.SEARCH)
                 .withStyleName(ValoTheme.BUTTON_FRIENDLY, ValoTheme.BUTTON_SMALL)
                 .withListener((Button.ClickEvent event) -> {
                     table.setBeans(new SortableLazyList<>(
@@ -91,6 +94,15 @@ public class SampleBrowserViewImpl extends AbstractView<SampleBrowserViewPresent
 
     @Override
     public void enter(ViewChangeEvent event) {
+        loadLabels();
+    }
+
+    private void loadLabels() {
+        journal.setCaption(provider.getProperty("label.journal.title"));
+        article.setCaption(provider.getProperty("label.article.title"));
+        author.setCaption(provider.getProperty("label.authors"));
+        date.setCaption(provider.getProperty("label.published.date"));
+        search.setCaption(provider.getProperty("label.search"));
     }
 
     @Override

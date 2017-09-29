@@ -30,20 +30,20 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
     @Inject
     private DbPropertiesProvider provider;
 
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
     private FileDownloader fileDownloader;
 
     @PostConstruct
     public void init() {
 
-        //provider.getProperty("label.result.sentence.qa.chart.title"),
-        // provider.getProperty("label.result.sentence.qa.chart.x.axis.title"),
-        ///    provider.getProperty("label.result.sentence.qa.chart.y.axis.title"),
+        downloadCSV.setCaption(provider.getProperty("label.download"));
+
         panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.average.sentence.qt.panel.title"))
                 .addTabSheet()
-                .addChart("Rozkład średniej długości",
-                        "Długość zdania",
-                        "Frekwencja",
+                .addChart(
+                        provider.getProperty("label.result.sentence.qa.chart.title"),
+                        provider.getProperty("label.result.sentence.qa.chart.x.axis.title"),
+                        provider.getProperty("label.result.sentence.qa.chart.y.axis.title"),
                         ChartType.COLUMN)
                 .build();
 

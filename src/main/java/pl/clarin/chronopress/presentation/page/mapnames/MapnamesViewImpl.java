@@ -96,15 +96,7 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
 
         final Label txt1 = new Label();
 
-        String t = VaadinUI.infoMessage("<span>System generuje rozkład punktów, odpowiadających nazwom miejscowości w tekstach.</span>"
-                + "<span>Kolor punktu odpowiada częstości nazwy w tekstach:</span>"
-                + "<ul>"
-                + " <li>żółty 1&ndash;10 </li>"
-                + " <li>zielony 11&ndash;100 </li>"
-                + " <li>niebieski 101&ndash;1000 </li>"
-                + " <li>czerwony &mdash; powyżej 1000</li>"
-                + "</ul>"
-                + "<span>Kliknięcie w  wyróżniony punkt uruchamia okno konkordacji nazwy miejscowości.</span>");
+        String t = VaadinUI.infoMessage(provider.getProperty("view.map.info"));
 
         txt1.setValue(t);
         txt1.setContentMode(ContentMode.HTML);
@@ -114,17 +106,17 @@ public class MapnamesViewImpl extends AbstractView<MapnamesViewPresenter> implem
 
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Label desc = new Label("Mapa nazw miejscowych");
+        Label desc = new Label(provider.getProperty("label.place.map"));
         desc.addStyleName("press-text-large");
 
-        Button filter = new MButton("Filtr danych")
+        Button filter = new MButton(provider.getProperty("label.filter"))
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Pokaż mapę")
+        Button execute = new MButton(provider.getProperty("view.map.showmap"))
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })

@@ -5,15 +5,20 @@ import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
+import javax.inject.Inject;
 import org.vaadin.viritin.MSize;
 import org.vaadin.viritin.layouts.MVerticalLayout;
+import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 
 public class ErrorView extends CustomComponent implements View {
+
+    @Inject
+    DbPropertiesProvider provider;
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
 
-        Label label = new Label("Brak dostępu");
+        Label label = new Label(provider.getProperty("security.no.access"));
 
         MVerticalLayout layout = new MVerticalLayout()
                 .withSize(MSize.FULL_SIZE)

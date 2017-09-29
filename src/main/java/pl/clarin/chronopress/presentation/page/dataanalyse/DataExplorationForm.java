@@ -47,7 +47,7 @@ public class DataExplorationForm extends CustomComponent {
     private final ComboBox contextPos = new ComboBox();
 
     @PropertyId("caseSensitive")
-    private final CheckBox caseSensitive = new CheckBox("Uwzględnij wielkość liter");
+    private final CheckBox caseSensitive = new CheckBox();
 
     private final BeanFieldGroup<DataExplorationDTO> binder = new BeanFieldGroup<>(DataExplorationDTO.class);
 
@@ -68,6 +68,7 @@ public class DataExplorationForm extends CustomComponent {
         lemmaPanel = initLemma();
         lemmaPanel.setVisible(false);
 
+        caseSensitive.setCaption(provider.getProperty("label.case.sensitive"));
         operationType.setVisible(false);
         initializeOperations();
 
@@ -95,7 +96,7 @@ public class DataExplorationForm extends CustomComponent {
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
         HorizontalLayout wrapper = new MHorizontalLayout()
-                .withCaption("Wpisz wyraz")
+                .withCaption(provider.getProperty("label.type.word"))
                 .with(lemma, help);
 
         return new MFormLayout(wrapper, caseSensitive)
@@ -105,12 +106,12 @@ public class DataExplorationForm extends CustomComponent {
 
     private HorizontalLayout initProfile() {
 
-        contextPos.setCaption("Wyrazy kotekstowe");
+        contextPos.setCaption(provider.getProperty("label.context.words"));
         contextPos.setNullSelectionAllowed(false);
         contextPos.addStyleName(ValoTheme.COMBOBOX_SMALL);
 
         contextPos.addItem(PartOfSpeech.all);
-        contextPos.setItemCaption(PartOfSpeech.all, "wszystkie");
+        contextPos.setItemCaption(PartOfSpeech.all, provider.getProperty("label.all"));
 
         contextPos.addItem(PartOfSpeech.adj);
         contextPos.setItemCaption(PartOfSpeech.adj, provider.getProperty("label.adjective"));
@@ -129,30 +130,30 @@ public class DataExplorationForm extends CustomComponent {
         List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
         leftContextGap.addStyleName(ValoTheme.COMBOBOX_SMALL);
-        leftContextGap.setCaption("Lewy kontekst");
+        leftContextGap.setCaption(provider.getProperty("label.left.context"));
         leftContextGap.addItems(numbers);
 
         rightContextGap.addStyleName(ValoTheme.COMBOBOX_SMALL);
-        rightContextGap.setCaption("Prawy kontekst");
+        rightContextGap.setCaption(provider.getProperty("label.right.context"));
         rightContextGap.addItems(numbers);
 
-        final Label txt1 = new Label();
+        final Label info1 = new Label();
 
-        txt1.setValue("Wyrazy kontekstowe (kolokaty) można ograniczyć do wskazanych części mowy.");
-        txt1.setContentMode(ContentMode.HTML);
+        info1.setValue(provider.getProperty("label.data.explor.info1"));
+        info1.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt1);
+        popupContent.addComponent(info1);
 
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        final Label txt2 = new Label();
+        final Label info2 = new Label();
 
-        txt2.setValue("Szerokość kontekstu określona jest liczbą wyrazów tekstowych.");
-        txt2.setContentMode(ContentMode.HTML);
+        info2.setValue(provider.getProperty("label.data.explor.info2"));
+        info2.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent2 = new VerticalLayout();
-        popupContent2.addComponent(txt2);
+        popupContent2.addComponent(info2);
 
         final PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
 

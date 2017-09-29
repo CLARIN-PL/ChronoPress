@@ -79,56 +79,50 @@ public class QuantityViewImpl extends AbstractView<QuantityViewPresenter> implem
         sheetLeft = new TabSheet(wordQuantitativeAnalysisTab);
         sheetRight = new TabSheet(sentenceQuantitativeAnalysisTab);
 
-        final Label txt1 = new Label();
+        final Label info1 = new Label();
 
-        String t = "<span>Moduł ten pozwala na automatyczne obliczanie podstawowych statystyk skupienia i rozrzutu cech dla tekstów.</span>";
-
-        txt1.setValue(VaadinUI.infoMessage(t));
-        txt1.setContentMode(ContentMode.HTML);
+        info1.setValue(VaadinUI.infoMessage(provider.getProperty("view.quantity.anal.info1")));
+        info1.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt1);
+        popupContent.addComponent(info1);
 
-        final Label txt2 = new Label();
-        String t1 = "<span>System rozpoznaje wyrazy tekstowe, definiowane jako ciagi znaków między spacjami.</span></br>"
-                + "<span>Jednostką pomiaru jest litera. System nie rozpoznaje jednostek wielowyrazowych typu \"na co dzień \" lub \"wilk morski\"</span>";
-
-        txt2.setValue(VaadinUI.infoMessage(t1));
-        txt2.setContentMode(ContentMode.HTML);
+        final Label info2 = new Label();
+        info2.setValue(VaadinUI.infoMessage(provider.getProperty("view.quantity.anal.info2")));
+        info2.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent2 = new VerticalLayout();
-        popupContent2.addComponent(txt2);
+        popupContent2.addComponent(info2);
 
-        final Label txt3 = new Label();
-        String t2 = "<span>System rozpoznaje zdania zgodnie z interpunkcją w tekście.</br> Jednostką pomiaru są litery lub pojedyncze wyrazy.</span>";
+        final Label info3 = new Label();
 
-        txt3.setValue(VaadinUI.infoMessage(t2));
-        txt3.setContentMode(ContentMode.HTML);
+        info3.setValue(VaadinUI.infoMessage(provider.getProperty("view.quantity.anal.info3")));
+        info3.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent3 = new VerticalLayout();
-        popupContent3.addComponent(txt3);
+        popupContent3.addComponent(info3);
 
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
         final PopupView help1 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
         final PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent3);
 
-        Label desc = new Label("Analiza ilościowa");
+        Label desc = new Label(provider.getProperty("view.tab.quantitative.analysis.title"));
         desc.addStyleName("press-text-large");
 
-        Button filter = new MButton("Filtr danych")
+        Button filter = new MButton(provider.getProperty("label.filter"))
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button executeWord = new MButton("Generuj statystyki wyrazów")
+        Button executeWord = new MButton(provider.getProperty("view.quantity.anal.generate.stats.words"))
                 .withListener(l -> {
                     getPresenter().onCalculateWordQuantitive(selectionForm.getData(), wordQuantitativeAnalysisTab.getWordAnalysisDTO());
                 })
                 .withStyleName(ValoTheme.BUTTON_SMALL);
 
-        Button executeSentence = new MButton("Generuj statystyki zdań")
+        Button executeSentence = new MButton(provider.getProperty("view.quantity.anal.generate.stats.sentence"))
                 .withListener(l -> {
                     getPresenter().onCalculateSentenceQuantitive(selectionForm.getData(), sentenceQuantitativeAnalysisTab.getSentenceAnalysisDTO());
                 })

@@ -31,11 +31,12 @@ public class FrequencyList implements CalculationResult {
 
     private BeanItemContainer<FrequencyItem> container = new BeanItemContainer<FrequencyItem>(FrequencyItem.class);
 
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
     private FileDownloader fileDownloader;
 
     @PostConstruct
-    public void  init() {
+    public void init() {
+        downloadCSV.setCaption(provider.getProperty("label.download"));
 
         initializeGrid();
         panel.setWidth(100, Sizeable.Unit.PERCENTAGE);
@@ -92,19 +93,19 @@ public class FrequencyList implements CalculationResult {
         Collections.sort(data, (Object o1, Object o2) -> {
             Long x1 = ((FrequencyItem) o1).getValue();
             Long x2 = ((FrequencyItem) o2).getValue();
-            return  x1.compareTo(x2);
+            return x1.compareTo(x2);
         });
         Collections.reverse(data);
 
-        java.io.File file  = java.io.File.createTempFile("frequency-list-"+date , ".csv");
+        java.io.File file = java.io.File.createTempFile("frequency-list-" + date, ".csv");
         file.deleteOnExit();
         try (FileWriter writer = new FileWriter(file)) {
             DecimalFormat df = new DecimalFormat();
             df.setMaximumFractionDigits(3);
-            
+
             data.forEach(i -> {
                 try {
-                    writer.append(i.getWord() + ";" + Long.toString(i.getValue())+";\n");
+                    writer.append(i.getWord() + ";" + Long.toString(i.getValue()) + ";\n");
                 } catch (IOException e) {
                     log.debug("Export to csv", e);
                 }
@@ -113,6 +114,5 @@ public class FrequencyList implements CalculationResult {
         }
         return new FileResource(file);
     }
-
 
 }

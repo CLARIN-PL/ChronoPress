@@ -22,7 +22,7 @@ public class SentenceQuantitativeAnalysisTab extends CustomComponent {
 
     @PostConstruct
     public void init() {
-        setCaption("Zdania");
+        setCaption(provider.getProperty("label.sentences"));
 
         HorizontalLayout layout = new MHorizontalLayout()
                 .withFullWidth()

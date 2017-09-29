@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pl.clarin.chronopress.presentation.page.education;
 
 import com.vaadin.server.FileResource;
@@ -74,15 +69,15 @@ public class CategoryTab extends HorizontalLayout {
     }
 
     private void buildContent(EducationPage page) {
-        
+
         content.removeAllComponents();
-        
+
         Accordion accordion = new Accordion();
-      
+
         if (page.getDiscursive() != null && !"".equals(page.getDiscursive())) {
-            if(page.getTabular() != null && !"".equals(page.getTabular())){
+            if (page.getTabular() != null && !"".equals(page.getTabular())) {
                 accordion.addComponent(createContentLabel(provider.getProperty("label.discursive"), page.getDiscursive()));
-            }else{
+            } else {
                 content.addComponent(createContentLabel(null, page.getDiscursive()));
             }
         }
@@ -109,8 +104,9 @@ public class CategoryTab extends HorizontalLayout {
             }
         }
 
-        if(accordion.getComponentCount() > 0)
+        if (accordion.getComponentCount() > 0) {
             content.addComponent(accordion);
+        }
     }
 
     private Label createContentLabel(String title, String content) {

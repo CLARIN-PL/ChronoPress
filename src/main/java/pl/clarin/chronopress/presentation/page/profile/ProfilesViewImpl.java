@@ -84,19 +84,12 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         selectionForm.setVisible(false);
         dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.PROFILE);
 
-        Label desc = new Label("Profile wyrazów");
+        Label desc = new Label(provider.getProperty("view.profile.title"));
         desc.addStyleName("press-text-large");
 
-        Label txt = new Label(VaadinUI.infoMessage("<span>Profil semantyczny wyrazu (leksemu) jest zbiorem wyrazów lub wyrażeń współwystępujących (kolokatów).</span></br>"
-                + "<span>Determinują one kontekstowo semantykę pojęcia wyrażonego wyszukiwanym hasłem.</span>"));
+        Label txt = new Label(VaadinUI.infoMessage(provider.getProperty("view.profile.desc")));
 
-        dataExplorationForm.setLemmaHelp(VaadinUI.infoMessage("<span>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków.</span></br>"
-                + "<span>Na przykład:</span></br>"
-                + "<span style=\"font-family: Courier;\">partia</span> wygeneruje profil leksemu <i>partia</i>, czyli wyrazów <i>partią, partiami</i> itd.</br>"
-                + "<span style=\"font-family: Courier;\">\"partią\"</span> wygeneruje profil leksykalny dokładnie tej formy czasownika partia</br>"
-                + "<span>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></span>"
-        ));
-
+        dataExplorationForm.setLemmaHelp(VaadinUI.infoMessage(provider.getProperty("view.profile.help")));
         txt.setContentMode(ContentMode.HTML);
         VerticalLayout popupContent = new VerticalLayout();
 
@@ -105,14 +98,14 @@ public class ProfilesViewImpl extends AbstractView<ProfilesViewPresenter> implem
         // The component itself
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Button filter = new MButton("Filtr danych")
+        Button filter = new MButton(provider.getProperty("label.filter"))
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Generuj profil")
+        Button execute = new MButton(provider.getProperty("view.profile.btn.generate"))
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })

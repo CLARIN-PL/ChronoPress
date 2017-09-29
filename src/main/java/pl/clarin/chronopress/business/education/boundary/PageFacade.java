@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -59,12 +60,12 @@ public class PageFacade {
         return repository.findBy(id);
     }
 
-    public HomePage getHomePage() {
+    public HomePage getHomePage(String lang) {
         List<HomePage> list = homeRepository.findAll();
-        if (list != null && list.size() > 0) {
-            return list.get(0);
-        }
-        return new HomePage();
+        Optional<HomePage> r = list.stream()
+                .filter(p -> p.getLang().equals(lang))
+                .findFirst();
+        return r.isPresent() ? r.get() : new HomePage();
     }
 
     public HomePage saveHomePage(HomePage page) {

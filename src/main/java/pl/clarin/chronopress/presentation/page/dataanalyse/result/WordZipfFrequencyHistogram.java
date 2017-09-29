@@ -27,19 +27,17 @@ public class WordZipfFrequencyHistogram implements CalculationResult {
     @Inject
     DbPropertiesProvider provider;
 
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
     private FileDownloader fileDownloader;
 
     @PostConstruct
     public void init() {
+        downloadCSV.setCaption(provider.getProperty("label.download"));
 
-        ///provider.getProperty("label.frequency.word.qa.chart.title"),
-        //provider.getProperty("label.frequency.word.qa.chart.x.axis.title"),
-        //provider.getProperty("label.frequency.word.qa.chart.y.axis.title"),
         panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.frequency.word.qt.panel.title"))
-                .addChart("Histogram Zipfa",
-                        "Frekwencja F",
-                        "Liczba wyrazów o frekwencji F",
+                .addChart(provider.getProperty("label.word.zipfa.histogram"),
+                        provider.getProperty("label.frequency.word.zipf.chart.x.axis.title"),
+                        provider.getProperty("label.frequency.word.zipf.chart.y.axis.title"),
                         ChartType.COLUMN)
                 .build();
 

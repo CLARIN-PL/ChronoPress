@@ -171,9 +171,15 @@
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>4.0.3</version>
+            <version>4.2.0</version>
         </dependency>
     </dependencies>
 

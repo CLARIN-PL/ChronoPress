@@ -40,7 +40,7 @@ public class LexemeProfileList implements CalculationResult {
     private BeanItemContainer<LexemeProfile> container = new BeanItemContainer<>(LexemeProfile.class);
 
     private FileDownloader fileDownloader;
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
 
     @PostConstruct
     public void init() {
@@ -54,6 +54,7 @@ public class LexemeProfileList implements CalculationResult {
         HorizontalLayout download = new HorizontalLayout();
         download.addStyleName(ChronoTheme.SMALL_MARGIN);
         downloadCSV.addStyleName(ValoTheme.BUTTON_TINY);
+        downloadCSV.setCaption(provider.getProperty("label.download"));
         download.addComponent(downloadCSV);
 
         VerticalLayout wrapper = new VerticalLayout();
@@ -77,7 +78,7 @@ public class LexemeProfileList implements CalculationResult {
         options.setInnerSize("0");
         chart.getConfiguration().setPlotOptions(options);
 
-        chart.getConfiguration().setTitle("Profil semantyczny");//provider.getProperty("view.data.exploration.profile.chart.title"));
+        chart.getConfiguration().setTitle(provider.getProperty("view.data.exploration.profile.chart.title"));
 
     }
 
@@ -109,7 +110,8 @@ public class LexemeProfileList implements CalculationResult {
         container.addAll(data);
         addChartData(data);
         grid.sort("count", SortDirection.DESCENDING);
-        chart.getConfiguration().setSubTitle("leksem '[" + lemma + "]'");
+        String txt = String.format(" %s '[%s]'", provider.getProperty("label.lexeme"), lemma);
+        chart.getConfiguration().setSubTitle(txt);
         try {
             fileDownloader = new FileDownloader(createExportContent(data));
         } catch (IOException e) {
@@ -125,9 +127,9 @@ public class LexemeProfileList implements CalculationResult {
         grid.addStyleName(ChronoTheme.GRID);
         grid.setContainerDataSource(container);
         grid.setColumnOrder("baseColocat", "match", "count", "percentage");
-        grid.getColumn("baseColocat").setHeaderCaption("Kolokat");
-        grid.getColumn("match").setHeaderCaption("Współwystąpienia");
-        grid.getColumn("count").setHeaderCaption("Częstość");
+        grid.getColumn("baseColocat").setHeaderCaption(provider.getProperty("label.collocat"));
+        grid.getColumn("match").setHeaderCaption(provider.getProperty("label.co.occurrences"));
+        grid.getColumn("count").setHeaderCaption(provider.getProperty("label.frequency"));
         grid.getColumn("percentage").setHeaderCaption(provider.getProperty("label.profile.percentage"));
 
     }

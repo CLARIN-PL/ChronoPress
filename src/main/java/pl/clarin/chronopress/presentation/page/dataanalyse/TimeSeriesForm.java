@@ -61,32 +61,23 @@ public class TimeSeriesForm extends CustomComponent {
         binder.setItemDataSource(new TimeSeriesDTO());
         binder.bindMemberFields(this);
 
-        Label txt1 = new Label(VaadinUI.infoMessage("<span>Wpisz wyraz lub frazę i wygeneruj histogram (szereg czasowy) częstości wystąpień.</span>"
-                + "<span>Wyraz (frazę) należy zatwierdzić klawiszem <b><Enter</b>.</span></br>"
-                + "<span>Na jednym wykresie można wyświetlić histogramy wielu wyrazów (fraz).</span></br>"
-                + "<span>Na przykład:</span></br>"
-                + "<span style=\"font-family: Courier;\">partia</span> wygeneruje histogram częstości sumy wyrazów <i>partia, partią, partiami</i> itd.</br>"
-                + "<span style=\"font-family: Courier;\">\"partią\"</span> wygeneruje histogram częstości dokładnie tego ciągu wyrazów."));
+        Label info1 = new Label(VaadinUI.infoMessage(provider.getProperty("view.time.series.info1")));
+        info1.setContentMode(ContentMode.HTML);
 
-        txt1.setContentMode(ContentMode.HTML);
+        Label info2 = new Label(VaadinUI.infoMessage(provider.getProperty("view.time.series.info2")));
+        info2.setContentMode(ContentMode.HTML);
 
-        Label txt2 = new Label(VaadinUI.infoMessage("Wybierz z listy pole leksykalne (zbiór wyrazów związanych tematycznie) i wygeneruj histogram ich sumaryczne częstości (szereg czasowy)"));
-        txt2.setContentMode(ContentMode.HTML);
-
-        Label txt3 = new Label(VaadinUI.infoMessage(
-                "<span>Wpisz wyrazy, zatwierdzając każdy klawiszem <b>Enter</b>.</span></br>"
-                + "<span>System wyszuka wszystkie formy fleksyjne podanych wyrazów.</span></br>"
-                + "<span>Następnie wygeneruj szereg czasowy ich sumarycznej częstości.</span>"));
-        txt3.setContentMode(ContentMode.HTML);
+        Label info3 = new Label(VaadinUI.infoMessage(provider.getProperty("view.time.series.info3")));
+        info3.setContentMode(ContentMode.HTML);
 
         VerticalLayout popupContent1 = new VerticalLayout();
-        popupContent1.addComponent(txt1);
+        popupContent1.addComponent(info1);
 
         VerticalLayout popupContent2 = new VerticalLayout();
-        popupContent2.addComponent(txt2);
+        popupContent2.addComponent(info2);
 
         VerticalLayout popupContent3 = new VerticalLayout();
-        popupContent3.addComponent(txt3);
+        popupContent3.addComponent(info3);
 
         // The component itself
         PopupView help1 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent1);
@@ -109,7 +100,7 @@ public class TimeSeriesForm extends CustomComponent {
         lexical.addBeans(lexicalFieldFacade.findAll());
 
         HorizontalLayout lexTxt = new MHorizontalLayout(help1, lexeme);
-        lexTxt.setCaption("Wyraz");
+        lexTxt.setCaption(provider.getProperty("label.word"));
 
         lexeme.addStyleName(TokenField.STYLE_TOKENFIELD);
         lexeme.addStyleName(ChronoTheme.TOKENFIELD);
@@ -117,7 +108,7 @@ public class TimeSeriesForm extends CustomComponent {
         lexeme.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
 
         HorizontalLayout usrlexTxt = new MHorizontalLayout(help3, userLexicalField);
-        usrlexTxt.setCaption("Własne pole leksykalne");
+        usrlexTxt.setCaption(provider.getProperty("label.custom.lexical.field"));
 
         userLexicalField.addStyleName(TokenField.STYLE_TOKENFIELD);
         userLexicalField.addStyleName(ChronoTheme.TOKENFIELD);
@@ -125,7 +116,7 @@ public class TimeSeriesForm extends CustomComponent {
         userLexicalField.setTokenInsertPosition(TokenField.InsertPosition.AFTER);
 
         movingAverage.setCaption(provider.getProperty("label.tool.moving.average"));
-        movingAverageWindowSize.setCaption("Dodaj średnią ruchomą");
+        movingAverageWindowSize.setCaption(provider.getProperty("label.add.movin.avarage"));
         movingAverageWindowSize.setVisible(false);
         movingAverage.addValueChangeListener(event
                 -> movingAverageWindowSize.setVisible(!movingAverageWindowSize.isVisible()));

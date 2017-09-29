@@ -72,23 +72,20 @@ public class DataSelectionForm extends CustomComponent {
         FormLayout left = new MFormLayout(years, titles, wrapper)
                 .withStyleName(ChronoTheme.COMPACT_FORM);
 
-        final Label txt1 = new Label();
-
-        txt1.setValue("Opcja ta pozwala wybrać kolekcje różnych periodyków, skierowane do konkretnych grup odbiorczych.</br>"
-                + "Wybór grupy odboirczej automatycznie anuluje wskazanie tytułów w polu \"Tytuł periodyku\"");
-        txt1.setContentMode(ContentMode.HTML);
+        final Label info1 = new Label();
+        info1.setValue(provider.getProperty("label.data.selection.form.info1"));
+        info1.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt1);
+        popupContent.addComponent(info1);
 
-        final Label txt2 = new Label();
+        final Label info2 = new Label();
 
-        txt2.setValue("Ekspozycja tekstu jest jego miejscem w strukturze periodyku, odpowiadającym ważności.</br> "
-                + "Przyjęto strukturę trzypoziomową (strona tytułowa, środek, ostatnia strona)");
-        txt2.setContentMode(ContentMode.HTML);
+        info2.setValue(provider.getProperty("label.data.selection.form.info2"));
+        info2.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent2 = new VerticalLayout();
-        popupContent2.addComponent(txt2);
+        popupContent2.addComponent(info2);
 
         final PopupView help1 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 

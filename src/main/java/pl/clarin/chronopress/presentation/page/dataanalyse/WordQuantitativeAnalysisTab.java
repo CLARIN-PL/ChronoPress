@@ -22,7 +22,7 @@ public class WordQuantitativeAnalysisTab extends CustomComponent {
 
     @PostConstruct
     public void init() {
-        setCaption("Wyrazy");
+        setCaption(provider.getProperty("label.words"));
 
         HorizontalLayout layout = new MHorizontalLayout()
                 .withFullWidth()

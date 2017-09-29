@@ -94,10 +94,10 @@ public class MainMenu extends HorizontalLayout {
         addComponent(layout);
         setComponentAlignment(layout, Alignment.BOTTOM_RIGHT);
 
-        initLabels();
+        loadLabels();
     }
 
-    private void initLabels() {
+    public void loadLabels() {
         start.setText(provider.getProperty("start.viev.menu.main"));
         samples.setText(provider.getProperty("start.viev.menu.samples"));
         about.setText(provider.getProperty("start.viev.menu.about"));

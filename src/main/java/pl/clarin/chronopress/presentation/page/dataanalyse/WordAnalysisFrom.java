@@ -73,51 +73,39 @@ public class WordAnalysisFrom extends CustomComponent {
         binder.bindMemberFields(this);
         initializeComponents();
 
-        final Label txt1 = new Label();
-
-        String t = "<p>System pozwala na obliczanie parametrów statystycznych dla wskazanych części mowy lub jednostek nazewniczych.</p>";
-
-        txt1.setValue(t);
-        txt1.setContentMode(ContentMode.HTML);
+        final Label info1 = new Label();
+        info1.setValue(provider.getProperty("label.word.anal.form.info1"));
+        info1.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt1);
+        popupContent.addComponent(info1);
 
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        final Label txt2 = new Label();
-
-        String t1 = "<span>System rozpoznaje nazwy wielowyrazowe typu: \"Adam Mickiewicz\" lub \"Niemcy Zachodnie\" </span>";
-
-        txt2.setValue(t1);
-        txt2.setContentMode(ContentMode.HTML);
+        final Label info2 = new Label();
+        info2.setValue(provider.getProperty("label.word.anal.form.info2"));
+        info2.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent2 = new VerticalLayout();
-        popupContent2.addComponent(txt2);
+        popupContent2.addComponent(info2);
 
         PopupView help2 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent2);
 
-        final Label txt3 = new Label();
-
-        String t2 = "<span>Histogram Zipfa przedstawia zależność częstości wystąpień wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są jako różne wyrazy) i liczby różnych wyrazów mających daną częstość</span></br>";
-
-        txt3.setValue(t2);
-        txt3.setContentMode(ContentMode.HTML);
+        final Label info3 = new Label();
+        info3.setValue(provider.getProperty("label.word.anal.form.info3"));
+        info3.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent3 = new VerticalLayout();
-        popupContent3.addComponent(txt3);
+        popupContent3.addComponent(info3);
 
         PopupView help3 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent3);
 
-        final Label txt4 = new Label();
-
-        String t3 = "<span>System generuje wykres częstości wyrazów tekstowych (np. formy \"dom\" i \"domu\" traktowane są jako różne wyrazy) o różnych długościach</span></br>";
-
-        txt4.setValue(t3);
-        txt4.setContentMode(ContentMode.HTML);
+        final Label info4 = new Label();
+        info4.setValue(provider.getProperty("label.word.anal.form.info4"));
+        info4.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent4 = new VerticalLayout();
-        popupContent4.addComponent(txt4);
+        popupContent4.addComponent(info4);
 
         PopupView help4 = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent4);
 

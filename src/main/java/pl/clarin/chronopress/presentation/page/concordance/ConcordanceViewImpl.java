@@ -99,34 +99,29 @@ public class ConcordanceViewImpl extends AbstractView<ConcordanceViewPresenter> 
         selectionForm.setVisible(false);
         dataExplorationForm.selectOptionType(DataExplorationForm.DataExplorationType.LEXEME_CONCORDANCE);
 
-        Label desc = new Label("Konkordancja");
+        Label desc = new Label(provider.getProperty("label.concordance.list"));
         desc.addStyleName("press-text-large");
 
-        Label txt = new Label(VaadinUI.infoMessage("<span>Konkordancja to zbiór wszystkich wystąpień wyrazu (leksemu) wraz z kontekstem.</span></br>"
-                + "<span>Tutaj granice kontekstu wyznaczone są przez początek i koniec zdania, w którym występuje wyraz wyszukiwany (tzw. ośrodek konkordancji).</span>"));
+        Label info = new Label(VaadinUI.infoMessage(provider.getProperty("view.concord.info")));
 
-        dataExplorationForm.setLemmaHelp(VaadinUI.infoMessage("<span>System rozpoznaje formy hasłowe wyrazów lub dokładne ciągi znaków.</span></br>"
-                + "<span>Na przykład:</span></br>"
-                + "<span style=\"font-family: Courier;\">partia</span> wygeneruje konkordancję leksemu <i>partia</i>, czyli wyrazów <i>partia, partią, partiami</i> itd.</br>"
-                + "<span style=\"font-family: Courier;\">\"był\"</span> wygeneruje konkordancję dokładnie tej formy czasownika <i>być</i></br>"
-                + "<span>Uwaga: system nie rozpoznaje form wielowyrazowych typu <i>śmiać się</i> lub <i>Władysław Gomułka</i></span>"));
+        dataExplorationForm.setLemmaHelp(VaadinUI.infoMessage(provider.getProperty("view.concord.lemma.help")));
 
-        txt.setContentMode(ContentMode.HTML);
+        info.setContentMode(ContentMode.HTML);
         VerticalLayout popupContent = new VerticalLayout();
 
-        popupContent.addComponent(txt);
+        popupContent.addComponent(info);
 
         // The component itself
         PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Button filter = new MButton("Filtr danych")
+        Button filter = new MButton(provider.getProperty("label.filter"))
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Wyszukaj konkordancję")
+        Button execute = new MButton(provider.getProperty("view.concord.search"))
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })

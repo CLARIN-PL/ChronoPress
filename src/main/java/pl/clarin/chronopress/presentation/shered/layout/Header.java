@@ -22,4 +22,8 @@ public class Header extends HorizontalLayout {
         setMargin(new MarginInfo(false, true));
         setExpandRatio(menu, 1);
     }
+
+    public void loadLabels() {
+        menu.loadLabels();
+    }
 }

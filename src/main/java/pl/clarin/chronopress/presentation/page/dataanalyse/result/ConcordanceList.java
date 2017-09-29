@@ -51,20 +51,20 @@ public class ConcordanceList implements CalculationResult {
     private BeanItemContainer<ConcordanceDTO> container = new BeanItemContainer<>(ConcordanceDTO.class);
 
     private FileDownloader fileDownloader;
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
 
     @PostConstruct
     public void init() {
-
+        downloadCSV.setCaption(provider.getProperty("label.download"));
         initializeGrid();
 
         sheet.setWidth(100, Sizeable.Unit.PERCENTAGE);
 
         VerticalLayout wrapper = new VerticalLayout();
-        wrapper.setCaption("Konkordancje");
+        wrapper.setCaption(provider.getProperty("label.concordance"));
         wrapper.addComponent(grid);
 
-        tree.setCaption("Statystyki");
+        tree.setCaption(provider.getProperty("label.stats"));
 
         HorizontalLayout btn = new HorizontalLayout();
         btn.addComponent(downloadCSV);

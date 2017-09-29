@@ -49,12 +49,10 @@ public class SentenceAnalysisForm extends CustomComponent {
         sentenceUnit.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         sentenceUnit.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         sentenceUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD);
-        //provider.getProperty("label.word")
-        sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD, "wyraz");
+        sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD, provider.getProperty("label.word"));
         sentenceUnit.select(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD);
         sentenceUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER);
-        //provider.getProperty("label.letter")
-        sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER, "litera");
+        sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER, provider.getProperty("label.letter"));
 
         VerticalLayout layout = new MVerticalLayout()
                 .withStyleName(ChronoTheme.COMPACT_FORM)

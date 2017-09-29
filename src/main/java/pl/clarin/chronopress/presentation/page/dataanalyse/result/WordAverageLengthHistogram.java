@@ -28,20 +28,18 @@ public class WordAverageLengthHistogram implements CalculationResult {
     @Inject
     private DbPropertiesProvider provider;
 
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
     private FileDownloader fileDownloader;
 
     @PostConstruct
     public void init() {
-
-        //provider.getProperty("label.result.word.qa.chart.title"),
-        //provider.getProperty("label.result.word.qa.chart.x.axis.title"),
-        //provider.getProperty("label.result.word.qa.chart.y.axis.title"),
+        downloadCSV.setCaption(provider.getProperty("label.download"));
         panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.result.average.word.qt.panel.title"))
                 .addTabSheet()
-                .addChart("Rozkład średniej długości",
-                        "Długość wyrazu",
-                        "Frekwencja",
+                .addChart(
+                        provider.getProperty("label.result.word.qa.chart.title"),
+                        provider.getProperty("label.result.word.qa.chart.x.axis.title"),
+                        provider.getProperty("label.result.word.qa.chart.y.axis.title"),
                         ChartType.COLUMN)
                 .build();
 

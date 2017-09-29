@@ -236,6 +236,7 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         }
     }
 
+    @Override
     public void onViewEnter() {
         content.removeAllComponents();
         content.addComponent(linksPanel);

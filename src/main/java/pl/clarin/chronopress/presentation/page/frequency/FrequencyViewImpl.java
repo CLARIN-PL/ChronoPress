@@ -93,38 +93,32 @@ public class FrequencyViewImpl extends AbstractView<FrequencyViewPresenter> impl
 
         operationType.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
         operationType.addItem(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST);
-        operationType.setItemCaption(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST, "Lista frekwencyjna leksemów (form hasłowych)");
+        operationType.setItemCaption(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST, provider.getProperty("view.freq.list.lexem"));
         operationType.select(DataExplorationForm.DataExplorationType.LEXEME_FREQUENCY_LIST);
 
         operationType.addItem(DataExplorationForm.DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST);
-        operationType.setItemCaption(DataExplorationForm.DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST,
-                "Lista frekwencyjna wyrazów tekstowych (nieodmienianych)");
+        operationType.setItemCaption(DataExplorationForm.DataExplorationType.NOT_LEMMATIZED_FREQUENCY_LIST, provider.getProperty("view.freq.list.word"));
 
-        final Label txt1 = new Label();
-
-        String t = VaadinUI.infoMessage("<span>Lista frekwencyjna jest lista wyrazów (w formie hasłowej lub dokładnie takiej, jak w tekście) wraz z częstością występowania.</span>"
-                + "<span>System pozwala na eksport listy frekwencyjnej w formacie .CSV i jej przetwarzanie arkuszem kalkulacyjnym.</span>"
-                + "<span>Tekst jest kodowany w formacie UTF-8.</span>");
-
-        txt1.setValue(t);
-        txt1.setContentMode(ContentMode.HTML);
+        final Label info = new Label();
+        info.setValue(VaadinUI.infoMessage(provider.getProperty("view.freq.info")));
+        info.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt1);
+        popupContent.addComponent(info);
 
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Label desc = new Label("Lista frekwencyjna");
+        Label desc = new Label(provider.getProperty("view.freq.title"));
         desc.addStyleName("press-text-large");
 
-        Button filter = new MButton("Filtr danych")
+        Button filter = new MButton(provider.getProperty("label.filter"))
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Utwórz listę frekwencyjną")
+        Button execute = new MButton(provider.getProperty("view.freq.btn.create.list"))
                 .withListener(l -> {
                     presenter.get().onCalculateDataExploration(new CalculateDataExplorationEvent(selectionForm.getData(), getDataExplorationDTO()));
                 })

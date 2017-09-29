@@ -7,6 +7,7 @@ import com.vaadin.annotations.Widgetset;
 import com.vaadin.cdi.CDIUI;
 import com.vaadin.cdi.CDIViewProvider;
 import com.vaadin.navigator.Navigator;
+import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinService;
 import com.vaadin.shared.ui.ui.Transport;
@@ -49,6 +50,8 @@ public class VaadinUI extends UI {
     @Inject
     LoginViewPresenter auth;
 
+    public static String currentLanguage = "PL";
+
     @Override
     protected void init(VaadinRequest request) {
         loadLanguage();
@@ -84,7 +87,7 @@ public class VaadinUI extends UI {
         } else {
             updateCookieValue("chronopress", "EN");
         }
-        getNavigator().navigateTo(StartView.ID);
+        Page.getCurrent().reload();
     }
 
     private void loadLanguage() {
@@ -94,16 +97,19 @@ public class VaadinUI extends UI {
         if (lang != null) {
 
             if (lang.getValue().equals("PL")) {
+                currentLanguage = "PL";
                 propertiesProvider.loadProperties("PL");
             } else {
+                currentLanguage = "EN";
                 propertiesProvider.loadProperties("EN");
             }
 
         } else {
-            setLangCookie("EN");
-            propertiesProvider.loadProperties("EN");
+            currentLanguage = "PL";
+            setLangCookie("PL");
+            propertiesProvider.loadProperties("PL");
         }
-
+        layout.loadLabels();
     }
 
     public static void setLangCookie(String value) {
@@ -120,16 +126,13 @@ public class VaadinUI extends UI {
         VaadinService.getCurrentResponse().addCookie(myCookie);
     }
 
-    public static Cookie updateCookieValue(final String name, final String value) {
-        // Create a new cookie
-        Cookie cookie = getCookieByName(name);
+    public static String getLanguage() {
+        return currentLanguage;
+    }
 
-        cookie.setValue(value);
-
+    public static void updateCookieValue(final String name, final String value) {
         // Save cookie
-        VaadinService.getCurrentResponse().addCookie(cookie);
-
-        return cookie;
+        Page.getCurrent().getJavaScript().execute(String.format("document.cookie = '%s=%s;';", "chronopress", value));
     }
 
     public static Cookie getCookieByName(String name) {

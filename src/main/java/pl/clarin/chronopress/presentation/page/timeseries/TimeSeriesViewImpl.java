@@ -74,6 +74,10 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
     private VerticalLayout layout;
 
+    private Label desc, helpInfo;
+
+    private Button filter, execute;
+
     public TimeSeriesDTO getTimeSeriesDTO() {
         try {
             return timeSeriesForm.getTimeSeriesDTO();
@@ -91,30 +95,25 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
     public void init() {
         selectionForm.setVisible(false);
 
-        final Label txt1 = new Label();
-
-        String t = VaadinUI.infoMessage("<span>System pozwala na wskazanie lat, tytułów periodyków, autora, grupy odbiorczej i typu periodyku (dziennik, tygodnik itp.)</span>"
-                + "</br><span>Kategoria ekspozycji (strona tytułowa, środek, ostatnia strona) nie obejmuje wszystkich próbek.</span>");
-
-        txt1.setValue(t);
-        txt1.setContentMode(ContentMode.HTML);
+        helpInfo = new Label();
+        helpInfo.setContentMode(ContentMode.HTML);
 
         final VerticalLayout popupContent = new VerticalLayout();
-        popupContent.addComponent(txt1);
+        popupContent.addComponent(helpInfo);
 
         final PopupView help = new PopupView(FontAwesome.QUESTION_CIRCLE.getHtml(), popupContent);
 
-        Label desc = new Label("Szeregi czasowe");
+        desc = new Label();
         desc.addStyleName("press-text-large");
 
-        Button filter = new MButton("Filtr danych")
+        filter = new MButton()
                 .withStyleName(ValoTheme.BUTTON_TINY, ValoTheme.BUTTON_LINK)
                 .withListener(l -> {
                     filterVisible = !filterVisible;
                     selectionForm.setVisible(filterVisible);
                 });
 
-        Button execute = new MButton("Wykonaj")
+        execute = new MButton()
                 .withListener(l -> {
 
                     calculateTimeSeries.fire(new CalculateTimeSerieEvent(selectionForm.getData(), getTimeSeriesDTO()));
@@ -138,6 +137,7 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
 
         setCompositionRoot(layout);
         setSizeFull();
+        loadLabels();
     }
 
     private VerticalLayout initializeLoading() {
@@ -228,5 +228,12 @@ public class TimeSeriesViewImpl extends AbstractView<TimeSeriesViewPresenter> im
         UI.getCurrent().removeWindow(concordanceWindow);
         concordanceWindow.setConcordance(list);
         UI.getCurrent().addWindow(concordanceWindow);
+    }
+
+    private void loadLabels() {
+        desc.setValue(provider.getProperty("time.series.view.name"));
+        helpInfo.setValue(VaadinUI.infoMessage(provider.getProperty("time.series.view.help.info")));
+        filter.setCaption(provider.getProperty("button.filter"));
+        execute.setCaption(provider.getProperty("button.execute"));
     }
 }

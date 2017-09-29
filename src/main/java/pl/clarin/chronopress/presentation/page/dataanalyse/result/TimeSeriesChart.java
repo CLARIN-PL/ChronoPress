@@ -30,18 +30,18 @@ public class TimeSeriesChart implements CalculationResult {
     @Inject
     private DbPropertiesProvider provider;
 
-    private final Button downloadCSV = new Button("Pobierz CSV", FontAwesome.DOWNLOAD);
+    private final Button downloadCSV = new Button(FontAwesome.DOWNLOAD);
     private FileDownloader fileDownloader;
 
     @PostConstruct
     public void init() {
+        downloadCSV.setCaption(provider.getProperty("label.download"));
 
-        // w przypadku l > 1 -> Szereg czasowy leksemów
-        //label.time.series.chart.title"),
-        //label.time.series.x.axis.title"),
-        //label.time.series.y.axis.title")
-        panel = new ChartPanel.ChartPanelBuilder("Szereg czasowy leksemu") //provider.getProperty("label.time.series.panel.title"))
-                .addChart("Szereg czasowy leksemu", "Data publikacji", "Częstość", ChartType.LINE)
+        panel = new ChartPanel.ChartPanelBuilder(provider.getProperty("label.time.series.panel.title"))
+                .addChart(
+                        provider.getProperty("label.time.series.panel.title"),
+                        provider.getProperty("label.published.date"),
+                        provider.getProperty("label.frequency"), ChartType.LINE)
                 .build();
 
         panel.setConcordnace(concordnace);
