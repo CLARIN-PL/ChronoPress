@@ -1,3 +1,4 @@
+ALTER TABLE property ALTER COLUMN value TYPE text;
 DELETE FROM property;
 
 INSERT INTO property( key, lang, value) VALUES('label.status','PL','Status');

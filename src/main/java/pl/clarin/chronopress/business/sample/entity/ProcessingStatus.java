@@ -6,7 +6,7 @@ public enum ProcessingStatus {
 
     private String name;
 
-    private ProcessingStatus(String name) {
+    ProcessingStatus(String name) {
         this.name = name;
     }
 

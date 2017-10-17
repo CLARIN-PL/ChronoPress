@@ -19,16 +19,17 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 import javax.persistence.criteria.*;
+import javax.transaction.Transaction;
+
 import pl.clarin.chronopress.business.audience.boundary.AudienceFacade;
 import pl.clarin.chronopress.business.propername.entity.ProperName;
 import pl.clarin.chronopress.business.sample.control.MovingAverage;
-import pl.clarin.chronopress.business.sample.entity.ProcessingStatus;
-import pl.clarin.chronopress.business.sample.entity.Sample;
-import pl.clarin.chronopress.business.sample.entity.Sentence;
-import pl.clarin.chronopress.business.sample.entity.SentenceProperName;
-import pl.clarin.chronopress.business.sample.entity.Word;
+import pl.clarin.chronopress.business.sample.entity.*;
 import pl.clarin.chronopress.presentation.page.dataanalyse.DataExplorationForm.PartOfSpeech;
 import pl.clarin.chronopress.presentation.shered.dto.ConcordanceDTO;
 import pl.clarin.chronopress.presentation.shered.dto.DataSelectionDTO;
@@ -55,6 +56,9 @@ public class SampleFacade {
 
     @Inject
     AudienceFacade audienceFacade;
+
+    @Inject
+    DictionaryWordFonemsAndSyllablesRepository repo;
 
     @Inject
     EntityManager em;
@@ -731,13 +735,10 @@ public class SampleFacade {
 
         List<LexemeProfile> list = new ArrayList<>();
         map.forEach((k, v) -> list.add(v));
-        Collections.sort(list, new Comparator() {
-
-            public int compare(Object o1, Object o2) {
-                Long x1 = ((LexemeProfile) o1).getCount();
-                Long x2 = ((LexemeProfile) o2).getCount();
-                return x1.compareTo(x2);
-            }
+        Collections.sort(list, (Comparator) (o1, o2) -> {
+            Long x1 = ((LexemeProfile) o1).getCount();
+            Long x2 = ((LexemeProfile) o2).getCount();
+            return x1.compareTo(x2);
         });
 
         return list;
@@ -778,5 +779,21 @@ public class SampleFacade {
 
         List<ConcordanceDTO> queryResult = em.createQuery(q).getResultList();
         return queryResult;
+    }
+
+    public void saveFonem(DictionaryWordFonemsAndSyllables dwfs) {
+        repo.saveAndFlush(dwfs);
+    }
+
+    public List<DictionaryWordFonemsAndSyllables> getAllDictionaryWordFonemsAndSyllables(){
+        return repo.findAll();
+    }
+
+    public void updateWordByDictionaryFonem(DictionaryWordFonemsAndSyllables d){
+        Query q = em.createQuery("UPDATE Word w SET w.syllableCount = :syllableCount, w.fonemCount = :fonemCount WHERE w.word = :lemma")
+                .setParameter("syllableCount", d.getSyllableCount())
+                .setParameter("fonemCount", d.getFonemCount())
+                .setParameter("lemma", d.getWord());
+        q.executeUpdate();
     }
 }

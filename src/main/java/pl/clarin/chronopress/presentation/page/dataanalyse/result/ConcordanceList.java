@@ -89,6 +89,7 @@ public class ConcordanceList implements CalculationResult {
     }
 
     public Resource createExportContent(List<ConcordanceDTO> data) throws IOException {
+
         final String date = LocalDate.now().toString();
         java.io.File file = java.io.File.createTempFile("konkordancje-" + date, ".csv");
         file.deleteOnExit();
@@ -220,7 +221,6 @@ public class ConcordanceList implements CalculationResult {
             //showSample.fire(new ShowSampleByIdEvent(dto.getTextId(), dto.getLemma()));
             Sample s = facade.findById(dto.getTextId());
             showSampleWindow(s);
-            System.out.println(s);
         });
     }
 

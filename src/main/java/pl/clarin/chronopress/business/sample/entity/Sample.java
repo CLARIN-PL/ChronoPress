@@ -61,6 +61,11 @@ public class Sample extends AbstractEntity {
     @Enumerated
     private ProcessingStatus processingStatus;
 
-    @OneToMany(mappedBy = "sample", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "sample", cascade = CascadeType.ALL,  fetch = FetchType.LAZY)
     private List<Sentence> sentences;
+
+    @Override
+    public String toString(){
+        return journalTitle;
+    }
 }

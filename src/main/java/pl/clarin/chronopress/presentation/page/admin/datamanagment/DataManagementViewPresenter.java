@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutorService;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
 import javax.inject.Inject;
+
+import pl.clarin.chronopress.business.importer.boundary.ImportFonemsService;
 import pl.clarin.chronopress.business.importer.boundary.ImportSamplesService;
 import pl.clarin.chronopress.business.importer.boundary.ProcessSampleService;
 import pl.clarin.chronopress.presentation.shered.mvp.AbstractPresenter;
@@ -20,6 +22,9 @@ public class DataManagementViewPresenter extends AbstractPresenter<DataManagemen
 
     @Inject
     ProcessSampleService processSampleService;
+
+    @Inject
+    ImportFonemsService importFonemsService;
 
     @Inject
     @Dedicated
@@ -45,13 +50,33 @@ public class DataManagementViewPresenter extends AbstractPresenter<DataManagemen
                 });
      }
 
+     public void onFonemUpdate(@Observes(notifyObserver = Reception.IF_EXISTS) FonemCountUpdateEvent ev){
+         System.out.println("Staring update fonems ...");
+         CompletableFuture.supplyAsync(() -> {
+                     importFonemsService.updateWords();
+                     return 1;
+                 },
+                 importerExecutor).thenRun(() -> {
+         });
+     }
+
+
     public void onProcessSamplesFinishedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) ProcessingSamplesFinishedEvent event) {
         getView().proccesingSamplesFinished();
         Notification.show("Procesowanie zakończone", Notification.Type.TRAY_NOTIFICATION);
     }
-    
+
     public void onProcessingStatusEvent(@Observes(notifyObserver = Reception.IF_EXISTS) ProcessSamplesStatusEvent event){
         getView().setProcessingStatusMessage(event.getMessage());
     }
 
+    public void onImportFonemsEvent(@Observes(notifyObserver = Reception.IF_EXISTS) ImportFonemsEvent event) {
+        CompletableFuture.supplyAsync(() -> {
+                    importFonemsService.importFile(event.getPath());
+                    return 1;
+                },
+                importerExecutor).thenRun(() -> {
+            getView().uploadingFOnemsFinished();
+        });
+    }
 }

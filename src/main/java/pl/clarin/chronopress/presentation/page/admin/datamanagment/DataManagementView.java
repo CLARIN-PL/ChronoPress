@@ -25,4 +25,6 @@ public interface DataManagementView extends ApplicationView<DataManagementViewPr
     void setProcessingInProgress();
     
     void setProcessingStatusMessage(String msg);
+
+    void uploadingFOnemsFinished();
 }

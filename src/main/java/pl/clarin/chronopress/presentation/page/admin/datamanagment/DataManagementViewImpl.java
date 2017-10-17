@@ -45,6 +45,13 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
     javax.enterprise.event.Event<ImportSamplesEvent> importSamples;
 
     @Inject
+    javax.enterprise.event.Event<ImportFonemsEvent> importFonems;
+
+    @Inject
+    javax.enterprise.event.Event<FonemCountUpdateEvent> fonemCountUpdateEvent;
+
+
+    @Inject
     javax.enterprise.event.Event<StartSampleProcessingEvent> processSamples;
     
     @Inject
@@ -52,10 +59,17 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
 
     private final ProgressBar importProgressBar = new ProgressBar();
 
+    private final ProgressBar importFonemsProgressBar = new ProgressBar();
+
     private final Label uploadInfo = new Label();
     private final Label proccessingInfo = new Label();
     private final Label proccessingGeoInfo = new Label();
+    private final Label updateWordsInfo = new Label();
+
+    private final Label importFonemsInfo = new Label();
+
     private final Plupload uploader = new Plupload("Wybierz plik", FontAwesome.FILES_O);
+    private final Plupload uploaderFonemsPack = new Plupload("Wybierz plik", FontAwesome.FILES_O);
     private Button process;
 
     @PostConstruct
@@ -67,7 +81,7 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
         MVerticalLayout section = new MVerticalLayout()
                 .withFullWidth()
                 .with(new Title(provider.getProperty("view.admin.data.management.title")),
-                        samplesUploader(), processUnProcessedSamples(), processUnProcessedGeolocations());
+                        samplesUploader(), processUnProcessedSamples(), processUnProcessedGeolocations(), fonemsUploader(), processFonmeToWordUpdate());
 
         MHorizontalLayout layout = new MHorizontalLayout()
                 .withFullWidth()
@@ -109,6 +123,22 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
                 .withFullWidth()
                 .withSpacing(true)
                 .with(new Label(provider.getProperty("view.data.management.process.geolocations")), proccessingGeoInfo, proc);
+
+    }
+
+    public HorizontalLayout processFonmeToWordUpdate() {
+        Button proc = new MButton()
+                .withCaption("Update fonem count")
+                .withStyleName(ValoTheme.BUTTON_SMALL)
+                .withListener(l -> {
+                    fonemCountUpdateEvent.fire(new FonemCountUpdateEvent());
+                    updateWordsInfo.setValue("Updating fonems counts ...");
+                });
+
+        return new MHorizontalLayout()
+                .withFullWidth()
+                .withSpacing(true)
+                .with(new Label("Update fonems"), updateWordsInfo, proc);
 
     }
 
@@ -164,11 +194,71 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
                         uploader, uploadInfo, importProgressBar);
     }
 
+    public HorizontalLayout fonemsUploader() {
+
+        final String path = "/tmp/chronopress/uploads/";
+
+        uploaderFonemsPack.addStyleName(ValoTheme.BUTTON_SMALL);
+        uploaderFonemsPack.addFilter(new PluploadFilter("Pliki zip", "zip"));
+
+        try {
+            Files.createDirectories(Paths.get(path));
+        } catch (IOException ex) {
+            Logger.getLogger(DataManagementViewImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        uploaderFonemsPack.setUploadPath(path);
+
+        uploaderFonemsPack.setMaxFileSize("100mb");
+
+        //show notification after file is uploaded
+        uploaderFonemsPack.addFileUploadedListener((PluploadFile file) -> {
+            Notification.show("Plik: " + file.getName() + " został wgrany ");
+            importFonems.fire(new ImportFonemsEvent(path + file.getUploadedFileAs(File.class).getName()));
+            importFonemsProgressBar.setVisible(true);
+        });
+
+        //update upload progress
+        uploaderFonemsPack.addUploadProgressListener((PluploadFile file) -> {
+            importFonemsInfo.setValue(file.getName() + " " + file.getPercent() + "%");
+        });
+
+        //autostart the uploader after adding files
+        uploaderFonemsPack.addFilesAddedListener((PluploadFile[] files) -> {
+            uploaderFonemsPack.start();
+        });
+
+        //notify, when the upload process is completed
+        uploaderFonemsPack.addUploadCompleteListener(() -> {
+            importFonemsInfo.setValue("Wygrywanie zakończone!");
+        });
+
+        //handle errors
+        uploaderFonemsPack.addErrorListener((PluploadError error) -> {
+            Notification.show("Wystąpił błąd: "
+                            + error.getMessage() + " (" + error.getType() + ")",
+                    Notification.Type.ERROR_MESSAGE);
+        });
+
+        return  new MHorizontalLayout()
+                .withSpacing(true)
+                .with(new Label("Import fonems"),
+                        uploaderFonemsPack, importFonemsInfo, importFonemsProgressBar);
+    }
+
     @Override
     public void uploadingSamplesFinished() {
         getUI().access(() -> {
             importProgressBar.setVisible(false);
             uploader.setVisible(true);
+        });
+    }
+
+    @Override
+    public void uploadingFOnemsFinished(){
+        getUI().access(() -> {
+            importFonemsProgressBar.setVisible(false);
+            uploaderFonemsPack.setVisible(true);
         });
     }
 

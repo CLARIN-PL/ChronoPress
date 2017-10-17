@@ -40,10 +40,12 @@ public class Word implements Serializable {
     @Column(name = "letter_count")
     private Integer letterCount = 0;
 
-    //@Column(name = "syllable_count")
-    //private Integer syllableCount = 0;
-    //@Column(name = "fonem_count")
-    //private Integer fonemCount = 0;
+    @Column(name = "syllable_count")
+    private Integer syllableCount = 0;
+
+    @Column(name = "fonem_count")
+    private Integer fonemCount = 0;
+
     @ManyToOne
     @JoinColumn(name = "sentence_id")
     private Sentence sentence;
