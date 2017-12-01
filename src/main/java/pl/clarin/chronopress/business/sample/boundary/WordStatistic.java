@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class git guiWordStatistic {
+public class WordStatistic {
 
     private Map<Integer, Long> wordCounts = new HashMap<>();
 
