@@ -4,6 +4,30 @@ $v-app-loading-text: "Loading ...";
 $v-font-family: "Source Sans Pro", sans-serif;
 $v-app-background-color: #f6f6f6;
 
+@media (min-width: 1330px) {
+    .ch-responsive-btn {
+        margin: 1px;
+        border-radius: 0px !important;
+        width: 32%;
+    }
+}
+
+@media (min-width: 910px) and (max-width: 1329px) {
+    .ch-responsive-btn {
+        margin: 1px;
+        border-radius: 0px !important;
+        width: 48%;
+    }
+}
+
+@media (min-width: 100px) and (max-width: 909px) {
+    .ch-responsive-btn {
+        margin: 1px;
+        border-radius: 0px !important;
+        width: 100%;
+    }
+}
+
 @mixin press {
 
     @include valo;
@@ -274,4 +298,5 @@ $v-app-background-color: #f6f6f6;
         padding-bottom: 10px;
         padding-top: 10px;
     }
+
 }

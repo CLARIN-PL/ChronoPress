@@ -48,10 +48,6 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
     javax.enterprise.event.Event<ImportFonemsEvent> importFonems;
 
     @Inject
-    javax.enterprise.event.Event<FonemCountUpdateEvent> fonemCountUpdateEvent;
-
-
-    @Inject
     javax.enterprise.event.Event<StartSampleProcessingEvent> processSamples;
     
     @Inject
@@ -64,7 +60,6 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
     private final Label uploadInfo = new Label();
     private final Label proccessingInfo = new Label();
     private final Label proccessingGeoInfo = new Label();
-    private final Label updateWordsInfo = new Label();
 
     private final Label importFonemsInfo = new Label();
 
@@ -81,7 +76,7 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
         MVerticalLayout section = new MVerticalLayout()
                 .withFullWidth()
                 .with(new Title(provider.getProperty("view.admin.data.management.title")),
-                        samplesUploader(), processUnProcessedSamples(), processUnProcessedGeolocations(), fonemsUploader(), processFonmeToWordUpdate());
+                        samplesUploader(), processUnProcessedSamples(), processUnProcessedGeolocations(), fonemsUploader());
 
         MHorizontalLayout layout = new MHorizontalLayout()
                 .withFullWidth()
@@ -126,21 +121,6 @@ public class DataManagementViewImpl extends AbstractView<DataManagementViewPrese
 
     }
 
-    public HorizontalLayout processFonmeToWordUpdate() {
-        Button proc = new MButton()
-                .withCaption("Update fonem count")
-                .withStyleName(ValoTheme.BUTTON_SMALL)
-                .withListener(l -> {
-                    fonemCountUpdateEvent.fire(new FonemCountUpdateEvent());
-                    updateWordsInfo.setValue("Updating fonems counts ...");
-                });
-
-        return new MHorizontalLayout()
-                .withFullWidth()
-                .withSpacing(true)
-                .with(new Label("Update fonems"), updateWordsInfo, proc);
-
-    }
 
     public HorizontalLayout samplesUploader() {
 

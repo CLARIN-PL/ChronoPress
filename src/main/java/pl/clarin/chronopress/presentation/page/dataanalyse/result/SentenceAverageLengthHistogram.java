@@ -65,13 +65,22 @@ public class SentenceAverageLengthHistogram implements CalculationResult {
     }
 
     public void addData(SentenceQuantitativeAnalysisResult data) {
-        String unitValue;
 
-        if (data.getSentence().getUnit() == Unit.LETTER) {
-            unitValue = provider.getProperty("label.unit.letter");
-        } else {
-            unitValue = provider.getProperty("label.unit.word");
+        String unitValue = "";
+
+        if (data.getSentence().getUnit() == Unit.WORD) {
+            unitValue = provider.getProperty("label.word");
         }
+        if (data.getSentence().getUnit() == Unit.LETTER) {
+            unitValue = provider.getProperty("label.letter");
+        }
+        if (data.getSentence().getUnit() == Unit.SYLLABLE) {
+            unitValue = provider.getProperty("label.syllable");
+        }
+        if (data.getSentence().getUnit() == Unit.FONEM) {
+            unitValue = provider.getProperty("label.fonem");
+        }
+
         panel.gridWithTab(
                 provider.getProperty("label.sample"),
                 new ChartPanel.FormBuilder()

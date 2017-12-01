@@ -63,12 +63,16 @@ public class WordAverageLengthHistogram implements CalculationResult {
 
     public void addData(WordQuantitativeAnalysisResult data) {
 
-        String unitValue;
+        String unitValue = "";
 
         if (data.getWord().getUnit() == Unit.LETTER) {
-            unitValue = provider.getProperty("label.unit.letter");
-        } else {
-            unitValue = provider.getProperty("label.unit.syllable");
+            unitValue = provider.getProperty("label.letter");
+        }
+        if (data.getWord().getUnit() == Unit.SYLLABLE) {
+            unitValue = provider.getProperty("label.syllable");
+        }
+        if (data.getWord().getUnit() == Unit.FONEM) {
+            unitValue = provider.getProperty("label.fonem");
         }
 
         panel.gridWithTab(

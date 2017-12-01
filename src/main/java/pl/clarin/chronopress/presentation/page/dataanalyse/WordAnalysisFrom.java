@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import org.vaadin.viritin.layouts.MHorizontalLayout;
 import org.vaadin.viritin.layouts.MVerticalLayout;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
+import pl.clarin.chronopress.presentation.shered.dto.Unit;
 import pl.clarin.chronopress.presentation.shered.dto.WordAnalysisDTO;
 import pl.clarin.chronopress.presentation.shered.validators.RegularExpressionValidator;
 
@@ -166,8 +167,16 @@ public class WordAnalysisFrom extends CustomComponent {
 
         wordUnit.addStyleName(ValoTheme.OPTIONGROUP_HORIZONTAL);
         wordUnit.addStyleName(ValoTheme.OPTIONGROUP_SMALL);
+
         wordUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER);
         wordUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER, provider.getProperty("label.letter"));
+
+        wordUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.SYLLABLE);
+        wordUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.SYLLABLE, provider.getProperty("label.syllable"));
+
+        wordUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.FONEM);
+        wordUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.FONEM, provider.getProperty("label.fonem"));
+
         wordUnit.select(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER);
     }
 

@@ -1,12 +1,16 @@
 package pl.clarin.chronopress.business.calculations.control;
 
 import com.google.gwt.thirdparty.guava.common.collect.Maps;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.Column;
+
 import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
 import pl.clarin.chronopress.business.sample.control.AverageIntegerCalulator;
 import pl.clarin.chronopress.business.sample.control.AverageLongCalulator;
@@ -30,22 +34,36 @@ public class QuantitiveAnalysis {
         if (dto.getWordAnalysisDTO().getWordAveragesLengthHistogram()
                 || dto.getWordAnalysisDTO().getWordZipfHistogram()) {
 
-            List<Integer> words = sampleFacade.findWordsLengths(dto.getDataSelectionDTO(), dto.getWordAnalysisDTO());
-            AverageIntegerCalulator averageCalulator = averageCalculations(words);
+            List<Integer> words = new ArrayList<>();
+
+            AverageIntegerCalulator averageCalulator = null;
 
             if (dto.getWordAnalysisDTO().getWordAveragesLengthHistogram()) {
+
+                if (dto.getWordAnalysisDTO().getWordUnit() == Unit.LETTER) {
+                    words = sampleFacade.findWordsLengths("letterCount", dto.getDataSelectionDTO(), dto.getWordAnalysisDTO());
+                }
+                if (dto.getWordAnalysisDTO().getWordUnit() == Unit.FONEM) {
+                    words = sampleFacade.findWordsLengths("fonemCount", dto.getDataSelectionDTO(), dto.getWordAnalysisDTO());
+                }
+
+                if (dto.getWordAnalysisDTO().getWordUnit() == Unit.SYLLABLE) {
+                    words = sampleFacade.findWordsLengths("syllableCount", dto.getDataSelectionDTO(), dto.getWordAnalysisDTO());
+                }
+
+                averageCalulator = averageCalculations(words);
+                result.getWord().setUnit(dto.getWordAnalysisDTO().getWordUnit());
+
                 result.setWordAverageCalculations(true);
                 result.setWordAverage(averageCalulator);
-                result.getWord().setUnit(Unit.LETTER);
                 result.getWord().setAverageLengthHistogram(averageLengthHistogram(words));
             }
-        }
 
-        if (dto.getWordAnalysisDTO().getWordZipfHistogram()) {
-            result.setWordFrequencyCalculations(true);
-            result.setWordFrequencyHistogram(frequencyZipfHistogram(sampleFacade.findWordsLengthFrequency(dto.getDataSelectionDTO(), dto.getWordAnalysisDTO())));
+            if (dto.getWordAnalysisDTO().getWordZipfHistogram()) {
+                result.setWordFrequencyCalculations(true);
+                result.setWordFrequencyHistogram(frequencyZipfHistogram(sampleFacade.findWordsLengthFrequency(dto.getDataSelectionDTO(), dto.getWordAnalysisDTO())));
+            }
         }
-
         return result;
 
     }
@@ -55,7 +73,9 @@ public class QuantitiveAnalysis {
         final SentenceQuantitativeAnalysisResult result = new SentenceQuantitativeAnalysisResult();
 
         if (dto.getAnalysisDTO().getSentenceAverageLengthHistogram()) {
+
             List<SentenceWordCount> list = sampleFacade.findSentenceWordCountAndWordLength(dto.getDataSelectionDTO(), dto.getAnalysisDTO());
+
             if (dto.getAnalysisDTO().getSentenceUnit() == Unit.WORD) {
                 result.getSentence().setUnit(Unit.WORD);
                 calculateSentence(Unit.WORD, result, list);
@@ -63,6 +83,14 @@ public class QuantitiveAnalysis {
             if (dto.getAnalysisDTO().getSentenceUnit() == Unit.LETTER) {
                 result.getSentence().setUnit(Unit.LETTER);
                 calculateSentence(Unit.LETTER, result, list);
+            }
+            if (dto.getAnalysisDTO().getSentenceUnit() == Unit.FONEM) {
+                result.getSentence().setUnit(Unit.FONEM);
+                calculateSentence(Unit.FONEM, result, list);
+            }
+            if (dto.getAnalysisDTO().getSentenceUnit() == Unit.SYLLABLE) {
+                result.getSentence().setUnit(Unit.SYLLABLE);
+                calculateSentence(Unit.SYLLABLE, result, list);
             }
         }
         return result;
@@ -86,6 +114,16 @@ public class QuantitiveAnalysis {
                     .map(SentenceWordCount::getLetterCount)
                     .collect(AverageLongCalulator::new, AverageLongCalulator::accept, AverageLongCalulator::combine);
         }
+        if (unit == Unit.SYLLABLE) {
+            return list.stream()
+                    .map(SentenceWordCount::getSyllableCount)
+                    .collect(AverageLongCalulator::new, AverageLongCalulator::accept, AverageLongCalulator::combine);
+        }
+        if (unit == Unit.FONEM) {
+            return list.stream()
+                    .map(SentenceWordCount::getFonemCount)
+                    .collect(AverageLongCalulator::new, AverageLongCalulator::accept, AverageLongCalulator::combine);
+        }
         return new AverageLongCalulator();
     }
 
@@ -99,6 +137,18 @@ public class QuantitiveAnalysis {
         if (unit == Unit.LETTER) {
             Map<Long, Long> map = list.stream()
                     .collect(Collectors.groupingBy(s -> s.getLetterCount().longValue(),
+                            Collectors.counting()));
+            return sortByLongKey(map);
+        }
+        if (unit == Unit.SYLLABLE) {
+            Map<Long, Long> map = list.stream()
+                    .collect(Collectors.groupingBy(s -> s.getSyllableCount(),
+                            Collectors.counting()));
+            return sortByLongKey(map);
+        }
+        if (unit == Unit.FONEM) {
+            Map<Long, Long> map = list.stream()
+                    .collect(Collectors.groupingBy(s -> s.getFonemCount(),
                             Collectors.counting()));
             return sortByLongKey(map);
         }

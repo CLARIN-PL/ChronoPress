@@ -51,8 +51,15 @@ public class SentenceAnalysisForm extends CustomComponent {
         sentenceUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD);
         sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD, provider.getProperty("label.word"));
         sentenceUnit.select(pl.clarin.chronopress.presentation.shered.dto.Unit.WORD);
+
         sentenceUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER);
         sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.LETTER, provider.getProperty("label.letter"));
+
+        sentenceUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.SYLLABLE);
+        sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.SYLLABLE, provider.getProperty("label.syllable"));
+
+        sentenceUnit.addItem(pl.clarin.chronopress.presentation.shered.dto.Unit.FONEM);
+        sentenceUnit.setItemCaption(pl.clarin.chronopress.presentation.shered.dto.Unit.FONEM, provider.getProperty("label.fonem"));
 
         VerticalLayout layout = new MVerticalLayout()
                 .withStyleName(ChronoTheme.COMPACT_FORM)

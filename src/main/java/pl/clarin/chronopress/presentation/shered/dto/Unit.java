@@ -1,5 +1,5 @@
 package pl.clarin.chronopress.presentation.shered.dto;
 
 public enum Unit {
-    SYLLABLE, LETTER, WORD
+    FONEM, SYLLABLE, LETTER, WORD
 }

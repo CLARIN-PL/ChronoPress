@@ -5,16 +5,7 @@ import com.vaadin.event.ShortcutAction;
 import com.vaadin.event.ShortcutListener;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.label.ContentMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Panel;
-import com.vaadin.ui.PopupView;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,10 +15,7 @@ import javax.inject.Inject;
 import org.vaadin.viritin.MSize;
 import org.vaadin.viritin.button.MButton;
 import org.vaadin.viritin.label.MLabel;
-import org.vaadin.viritin.layouts.MGridLayout;
-import org.vaadin.viritin.layouts.MHorizontalLayout;
-import org.vaadin.viritin.layouts.MPanel;
-import org.vaadin.viritin.layouts.MVerticalLayout;
+import org.vaadin.viritin.layouts.*;
 import pl.clarin.chronopress.business.property.boundary.DbPropertiesProvider;
 import pl.clarin.chronopress.presentation.VaadinUI;
 import pl.clarin.chronopress.presentation.page.concordance.ConcordanceView;
@@ -121,61 +109,55 @@ public class StartViewImpl extends AbstractView<StartViewPresenter> implements S
         });
 
         timeSerriesBtn = new MButton()
-                .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(TimeSeriesView.ID));
                 })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
+                .withStyleName(ValoTheme.BUTTON_LARGE)
+                .withStyleName("ch-responsive-btn");
 
         profilesBtn = new MButton()
-                .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(ProfilesView.ID));
                 })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
+                .withStyleName(ValoTheme.BUTTON_LARGE)
+                .withStyleName("ch-responsive-btn");
 
         concordanceBtn = new MButton()
-                .withSize(MSize.FULL_SIZE)
-                .withListener(l -> {
+                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(ConcordanceView.ID));
                 })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
+                .withStyleName(ValoTheme.BUTTON_LARGE)
+                .withStyleName("ch-responsive-btn");
 
         gmapBtn = new MButton()
-                .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(MapnamesView.ID));
                 })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
+                .withStyleName(ValoTheme.BUTTON_LARGE)
+                .withStyleName("ch-responsive-btn");
 
         freqBtn = new MButton()
-                .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(FrequencyView.ID));
                 })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
+                .withStyleName(ValoTheme.BUTTON_LARGE)
+                .withStyleName("ch-responsive-btn");
 
         quanAnalBtn = new MButton()
-                .withSize(MSize.FULL_SIZE)
                 .withListener(l -> {
                     navigation.fire(new NavigationEvent(QuantityView.ID));
                 })
-                .withStyleName(ValoTheme.BUTTON_LARGE);
+                .withStyleName(ValoTheme.BUTTON_LARGE)
+                .withStyleName("ch-responsive-btn");
 
-        GridLayout gridLayout = new MGridLayout()
+       CssLayout gridLayout = new MCssLayout()
                 .withWidth(70, Unit.PERCENTAGE);
-
-        gridLayout.setColumns(3);
-        gridLayout.setRows(3);
-        gridLayout.setColumnExpandRatio(0, 1);
-        gridLayout.setColumnExpandRatio(1, 1);
-        gridLayout.setColumnExpandRatio(2, 1);
-        gridLayout.addComponent(timeSerriesBtn, 0, 0);
-        gridLayout.addComponent(profilesBtn, 1, 0);
-        gridLayout.addComponent(concordanceBtn, 2, 0);
-        gridLayout.addComponent(gmapBtn, 0, 1);
-        gridLayout.addComponent(freqBtn, 1, 1);
-        gridLayout.addComponent(quanAnalBtn, 2, 1);
+        gridLayout.addComponent(timeSerriesBtn);
+        gridLayout.addComponent(profilesBtn);
+        gridLayout.addComponent(concordanceBtn);
+        gridLayout.addComponent(gmapBtn);
+        gridLayout.addComponent(freqBtn);
+        gridLayout.addComponent(quanAnalBtn);
 
         Panel searchPanel = new MPanel(searchContent)
                 .withStyleName(ValoTheme.PANEL_BORDERLESS)

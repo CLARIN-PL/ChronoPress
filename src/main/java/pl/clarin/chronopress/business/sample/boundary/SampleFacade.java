@@ -156,7 +156,9 @@ public class SampleFacade {
         q.select(cb.construct(SentenceWordCount.class,
                 root.get("sentence").get("id"),
                 root.get("sentence").get("wordCount"),
-                cb.sum(root.get("letterCount"))));
+                cb.sum(root.get("letterCount")),
+                cb.sum(root.get("fonemCount")),
+                cb.sum(root.get("syllableCount"))));
 
         q.groupBy(root.get("sentence").get("id"), root.get("sentence").get("wordCount"));
         q.where(predicates.toArray(new Predicate[predicates.size()]));
@@ -204,14 +206,14 @@ public class SampleFacade {
                 .getResultList();
     }
 
-    public List<Integer> findWordsLengths(DataSelectionDTO selection, WordAnalysisDTO dto) {
+    public List<Integer> findWordsLengths(String fieldName, DataSelectionDTO selection, WordAnalysisDTO dto) {
         if (dto.getNamingUnit()) {
             return findWordsLengthsForProperNames(selection, dto);
         }
-        return findByWordsLengths(selection, dto);
+        return findByWordsLengths(fieldName, selection, dto);
     }
 
-    public List<Integer> findByWordsLengths(DataSelectionDTO selection, WordAnalysisDTO dto) {
+    public List<Integer> findByWordsLengths(String fieldName, DataSelectionDTO selection, WordAnalysisDTO dto) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Integer> q = cb.createQuery(Integer.class);
 
@@ -223,7 +225,7 @@ public class SampleFacade {
         Predicate p1 = SampleSpecification.search(selection).toPredicate(text, q, cb);
         Predicate p2 = WordSpecification.filter(dto).toPredicate(root, q, cb);
 
-        q.select(root.get("letterCount"));
+        q.select(root.get(fieldName));
         q.where(p0, p1, p2);
 
         return em.createQuery(q).getResultList();
@@ -673,7 +675,7 @@ public class SampleFacade {
 
         List<String> partOfSpeech = new ArrayList<>();
 
-        if (PartOfSpeech.all == pos.all) {
+        if (PartOfSpeech.all == pos) {
             partOfSpeech.add(PartOfSpeech.adj.toString());
             partOfSpeech.add(PartOfSpeech.adverb.toString());
             partOfSpeech.add(PartOfSpeech.noun.toString());
@@ -754,7 +756,6 @@ public class SampleFacade {
 
         List<Predicate> predicates = new ArrayList<>();
         predicates.add(cb.equal(sentence.get("sample").get("id"), text.get("id")));
-        predicates.add(WordSpecification.notPunctuation().toPredicate(root, q, cb));
         predicates.add(WordSpecification.byLexeme(base).toPredicate(root, q, cb));
 
         if (date != null) {

@@ -50,17 +50,6 @@ public class DataManagementViewPresenter extends AbstractPresenter<DataManagemen
                 });
      }
 
-     public void onFonemUpdate(@Observes(notifyObserver = Reception.IF_EXISTS) FonemCountUpdateEvent ev){
-         System.out.println("Staring update fonems ...");
-         CompletableFuture.supplyAsync(() -> {
-                     importFonemsService.updateWords();
-                     return 1;
-                 },
-                 importerExecutor).thenRun(() -> {
-         });
-     }
-
-
     public void onProcessSamplesFinishedEvent(@Observes(notifyObserver = Reception.IF_EXISTS) ProcessingSamplesFinishedEvent event) {
         getView().proccesingSamplesFinished();
         Notification.show("Procesowanie zakończone", Notification.Type.TRAY_NOTIFICATION);
