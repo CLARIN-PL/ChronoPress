@@ -19,12 +19,9 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.Column;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
-import javax.transaction.Transaction;
 
 import pl.clarin.chronopress.business.audience.boundary.AudienceFacade;
 import pl.clarin.chronopress.business.propername.entity.ProperName;
@@ -254,7 +251,7 @@ public class SampleFacade {
 
     public List<Long> findWordsLengthFrequency(DataSelectionDTO selection, WordAnalysisDTO dto) {
         if (dto.getNamingUnit()) {
-            return findWordsFequencyForProperNames(selection, dto);
+            return findWordsFrequencyForProperNames(selection, dto);
         }
         return findByWordsLengthFrequency(selection, dto);
     }
@@ -279,7 +276,7 @@ public class SampleFacade {
         return em.createQuery(q).getResultList();
     }
 
-    public List<Long> findWordsFequencyForProperNames(DataSelectionDTO selection, WordAnalysisDTO dto) {
+    public List<Long> findWordsFrequencyForProperNames(DataSelectionDTO selection, WordAnalysisDTO dto) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> q = cb.createQuery(Long.class);
 
@@ -431,11 +428,14 @@ public class SampleFacade {
 
         q.where(predicates.toArray(new Predicate[predicates.size()]));
 
-        List<TimeProbe> queryResult = em.createQuery(q).getResultList();
+        List<TimeProbe> queryResult = em
+                .createQuery(q)
+                .getResultList();
 
         Map<String, List<TimeProbe>> sorted = new HashMap<>();
 
-        Map<Integer, Map<Integer, List<TimeProbe>>> groupByDate = queryResult.stream()
+        Map<Integer, Map<Integer, List<TimeProbe>>> groupByDate = queryResult
+                .stream()
                 .collect(groupingBy(p -> p.getYear(), groupingBy(p -> p.getMonth())));
 
         if (dto.getAsSumOfResults()) {
