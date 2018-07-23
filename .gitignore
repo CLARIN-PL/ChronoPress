@@ -1,0 +1,17 @@
+bin/
+target/
+build/
+.settings/
+.idea/
+.gradle/
+.metadata
+.classpath
+.project
+.log
+.iml
+.ipr
+.iws
+.springBeans
+.externalToolBuilders/
+*~
+src/main/webapp/VAADIN/gwt-unitCache/
