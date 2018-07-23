@@ -1,2 +1,2 @@
 # ChronoPress
-Press texts portal processing
+Chronological press texts processing portal
