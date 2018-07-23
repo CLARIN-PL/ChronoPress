@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
+import javax.persistence.criteria.Fetch;
+
 import lombok.Data;
 
 @Entity
@@ -16,7 +18,6 @@ import lombok.Data;
             @Index(name = "wc_idx", columnList = "wc")
         })
 @Data
-@Cacheable
 public class Sentence implements Serializable {
 
     @Id
@@ -31,7 +32,7 @@ public class Sentence implements Serializable {
 
     private Integer seq;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "sample_id")
     private Sample sample;
 

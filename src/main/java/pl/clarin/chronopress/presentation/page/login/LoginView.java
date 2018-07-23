@@ -8,6 +8,6 @@ import pl.clarin.chronopress.presentation.shered.mvp.ApplicationView;
  */
 public interface LoginView extends ApplicationView<LoginViewPresenter> {
 
-    public static final String ID = "password-login";
+     String ID = "password-login";
 
 }

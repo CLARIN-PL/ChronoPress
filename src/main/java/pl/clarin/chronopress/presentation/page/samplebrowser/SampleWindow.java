@@ -94,7 +94,7 @@ public class SampleWindow extends Window implements Property.ValueChangeListener
     }
 
     public void setItemWithMarkedkWord(Sample txt, String word) {
-        String t = txt.getTxt().replace(word, "<b>" + word + "</b>");
+        String t = txt.getTxt().replace(word, "<b style='font-color:red'>" + word + "</b>");
         txt.setTxt(t);
         setItem(txt);
     }

@@ -9,7 +9,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "dictionary_word_fonems_syllables")
 @Data
-@Cacheable
 public class DictionaryWordFonemsAndSyllables implements Serializable {
 
     @Id

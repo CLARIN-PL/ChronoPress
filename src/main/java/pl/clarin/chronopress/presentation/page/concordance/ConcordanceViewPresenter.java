@@ -11,6 +11,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import pl.clarin.chronopress.business.calculations.boundary.CalculationsFacade;
 import pl.clarin.chronopress.business.calculations.boundary.DataExplorationResult;
+import pl.clarin.chronopress.business.sample.boundary.ConcordanceQueryService;
 import pl.clarin.chronopress.business.sample.boundary.SampleFacade;
 import pl.clarin.chronopress.business.sample.entity.Sample;
 import pl.clarin.chronopress.presentation.page.dataanalyse.CalculateDataExplorationEvent;
@@ -40,6 +41,9 @@ public class ConcordanceViewPresenter extends AbstractPresenter<ConcordanceView>
     @Inject
     SampleFacade sampleFacade;
 
+    @Inject
+    ConcordanceQueryService queryService;
+
     @Override
     protected void onViewEnter() {
         getView().setInitDataSelection(sampleFacade.getInitDataSelection());
@@ -56,6 +60,8 @@ public class ConcordanceViewPresenter extends AbstractPresenter<ConcordanceView>
                 getView().addResultPanel(r);
             }
         });
+
+        queryService.findConcordanceByLemma(event.getDataExplorationDTO().getLemma());
     }
 
     public void onShowConcordanceWindow(@Observes(notifyObserver = Reception.IF_EXISTS) ShowConcordanceWindowEvent event) {

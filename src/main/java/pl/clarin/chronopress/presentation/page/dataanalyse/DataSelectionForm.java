@@ -33,6 +33,7 @@ public class DataSelectionForm extends CustomComponent {
     @Inject
     SearchableTablePanel searchAuthorsPanel;
 
+    // popravic przekazywanie typ nie wybiera not_lemma
     @PostConstruct
     public void initialize() {
 

@@ -782,6 +782,11 @@ public class SampleFacade {
         return queryResult;
     }
 
+    public List<Word> findAllWords(){
+        Query q = em.createQuery("Select w FROM Word w");
+        return q.getResultList();
+    }
+
     public void saveFonem(DictionaryWordFonemsAndSyllables dwfs) {
         repo.saveAndFlush(dwfs);
     }

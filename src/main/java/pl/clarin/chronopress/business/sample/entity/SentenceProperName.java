@@ -16,7 +16,6 @@ import pl.clarin.chronopress.business.propername.entity.ProperName;
 @Entity
 @Table(name = "Sentence_ProperName")
 @Data
-@Cacheable
 public class SentenceProperName implements Serializable {
 
     @Id
